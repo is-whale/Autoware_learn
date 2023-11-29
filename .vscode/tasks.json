@@ -1,0 +1,33 @@
+// {
+// 	"version": "2.0.0",
+// 	"tasks": [
+// 		{
+// 			"type": "catkin",
+// 			"args": [
+// 				"--workspace",
+// 				"/home/driver/Ackermann-chassis-PID"
+// 			],
+// 			"problemMatcher": [
+// 				"$catkin-gcc"
+// 			],
+// 			"group": "build",
+// 			"label": "catkin: build"
+// 		}
+// 	]
+// }
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "catkin_make",
+            "type": "shell",
+            "command": "catkin build",
+            "args": [],//如果需要在命令后面加一些后缀，可以写在这里，比如-DCATKIN_WHITELIST_PACKAGES=“pac1;pac2”
+            "group": {"kind":"build","isDefault":true},
+            "presentation": {
+                "reveal": "always" //可选always或者silence，代表是否输出信息
+            },
+            "problemMatcher": "$msCompile"
+        },
+    ]
+}
