@@ -4,5 +4,9 @@
     ],
     "python.analysis.extraPaths": [
         "/opt/ros/noetic/lib/python3/dist-packages"
-    ]
+    ],
+    "files.associations": {
+        "*.cpp": "cpp",
+        "algorithm": "cpp"
+    }
 }
