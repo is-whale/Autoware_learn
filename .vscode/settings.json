@@ -4,5 +4,6 @@
     ],
     "python.analysis.extraPaths": [
         "/opt/ros/noetic/lib/python3/dist-packages"
-    ]
+    ],
+    "cmake.sourceDirectory": "/home/whale/code/autoware/Autoware_learn/src/autoware/common/amathutils_lib"
 }

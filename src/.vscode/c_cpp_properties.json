@@ -9,7 +9,8 @@
                 "/opt/ros/noetic/include/**",
                 "/usr/include/**",
                 "./autoware/common/gnss/include/",
-                "${workspaceFolder}/autoware/core_planning/freespace_planner/include"
+                "${workspaceFolder}/autoware/core_planning/freespace_planner/include",
+                "${workspaceFolder}/autoware/core_planning/op_global_planner/include"
             ],
             "name": "ROS",
             "intelliSenseMode": "gcc-x64",
