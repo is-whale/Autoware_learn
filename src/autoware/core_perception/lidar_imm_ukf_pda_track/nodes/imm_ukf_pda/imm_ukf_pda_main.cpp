@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "imm_ukf_pda.h"
+#include <imm_ukf_pda/imm_ukf_pda.h>
 
 int main(int argc, char** argv)
 {

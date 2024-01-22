@@ -70,7 +70,7 @@
 #include <autoware_msgs/NDTStat.h>
 
 //headers in Autoware Health Checker
-#include <autoware_health_checker/node_status_publisher.h>
+#include <autoware_health_checker/health_checker/health_checker.h>
 
 #define PREDICT_POSE_THRESHOLD 0.5
 
@@ -78,7 +78,7 @@
 #define Wb 0.3
 #define Wc 0.3
 
-static std::shared_ptr<autoware_health_checker::NodeStatusPublisher> node_status_publisher_ptr_;
+static std::shared_ptr<autoware_health_checker::HealthChecker> health_checker_ptr_;
 
 struct pose
 {
@@ -166,6 +166,9 @@ static bool has_converged;
 static int iteration = 0;
 static double fitness_score = 0.0;
 static double trans_probability = 0.0;
+
+// reference for comparing fitness_score, default value set to 500.0
+static double _gnss_reinit_fitness = 500.0;
 
 static double diff = 0.0;
 static double diff_x = 0.0, diff_y = 0.0, diff_z = 0.0, diff_yaw;
@@ -550,7 +553,7 @@ static void gnss_callback(const geometry_msgs::PoseStamped::ConstPtr& input)
   ros::Time current_gnss_time = input->header.stamp;
   static ros::Time previous_gnss_time = current_gnss_time;
 
-  if ((_use_gnss == 1 && init_pos_set == 0) || fitness_score >= 500.0)
+  if ((_use_gnss == 1 && init_pos_set == 0) || fitness_score >= _gnss_reinit_fitness)
   {
     previous_pose.x = previous_gnss_pose.x;
     previous_pose.y = previous_gnss_pose.y;
@@ -921,7 +924,7 @@ static void imu_callback(const sensor_msgs::Imu::Ptr& input)
 
 static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
 {
-  node_status_publisher_ptr_->CHECK_RATE("/topic/rate/points_raw/slow",8,5,1,"topic points_raw subscribe rate low.");
+  health_checker_ptr_->CHECK_RATE("topic_rate_filtered_points_slow", 8, 5, 1, "topic filtered_points subscribe rate slow.");
   if (map_loaded == 1 && init_pos_set == 1)
   {
     matching_start = std::chrono::system_clock::now();
@@ -1354,7 +1357,7 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
     }
 
     predict_pose_pub.publish(predict_pose_msg);
-    node_status_publisher_ptr_->CHECK_RATE("/topic/rate/ndt_pose/slow",8,5,1,"topic points_raw publish rate low.");
+    health_checker_ptr_->CHECK_RATE("topic_rate_ndt_pose_slow", 8, 5, 1, "topic ndt_pose publish rate slow.");
     ndt_pose_pub.publish(ndt_pose_msg);
     // current_pose is published by vel_pose_mux
     //    current_pose_pub.publish(current_pose_msg);
@@ -1376,7 +1379,7 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
     matching_end = std::chrono::system_clock::now();
     exe_time = std::chrono::duration_cast<std::chrono::microseconds>(matching_end - matching_start).count() / 1000.0;
     time_ndt_matching.data = exe_time;
-    node_status_publisher_ptr_->CHECK_MAX_VALUE("/value/time_ndt_matching",time_ndt_matching.data,50,70,100,"value time_ndt_matching is too high.");
+    health_checker_ptr_->CHECK_MAX_VALUE("time_ndt_matching", time_ndt_matching.data, 50, 70, 100, "value time_ndt_matching is too high.");
     time_ndt_matching_pub.publish(time_ndt_matching);
 
     // Set values for /estimate_twist
@@ -1394,8 +1397,8 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
     geometry_msgs::Vector3Stamped estimate_vel_msg;
     estimate_vel_msg.header.stamp = current_scan_time;
     estimate_vel_msg.vector.x = current_velocity;
-    node_status_publisher_ptr_->CHECK_MAX_VALUE("/value/estimate_twist/linear",current_velocity,5,10,15,"value linear estimated twist is too high.");
-    node_status_publisher_ptr_->CHECK_MAX_VALUE("/value/estimate_twist/angular",angular_velocity,5,10,15,"value linear angular twist is too high.");
+    health_checker_ptr_->CHECK_MAX_VALUE("estimate_twist_linear", current_velocity, 5, 10, 15, "value linear estimated twist is too high.");
+    health_checker_ptr_->CHECK_MAX_VALUE("estimate_twist_angular", angular_velocity, 5, 10, 15, "value linear angular twist is too high.");
     estimated_vel_pub.publish(estimate_vel_msg);
 
     // Set values for /ndt_stat
@@ -1441,7 +1444,7 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
     std::cout << "Sequence: " << input->header.seq << std::endl;
     std::cout << "Timestamp: " << input->header.stamp << std::endl;
     std::cout << "Frame ID: " << input->header.frame_id << std::endl;
-    //		std::cout << "Number of Scan Points: " << scan_ptr->size() << " points." << std::endl;
+    //    std::cout << "Number of Scan Points: " << scan_ptr->size() << " points." << std::endl;
     std::cout << "Number of Filtered Scan Points: " << scan_points_num << " points." << std::endl;
     std::cout << "NDT has converged: " << has_converged << std::endl;
     std::cout << "Fitness Score: " << fitness_score << std::endl;
@@ -1524,9 +1527,9 @@ int main(int argc, char** argv)
 
   ros::NodeHandle nh;
   ros::NodeHandle private_nh("~");
-  node_status_publisher_ptr_ = std::make_shared<autoware_health_checker::NodeStatusPublisher>(nh,private_nh);
-  node_status_publisher_ptr_->ENABLE();
-  node_status_publisher_ptr_->NODE_ACTIVATE();
+  health_checker_ptr_ = std::make_shared<autoware_health_checker::HealthChecker>(nh,private_nh);
+  health_checker_ptr_->ENABLE();
+  health_checker_ptr_->NODE_ACTIVATE();
 
   // Set log file name.
   private_nh.getParam("output_log_data", _output_log_data);
@@ -1555,6 +1558,8 @@ int main(int argc, char** argv)
   private_nh.getParam("use_odom", _use_odom);
   private_nh.getParam("imu_upside_down", _imu_upside_down);
   private_nh.getParam("imu_topic", _imu_topic);
+  private_nh.param<double>("gnss_reinit_fitness", _gnss_reinit_fitness, 500.0);
+
 
   if (nh.getParam("localizer", _localizer) == false)
   {
@@ -1605,6 +1610,7 @@ int main(int argc, char** argv)
   std::cout << "imu_upside_down: " << _imu_upside_down << std::endl;
   std::cout << "imu_topic: " << _imu_topic << std::endl;
   std::cout << "localizer: " << _localizer << std::endl;
+  std::cout << "gnss_reinit_fitness: " << _gnss_reinit_fitness << std::endl;
   std::cout << "(tf_x,tf_y,tf_z,tf_roll,tf_pitch,tf_yaw): (" << _tf_x << ", " << _tf_y << ", " << _tf_z << ", "
             << _tf_roll << ", " << _tf_pitch << ", " << _tf_yaw << ")" << std::endl;
   std::cout << "-----------------------------------------------------------------" << std::endl;
