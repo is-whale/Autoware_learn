@@ -188,14 +188,14 @@ void AstarAvoid::run()
     }
     else if (state_ == AstarAvoid::STATE::STOPPING)
     {
-      bool replan = ((ros::WallTime::now() - start_plan_time).toSec() > replan_interval_); //time >replan_interval
-      //maybe time < replan time
+      bool replan = ((ros::WallTime::now() - start_plan_time).toSec() > replan_interval_); // time >replan_interval
+      // maybe time < replan time
       if (!found_obstacle)
       {
         ROS_INFO("STOPPING -> RELAYING, Obstacle disappers");
         state_ = AstarAvoid::STATE::RELAYING;
       }
-      //start planner
+      // start planner
       else if (replan && avoid_velocity)
       {
         ROS_INFO("STOPPING -> PLANNING, Start A* planning");
@@ -205,7 +205,7 @@ void AstarAvoid::run()
     else if (state_ == AstarAvoid::STATE::PLANNING)
     {
       start_plan_time = ros::WallTime::now();
-
+      // planner
       if (planAvoidWaypoints(end_of_avoid_index))
       {
         ROS_INFO("PLANNING -> AVOIDING, Found path");
