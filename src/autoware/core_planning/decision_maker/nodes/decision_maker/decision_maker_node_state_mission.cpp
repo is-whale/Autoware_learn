@@ -38,8 +38,6 @@ void DecisionMakerNode::exitWaitOrderState(cstring_t& state_name, int status)
 
 void DecisionMakerNode::entryMissionCheckState(cstring_t& state_name, int status)
 {
-  intersects.clear();
-  initVectorMap();
 
   publishOperatorHelpMessage("Received mission, checking now...");
   setEventFlag("received_back_state_waypoint", false);
@@ -68,7 +66,14 @@ void DecisionMakerNode::entryMissionCheckState(cstring_t& state_name, int status
   }
 
   // waypoint-state set and insert interpolation waypoint for stopline
-  setWaypointState(current_status_.based_lane_array);
+  if(use_lanelet_map_)
+  {
+    setWaypointStateUsingLanelet2Map(current_status_.based_lane_array);        
+  }
+  else
+  {
+    setWaypointStateUsingVectorMap(current_status_.based_lane_array);    
+  }
 
   // indexing
   gid = 0;
@@ -91,7 +96,7 @@ void DecisionMakerNode::entryMissionCheckState(cstring_t& state_name, int status
   }
   if (!isSubscriberRegistered("stop_order_idx"))
   {
-    Subs["stop_order_idx"] = nh_.subscribe("/state/stop_order_wpidx", 1, &DecisionMakerNode::callbackFromStopOrder, this);
+    Subs["stop_order_idx"] = nh_.subscribe("state/stop_order_wpidx", 1, &DecisionMakerNode::callbackFromStopOrder, this);
   }
 }
 void DecisionMakerNode::updateMissionCheckState(cstring_t& state_name, int status)

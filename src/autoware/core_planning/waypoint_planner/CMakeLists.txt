@@ -3,70 +3,99 @@ project(waypoint_planner)
 
 set(CMAKE_CXX_FLAGS "-O2 -g -Wall ${CMAKE_CXX_FLAGS}")
 
-find_package(catkin REQUIRED COMPONENTS
-  autoware_build_flags
-  roscpp
-  std_msgs
-  pcl_ros
-  pcl_conversions
-  tf
-  waypoint_follower
-  autoware_msgs
-  vector_map
-  astar_search
+find_package(autoware_build_flags REQUIRED)
+
+find_package(
+  catkin REQUIRED COMPONENTS
+    astar_search
+    autoware_config_msgs
+    autoware_health_checker
+    autoware_msgs
+    lanelet2_extension
+    libwaypoint_follower
+    pcl_conversions
+    pcl_ros
+    roscpp
+    roslint
+    std_msgs
+    tf
+    vector_map
 )
 
-catkin_package(
-  CATKIN_DEPENDS
-  roscpp
-  std_msgs
-  tf
-  waypoint_follower
-  autoware_msgs
-  vector_map
-  astar_search
-)
+catkin_package()
+
+# TODO add all codes to roslint
+roslint_cpp(src/velocity_set_lanelet2/velocity_set_lanelet2.cpp)
 
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(astar_avoid
+add_executable(
+  astar_avoid
   src/astar_avoid/astar_avoid.cpp
   src/astar_avoid/astar_avoid_node.cpp
 )
 
-target_link_libraries(astar_avoid
+target_link_libraries(
+  astar_avoid
   ${catkin_LIBRARIES}
 )
 
-add_dependencies(astar_avoid
+add_dependencies(
+  astar_avoid
   ${catkin_EXPORTED_TARGETS}
 )
 
-add_executable(velocity_set
+add_executable(
+  velocity_set
   src/velocity_set/velocity_set.cpp
   src/velocity_set/velocity_set_path.cpp
   src/velocity_set/velocity_set_info.cpp
   src/velocity_set/libvelocity_set.cpp
 )
 
-target_link_libraries(velocity_set
+target_link_libraries(
+  velocity_set
   ${catkin_LIBRARIES}
 )
 
-add_dependencies(velocity_set
+add_dependencies(
+  velocity_set
   ${catkin_EXPORTED_TARGETS}
 )
 
-install(TARGETS astar_avoid velocity_set
-        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+add_executable(
+  velocity_set_lanelet2
+  src/velocity_set_lanelet2/velocity_set_lanelet2.cpp
+  src/velocity_set/velocity_set_path.cpp
+  src/velocity_set/velocity_set_info.cpp
+  src/velocity_set/libvelocity_set.cpp
 )
 
-install(DIRECTORY launch/
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
-        PATTERN ".svn" EXCLUDE
+target_link_libraries(
+  velocity_set_lanelet2
+  ${catkin_LIBRARIES}
 )
+
+add_dependencies(
+  velocity_set_lanelet2
+  ${catkin_EXPORTED_TARGETS}
+)
+
+install(
+  TARGETS astar_avoid velocity_set velocity_set_lanelet2
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(
+  DIRECTORY launch/
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+)
+
+if (CATKIN_ENABLE_TESTING)
+  roslint_add_test()
+endif()

@@ -105,7 +105,6 @@ void AstarNavi::run()
   {
     ros::spinOnce();
 
-    //若未初始化，则不执行后续代码，直接进入下一次循环
     if (!costmap_initialized_ || !current_pose_initialized_ || !goal_pose_initialized_)
     {
       rate.sleep();
@@ -119,7 +118,6 @@ void AstarNavi::run()
     goalPoseCallback(goal_pose_global_);
 
     // execute astar search
-    //搜索路线并且记录时间
     ros::WallTime start = ros::WallTime::now();
     bool result = astar_.makePlan(current_pose_local_.pose, goal_pose_local_.pose);
     ros::WallTime end = ros::WallTime::now();
@@ -127,7 +125,6 @@ void AstarNavi::run()
     ROS_INFO("Astar planning: %f [s]", (end - start).toSec());
 
     if (result)
-    //搜索到路线
     {
       ROS_INFO("Found GOAL!");
       publishWaypoints(astar_.getPath(), waypoints_velocity_);

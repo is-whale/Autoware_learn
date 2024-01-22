@@ -30,7 +30,7 @@
 #include <geometry_msgs/TwistStamped.h>
 #include <autoware_msgs/LaneArray.h>
 
-#include "waypoint_follower/libwaypoint_follower.h"
+#include "libwaypoint_follower/libwaypoint_follower.h"
 #include "astar_search/astar_search.h"
 
 class AstarAvoid
@@ -88,6 +88,7 @@ private:
   bool found_avoid_path_;
   int closest_waypoint_index_;
   int obstacle_waypoint_index_;
+  int closest_local_index_;
   nav_msgs::OccupancyGrid costmap_;
   autoware_msgs::Lane base_waypoints_;
   autoware_msgs::Lane avoid_waypoints_;

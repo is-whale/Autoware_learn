@@ -19,9 +19,9 @@
 #include <std_msgs/ColorRGBA.h>
 #include <iostream>
 
-#include "../../src/velocity_set/libvelocity_set.h"
-#include "../../src/velocity_set/velocity_set_info.h"
-#include "../../src/velocity_set/velocity_set_path.h"
+#include <waypoint_planner/velocity_set/libvelocity_set.h>
+#include <waypoint_planner/velocity_set/velocity_set_info.h>
+#include <waypoint_planner/velocity_set/velocity_set_path.h>
 
 namespace
 {
@@ -569,7 +569,7 @@ int main(int argc, char** argv)
   ros::Publisher stopline_waypoint_pub = nh.advertise<std_msgs::Int32>("stopline_waypoint", 1, true);
 
   ros::Publisher final_waypoints_pub;
-	final_waypoints_pub = nh.advertise<autoware_msgs::Lane>("final_waypoints", 1, true);
+  final_waypoints_pub = nh.advertise<autoware_msgs::Lane>("final_waypoints", 1, true);
 
   ros::Rate loop_rate(LOOP_RATE);
   while (ros::ok())

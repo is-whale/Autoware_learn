@@ -1,5 +1,4 @@
 # OpenPlanner - Simulator
-模拟器，这部分代码可以用在雷达数据利用
 
 Collection of nodes developed to help testing planning algorithm, it could be used with any planner. 
 it consists of three main modules (perception simulator, traffic lights simulator, vehicle simulator) 

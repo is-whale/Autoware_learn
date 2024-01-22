@@ -33,7 +33,7 @@
 #include <iostream>
 
 #include "autoware_msgs/Lane.h"
-#include "waypoint_follower/libwaypoint_follower.h"
+#include "libwaypoint_follower/libwaypoint_follower.h"
 #include "libvelocity_set.h"
 
 namespace
@@ -571,7 +571,7 @@ EControl crossWalkDetection(const int &crosswalk_id)
         vscan_temp.x = vscan.x;
         vscan_temp.y = vscan.y;
         vscan_temp.z = vscan.z;
-	g_obstacle.setStopPoint(calcAbsoluteCoordinate(vscan_temp, g_localizer_pose.pose));
+  g_obstacle.setStopPoint(calcAbsoluteCoordinate(vscan_temp, g_localizer_pose.pose));
       }
       if (stop_count > g_threshold_points)
         return STOP;
@@ -635,7 +635,7 @@ EControl vscanDetection()
         vscan_temp.x = item->x;
         vscan_temp.y = item->y;
         vscan_temp.z = item->z;
-	g_obstacle.setStopPoint(calcAbsoluteCoordinate(vscan_temp, g_localizer_pose.pose));
+  g_obstacle.setStopPoint(calcAbsoluteCoordinate(vscan_temp, g_localizer_pose.pose));
       }
       if (stop_point_count > g_threshold_points)
       {
@@ -678,7 +678,7 @@ EControl vscanDetection()
           vscan_temp.x = item->x;
           vscan_temp.y = item->y;
           vscan_temp.z = item->z;
-	  g_obstacle.setDeceleratePoint(calcAbsoluteCoordinate(vscan_temp, g_localizer_pose.pose));
+    g_obstacle.setDeceleratePoint(calcAbsoluteCoordinate(vscan_temp, g_localizer_pose.pose));
         }
       }
 
