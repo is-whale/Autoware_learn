@@ -6,9 +6,11 @@
 
   <!-- Avoidance behavior configurations -->
   <arg name="costmap_topic" default="semantics/costmap_generator/occupancy_grid" />
-  <arg name="enable_avoidance" default="false" />
+  <arg name="enable_avoidance" default="false" />  
+  <!--避障&中继模式-->
   <arg name="avoid_waypoints_velocity" default="10.0" />
-  <arg name="avoid_start_velocity" default="3.0" />
+  <!-- 开始避障速度，小于此值 -->
+  <arg name="avoid_start_velocity" default="3.0" /> 
   <arg name="replan_interval" default="2.0" />
   <arg name="search_waypoints_size" default="50" />
   <arg name="search_waypoints_delta" default="2" />
