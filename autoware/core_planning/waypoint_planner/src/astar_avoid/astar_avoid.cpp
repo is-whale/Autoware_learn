@@ -212,7 +212,7 @@ void AstarAvoid::run()
         state_ = AstarAvoid::STATE::AVOIDING;
         start_avoid_time = ros::WallTime::now();
       }
-      else
+      else // without path
       {
         ROS_INFO("PLANNING -> STOPPING, Cannot find path");
         state_ = AstarAvoid::STATE::STOPPING;
