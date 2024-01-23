@@ -18,7 +18,7 @@ const double NaN_double = std::numeric_limits<double>::quiet_NaN();
  */
 double hypot(double x, double y, double z)
 {
-	return sqrt(x*x + y*y + z*z);
+  return sqrt(x*x + y*y + z*z);
 }
 
 
@@ -30,18 +30,18 @@ double hypot(double x, double y, double z)
  */
 double normalizeRadians (double radians)
 {
-	if (std::abs(radians) > PI)
-	{
-		// For numerical stability we must use this sin/cos/atan2
-		// implementation even though it might consume more cycles.
-		// Note that radians = -pi converts to atan2(0,-1) = +pi!
-		radians = std::atan2 (std::sin(radians), std::cos(radians));
-		// radians now in (-pi,+pi]
-	}
-	if (radians == PI)	// equality of doubles ... just for the sake of completeness
-	{
-		// Convert half-open interval from  (-pi,+pi]  to  [-pi,+pi)
-		radians = -PI;
-	}
-	return radians;
+  if (std::abs(radians) > PI)
+  {
+    // For numerical stability we must use this sin/cos/atan2
+    // implementation even though it might consume more cycles.
+    // Note that radians = -pi converts to atan2(0,-1) = +pi!
+    radians = std::atan2 (std::sin(radians), std::cos(radians));
+    // radians now in (-pi,+pi]
+  }
+  if (radians == PI)  // equality of doubles ... just for the sake of completeness
+  {
+    // Convert half-open interval from  (-pi,+pi]  to  [-pi,+pi)
+    radians = -PI;
+  }
+  return radians;
 }

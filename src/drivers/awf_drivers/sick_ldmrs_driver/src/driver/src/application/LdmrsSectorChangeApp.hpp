@@ -12,33 +12,33 @@
 
 namespace application
 {
-	
+  
 //
 // LdmrsApp
 //
 class LdmrsSectorChangeApp : public BasicApplication
 {
 public:
-	LdmrsSectorChangeApp(Manager* manager);
-	virtual ~LdmrsSectorChangeApp();
+  LdmrsSectorChangeApp(Manager* manager);
+  virtual ~LdmrsSectorChangeApp();
 
 protected:
-	void setData(BasicData& data);	// Receiver
-	
+  void setData(BasicData& data);  // Receiver
+  
 private:
-	void checkResolution(Scan& scan);
-	void changeThreadFunction(bool& endThread, UINT16& waitTimeMs);
-	bool changeFlexResConfiguration(const ScannerInfo::ResolutionMap& configuredRM);
-	bool changeAngularResolutionType(devices::AngularResolutionType type);
-	bool readDetailedErrorCode(UINT32* code = NULL);
+  void checkResolution(Scan& scan);
+  void changeThreadFunction(bool& endThread, UINT16& waitTimeMs);
+  bool changeFlexResConfiguration(const ScannerInfo::ResolutionMap& configuredRM);
+  bool changeAngularResolutionType(devices::AngularResolutionType type);
+  bool readDetailedErrorCode(UINT32* code = NULL);
 
 private:
-	bool m_beVerbose;
-	Manager* m_manager;
-	ScannerInfo::ResolutionMap m_lastMeasuredSector;
-	SickThread<LdmrsSectorChangeApp, &LdmrsSectorChangeApp::changeThreadFunction> m_changeThread;
+  bool m_beVerbose;
+  Manager* m_manager;
+  ScannerInfo::ResolutionMap m_lastMeasuredSector;
+  SickThread<LdmrsSectorChangeApp, &LdmrsSectorChangeApp::changeThreadFunction> m_changeThread;
 };
 
-}	// namespace application
+}  // namespace application
 
 #endif

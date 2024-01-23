@@ -61,52 +61,52 @@ DriveWorks::DeviceArguments CameraArguments(options);
 namespace gmsl_camera
 {
   class CameraNodelet: public nodelet::Nodelet
-	{
-		public:
-			CameraNodelet():running(false)
-			{
-			}
+  {
+    public:
+      CameraNodelet():running(false)
+      {
+      }
 
-			~CameraNodelet()
-			{
-				// signal gmsl camera to stop before nodelet exit
-				// note: we are not using a signal handler: just using destructor to stop camera(s)
-				// on the programme termination
-				if(camera && running)
-				{
-				  try
-				  {
-					  NODELET_INFO("shutting down camera thread");
-					  running = false;
-						camera->shutdown();
-						delete camera;
-						NODELET_INFO("camera stopped");
-				  }
-				  catch(std::runtime_error& e)
-				  {
-						NODELET_ERROR("%s", e.what());
-					}
+      ~CameraNodelet()
+      {
+        // signal gmsl camera to stop before nodelet exit
+        // note: we are not using a signal handler: just using destructor to stop camera(s)
+        // on the programme termination
+        if(camera && running)
+        {
+          try
+          {
+            NODELET_INFO("shutting down camera thread");
+            running = false;
+            camera->shutdown();
+            delete camera;
+            NODELET_INFO("camera stopped");
+          }
+          catch(std::runtime_error& e)
+          {
+            NODELET_ERROR("%s", e.what());
+          }
 
-				}
-			}
+        }
+      }
 
-			void onInit()
-			{
-				// global and private node handler
-				ros::NodeHandle node  = getNodeHandle();
-				ros::NodeHandle pnode = getPrivateNodeHandle();
-				// spawn device thread when create this instance
-				camera = new DriveWorks::SekonixGmslCamera(node, pnode, CameraArguments);
-				running = true;
-			}
+      void onInit()
+      {
+        // global and private node handler
+        ros::NodeHandle node  = getNodeHandle();
+        ros::NodeHandle pnode = getPrivateNodeHandle();
+        // spawn device thread when create this instance
+        camera = new DriveWorks::SekonixGmslCamera(node, pnode, CameraArguments);
+        running = true;
+      }
 
-	  private:
-	    DriveWorks::SekonixGmslCamera *camera;
-	    volatile bool running;
+    private:
+      DriveWorks::SekonixGmslCamera *camera;
+      volatile bool running;
 
-	};
+  };
 
-	//PLUGINLIB_DECLARE_CLASS(gmsl_camera, CameraNodelet, gmsl_camera::CameraNodelet, nodelet::Nodelet);
-	PLUGINLIB_EXPORT_CLASS(gmsl_camera::CameraNodelet, nodelet::Nodelet);
+  //PLUGINLIB_DECLARE_CLASS(gmsl_camera, CameraNodelet, gmsl_camera::CameraNodelet, nodelet::Nodelet);
+  PLUGINLIB_EXPORT_CLASS(gmsl_camera::CameraNodelet, nodelet::Nodelet);
 };
 

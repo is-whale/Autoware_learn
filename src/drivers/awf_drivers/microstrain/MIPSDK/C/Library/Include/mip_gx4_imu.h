@@ -53,8 +53,8 @@
 
 #define GX4_IMU_MODEL_NUMBER            6237
 
-#define GX4_IMU_BASIC_STATUS_SEL	1
-#define GX4_IMU_DIAGNOSTICS_STATUS_SEL	2
+#define GX4_IMU_BASIC_STATUS_SEL  1
+#define GX4_IMU_DIAGNOSTICS_STATUS_SEL  2
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -71,8 +71,8 @@
 
 typedef struct _gx4_imu_basic_status_field
 {
- u16 device_model;		// always GX4_MODEL_NUMBER
- u8  status_selector;	// always GX4_BASIC_STATUS_SEL
+ u16 device_model;    // always GX4_MODEL_NUMBER
+ u8  status_selector;  // always GX4_BASIC_STATUS_SEL
  
  u32 status_flags;
  
@@ -88,8 +88,8 @@ typedef struct _gx4_imu_basic_status_field
 
 typedef struct _gx4_imu_diagnostic_status_field
 {
- u16 device_model;		// always GX4_IMU_MODEL_NUMBER
- u8  status_selector;	// always GX4_DIAGNOSTICS_STATUS_SEL
+ u16 device_model;    // always GX4_IMU_MODEL_NUMBER
+ u8  status_selector;  // always GX4_DIAGNOSTICS_STATUS_SEL
  
  u32 status_flags;
  

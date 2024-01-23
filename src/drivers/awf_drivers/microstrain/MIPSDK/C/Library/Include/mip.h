@@ -62,7 +62,7 @@
 #define MIP_SYNC_BYTE2         0x65
 
 //MIP Packet Sizes
-#define MIP_HEADER_SIZE	          sizeof(mip_header)		
+#define MIP_HEADER_SIZE            sizeof(mip_header)    
 #define MIP_CHECKSUM_SIZE         2
 #define MIP_MAX_PAYLOAD_SIZE      255
 #define MIP_MAX_PAYLOAD_DATA_SIZE 253
@@ -74,8 +74,8 @@
 // GLOBAL MIP DESCRIPTORS  (global desc are 0xF0 - 0xFF) - same usage in all descriptor sets
 ////////////////////////////////////////////////////////////////////////////////
 
-#define MIP_REPLY_DESC_GLOBAL_ACK_NACK    				0xF1 // Ack/nack desc is same in all sets
-#define MIP_DESC_GLOBAL_PRODUCTION_TEST    				0xFE // Production Test desc is same in all sets
+#define MIP_REPLY_DESC_GLOBAL_ACK_NACK            0xF1 // Ack/nack desc is same in all sets
+#define MIP_DESC_GLOBAL_PRODUCTION_TEST            0xFE // Production Test desc is same in all sets
 
 
 ////////////////////////////////////////////////////////////////////////////////

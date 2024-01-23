@@ -60,10 +60,10 @@ SekonixGmslCamera::SekonixGmslCamera(ros::NodeHandle comm_nh, ros::NodeHandle pa
 
   // from DriveWorksApi.hpp
   ImageConfig imageConfig = {
-    (uint32_t)pub_width,         				//publish image width
-    (uint32_t)pub_height,        				//publish image height
-    (uint32_t)pub_buffer,        				//publish buffer
-              pub_compressed,        		//publish raw or compressed image
+    (uint32_t)pub_width,                 //publish image width
+    (uint32_t)pub_height,                //publish image height
+    (uint32_t)pub_buffer,                //publish buffer
+              pub_compressed,            //publish raw or compressed image
     (uint32_t)pub_compressed_quality,   //image compressed quality
               calib_folder,             //camera calibration folder
   };
@@ -117,11 +117,11 @@ void SekonixGmslCamera::startup()
   // After gmsl cameras init - start image publishing thread(s)
   while(!(gmsl_cam->isCamReady()))
   {
-		sleep(1);
-	}
-	// Ready
-	numPort = gmsl_cam->getNumPort();
-	std::cout << "Start camera threads .." << std::endl;
+    sleep(1);
+  }
+  // Ready
+  numPort = gmsl_cam->getNumPort();
+  std::cout << "Start camera threads .." << std::endl;
 }
 
 /*
@@ -131,8 +131,8 @@ void SekonixGmslCamera::startup()
 
 void SekonixGmslCamera::shutdown()
 {
-	// Clean up camera frames & sdk all at once
-	gmsl_cam->stopCameras();
+  // Clean up camera frames & sdk all at once
+  gmsl_cam->stopCameras();
 }
 
 }/* DriveWorks ns */

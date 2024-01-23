@@ -92,13 +92,13 @@ public:
   /*
    * Start the polling threads to grab an image from the camera and publish it
    */
-	void startup();
+  void startup();
 
-	/*
+  /*
    * Stop the polling threads to grab an image from the camera and publish it
    * Send a request to cleanup the camera connections all at once
    */
-	void shutdown();
+  void shutdown();
 
 private:
   ros::NodeHandle node;                                           // Global ns

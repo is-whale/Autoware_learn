@@ -21,17 +21,17 @@ typedef std::vector<EvalCase_ptr> EvalCaseVector;
 class EvalCases : public BasicData
 {
 public:
-	EvalCases();
+  EvalCases();
 
-	virtual ~EvalCases() {};
-	virtual const UINT32 getUsedMemory() const;
+  virtual ~EvalCases() {};
+  virtual const UINT32 getUsedMemory() const;
 
-	void clear();
-	void add(EvalCase_ptr evalCase);
-	const EvalCaseVector& getEvalCases() const;
-	
+  void clear();
+  void add(EvalCase_ptr evalCase);
+  const EvalCaseVector& getEvalCases() const;
+  
 private:
-	EvalCaseVector m_evalCases;
+  EvalCaseVector m_evalCases;
 };
 
 } // namespace datatypes

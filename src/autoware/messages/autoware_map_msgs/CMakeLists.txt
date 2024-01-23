@@ -8,44 +8,45 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_message_files(
   FILES
-  Point.msg
-  Waypoint.msg
-  Lane.msg
-  SignalLight.msg
-  Signal.msg
-  LaneSignalLightRelation.msg
-  WaypointSignalRelation.msg
-  Area.msg
-  WaypointRelation.msg
-  LaneRelation.msg
-  WaypointLaneRelation.msg
-  LaneAttributeRelation.msg
-  LaneChangeRelation.msg
-  OppositeLaneRelation.msg
-  Wayarea.msg
-
-  PointArray.msg
-  WaypointArray.msg
-  LaneArray.msg
-  SignalLightArray.msg
-  SignalArray.msg
-  LaneSignalLightRelationArray.msg
-  WaypointSignalRelationArray.msg
-  AreaArray.msg
-  WaypointRelationArray.msg
-  LaneRelationArray.msg
-  WaypointLaneRelationArray.msg
-  LaneAttributeRelationArray.msg
-  LaneChangeRelationArray.msg
-  OppositeLaneRelationArray.msg
-  WayareaArray.msg
+    Area.msg
+    AreaArray.msg
+    Lane.msg
+    LaneArray.msg
+    LaneAttributeRelation.msg
+    LaneAttributeRelationArray.msg
+    LaneChangeRelation.msg
+    LaneChangeRelationArray.msg
+    LaneRelation.msg
+    LaneRelationArray.msg
+    LaneSignalLightRelation.msg
+    LaneSignalLightRelationArray.msg
+    OppositeLaneRelation.msg
+    OppositeLaneRelationArray.msg
+    Point.msg
+    PointArray.msg
+    Signal.msg
+    SignalArray.msg
+    SignalLight.msg
+    SignalLightArray.msg
+    Wayarea.msg
+    WayareaArray.msg
+    Waypoint.msg
+    WaypointArray.msg
+    WaypointLaneRelation.msg
+    WaypointLaneRelationArray.msg
+    WaypointRelation.msg
+    WaypointRelationArray.msg
+    WaypointSignalRelation.msg
+    WaypointSignalRelationArray.msg
 )
 
 generate_messages(
   DEPENDENCIES
-  std_msgs
+    std_msgs
 )
 
 catkin_package(
-  CATKIN_DEPENDS message_runtime std_msgs
+  CATKIN_DEPENDS
+    message_runtime
+    std_msgs
 )

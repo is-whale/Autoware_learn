@@ -21,33 +21,33 @@ namespace datatypes
 class FieldDescription : public BasicData
 {
 public:
-	enum FieldType
-	{
-		Undefined = 0,
-		Segmented = 1,
-		Rectangle = 2,
-		Radial = 3,
-		Dynamic = 4
-	};
+  enum FieldType
+  {
+    Undefined = 0,
+    Segmented = 1,
+    Rectangle = 2,
+    Radial = 3,
+    Dynamic = 4
+  };
 
-	FieldDescription();
+  FieldDescription();
 
-	virtual void computePolygon() = 0;
+  virtual void computePolygon() = 0;
 
-	const Polygon2D& getFieldAsPolygon() const
-	{
-		return m_fieldPolygon;
-	}
+  const Polygon2D& getFieldAsPolygon() const
+  {
+    return m_fieldPolygon;
+  }
 
-	FieldType getFieldType() const
-	{
-		return m_fieldType;
-	}
+  FieldType getFieldType() const
+  {
+    return m_fieldType;
+  }
 
-	static std::string fieldTypeToString(FieldType type);
+  static std::string fieldTypeToString(FieldType type);
 protected:
-	FieldType m_fieldType;
-	Polygon2D m_fieldPolygon;
+  FieldType m_fieldType;
+  Polygon2D m_fieldPolygon;
 };
 
 

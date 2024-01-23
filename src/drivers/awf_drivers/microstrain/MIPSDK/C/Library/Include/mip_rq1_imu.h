@@ -54,8 +54,8 @@
 
 #define RQ1_IMU_MODEL_NUMBER    6238
 
-#define RQ1_IMU_BASIC_STATUS_SEL		1
-#define RQ1_IMU_DIAGNOSTICS_STATUS_SEL		2
+#define RQ1_IMU_BASIC_STATUS_SEL    1
+#define RQ1_IMU_DIAGNOSTICS_STATUS_SEL    2
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -72,8 +72,8 @@
 
 typedef struct _rq1_imu_basic_status_field
 {
- u16 device_model;		// always RQ1_IMU_MODEL_NUMBER
- u8  status_selector;	// always RQ1_IMU_BASIC_STATUS_SEL
+ u16 device_model;    // always RQ1_IMU_MODEL_NUMBER
+ u8  status_selector;  // always RQ1_IMU_BASIC_STATUS_SEL
  
  u32 status_flags;
  
@@ -89,8 +89,8 @@ typedef struct _rq1_imu_basic_status_field
 
 typedef struct _rq1_imu_diagnostic_status_field
 {
- u16 device_model;		// always RQ1_MODEL_NUMBER
- u8  status_selector;	// always RQ1_IMU_DIAGNOSTICS_STATUS_SEL
+ u16 device_model;    // always RQ1_MODEL_NUMBER
+ u8  status_selector;  // always RQ1_IMU_DIAGNOSTICS_STATUS_SEL
  
  u32 status_flags;
  

@@ -55,7 +55,7 @@
 
 //GX3-35 Status parameters
 
-#define GX3_35_MODEL_NUMBER			6225
+#define GX3_35_MODEL_NUMBER      6225
 
 
 
@@ -74,12 +74,12 @@
 // when status_selector = 3DM_GX3_35_BASIC_STATUS_SEL)
 ///
 
-#define GX3_35_BASIC_STATUS_SEL		1
+#define GX3_35_BASIC_STATUS_SEL    1
 
 typedef struct _gx3_35_basic_status_field
 {
- u16 device_model;		// always 3DM_GX3_35_MODEL_NUMBER
- u8  status_selector;	// always 3DM_GX3_35_BASIC_STATUS_SEL
+ u16 device_model;    // always 3DM_GX3_35_MODEL_NUMBER
+ u8  status_selector;  // always 3DM_GX3_35_BASIC_STATUS_SEL
  u8  com_mode;
  u8  com_device;
  u32 settings_flags;
@@ -93,12 +93,12 @@ typedef struct _gx3_35_basic_status_field
 // when status_selector = 3DM_GX3_35_DIAGNOSTICS_STATUS_SEL)
 ///
 
-#define GX3_35_DIAGNOSTICS_STATUS_SEL	2
+#define GX3_35_DIAGNOSTICS_STATUS_SEL  2
 
 typedef struct _gx3_35_diagnostic_status_field
 {
- u16 device_model;		// always 3DM_GX3_35_MODEL_NUMBER
- u8  status_selector;	// always 3DM_GX3_35_DIAGNOSTICS_STATUS_SEL
+ u16 device_model;    // always 3DM_GX3_35_MODEL_NUMBER
+ u8  status_selector;  // always 3DM_GX3_35_DIAGNOSTICS_STATUS_SEL
  u8  com_mode;
  u8  com_device;
  u32 settings_flags;

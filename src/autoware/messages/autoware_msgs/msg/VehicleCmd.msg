@@ -3,7 +3,7 @@ autoware_msgs/SteerCmd steer_cmd
 autoware_msgs/AccelCmd accel_cmd
 autoware_msgs/BrakeCmd brake_cmd
 autoware_msgs/LampCmd lamp_cmd
-int32 gear
+autoware_msgs/Gear gear_cmd
 int32 mode
 geometry_msgs/TwistStamped twist_cmd
 autoware_msgs/ControlCommand ctrl_cmd

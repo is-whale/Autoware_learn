@@ -71,7 +71,7 @@
 #define MIP_FILTER_CMD_SENSOR2VEHICLE_TRANSFORMATION          0x11
 #define MIP_FILTER_CMD_SENSOR2VEHICLE_OFFSET                  0x12
 #define MIP_FILTER_CMD_ANTENNA_OFFSET                         0x13
-#define MIP_FILTER_CMD_ESTIMATION_CONTROL					   0x14
+#define MIP_FILTER_CMD_ESTIMATION_CONTROL             0x14
 #define MIP_FILTER_CMD_GPS_SOURCE_CONTROL                     0x15
 #define MIP_FILTER_CMD_EXTERNAL_GPS_UPDATE                    0x16
 #define MIP_FILTER_CMD_EXTERNAL_HEADING_UPDATE                0x17
@@ -91,7 +91,7 @@
 #define MIP_FILTER_CMD_REFERENCE_POSITION                                  0x26
 #define MIP_FILTER_CMD_ENABLE_MEASUREMENT                                  0x41
 #define MIP_FILTER_CMD_MAG_NOISE                                           0x42
-#define MIP_FILTER_CMD_DECLINATION_SOURCE        		                    0x43
+#define MIP_FILTER_CMD_DECLINATION_SOURCE                                0x43
 #define MIP_FILTER_CMD_ACCEL_MAGNITUDE_ERROR_ADAPTIVE_MEASUREMENT_CONTROL  0x44
 #define MIP_FILTER_CMD_MAG_MAGNITUDE_ERROR_ADAPTIVE_MEASUREMENT_CONTROL    0x45
 #define MIP_FILTER_CMD_MAG_DIP_ANGLE_ERROR_ADAPTIVE_MEASUREMENT_CONTROL    0x46
@@ -105,7 +105,7 @@
 #define MIP_FILTER_REPLY_SENSOR2VEHICLE_TRANSFORMATION        0x81
 #define MIP_FILTER_REPLY_SENSOR2VEHICLE_OFFSET                0x82
 #define MIP_FILTER_REPLY_ANTENNA_OFFSET                       0x83
-#define MIP_FILTER_REPLY_ESTIMATION_CONTROL				   0x84
+#define MIP_FILTER_REPLY_ESTIMATION_CONTROL           0x84
 #define MIP_FILTER_REPLY_GPS_SOURCE_CONTROL                   0x86
 #define MIP_FILTER_REPLY_HEADING_UPDATE_CONTROL               0x87
 #define MIP_FILTER_REPLY_AUTOINIT_CONTROL                     0x88
@@ -119,7 +119,7 @@
 #define MIP_FILTER_REPLY_REFERENCE_POSITION                                  0x90
 #define MIP_FILTER_REPLY_ENABLE_MEASUREMENT                                  0xB0
 #define MIP_FILTER_REPLY_MAG_NOISE                                           0xB1
-#define MIP_FILTER_REPLY_DECLINATION_SOURCE     		                      0xB2
+#define MIP_FILTER_REPLY_DECLINATION_SOURCE                               0xB2
 #define MIP_FILTER_REPLY_ACCEL_MAGNITUDE_ERROR_ADAPTIVE_MEASUREMENT_CONTROL  0xB3
 #define MIP_FILTER_REPLY_MAG_MAGNITUDE_ERROR_ADAPTIVE_MEASUREMENT_CONTROL    0xB4
 #define MIP_FILTER_REPLY_MAG_DIP_ANGLE_ERROR_ADAPTIVE_MEASUREMENT_CONTROL    0xB5
@@ -156,18 +156,18 @@
 #define MIP_FILTER_DATA_HEADING_UPDATE_STATE                  0x14
 #define MIP_FILTER_DATA_MAGNETIC_MODEL                        0x15
 
-#define MIP_FILTER_DATA_GYRO_SCALE_FACTOR                     0x16	  
+#define MIP_FILTER_DATA_GYRO_SCALE_FACTOR                     0x16    
 #define MIP_FILTER_DATA_ACCEL_SCALE_FACTOR                    0x17
-#define MIP_FILTER_DATA_GYRO_SCALE_FACTOR_UNCERTAINTY         0x18	  
+#define MIP_FILTER_DATA_GYRO_SCALE_FACTOR_UNCERTAINTY         0x18    
 #define MIP_FILTER_DATA_ACCEL_SCALE_FACTOR_UNCERTAINTY        0x19
-#define MIP_FILTER_DATA_MAG_BIAS    		  	               0x1A	
+#define MIP_FILTER_DATA_MAG_BIAS                           0x1A  
 #define MIP_FILTER_DATA_MAG_BIAS_UNCERTAINTY                  0x1B
-#define MIP_FILTER_DATA_COMPENSATED_ACCELERATION              0x1C	
-#define MIP_FILTER_DATA_STANDARD_ATMOSPHERE_DATA              0x20	
-#define MIP_FILTER_DATA_PRESSURE_ALTITUDE                     0x21	
-#define MIP_FILTER_DATA_DENSITY_ALTITUDE                      0x22	
+#define MIP_FILTER_DATA_COMPENSATED_ACCELERATION              0x1C  
+#define MIP_FILTER_DATA_STANDARD_ATMOSPHERE_DATA              0x20  
+#define MIP_FILTER_DATA_PRESSURE_ALTITUDE                     0x21  
+#define MIP_FILTER_DATA_DENSITY_ALTITUDE                      0x22  
 #define MIP_FILTER_DATA_ANTENNA_OFFSET_CORRECTION             0x30
-#define MIP_FILTER_DATA_ANTENNA_OFFSET_CORRECTION_UNCERTAINTY 0x31	  
+#define MIP_FILTER_DATA_ANTENNA_OFFSET_CORRECTION_UNCERTAINTY 0x31    
 
 
 
@@ -367,7 +367,7 @@ typedef struct _mip_filter_zero_update_command
 
 typedef struct _mip_filter_external_heading_with_time_command
 {
- double	gps_tow;
+ double  gps_tow;
  u16 gps_week_number;
  float heading_angle_rads;
  float heading_angle_sigma_rads;

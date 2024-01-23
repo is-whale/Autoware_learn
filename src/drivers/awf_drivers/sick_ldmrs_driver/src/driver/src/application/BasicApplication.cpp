@@ -12,18 +12,18 @@ namespace application
 //     Basisklasse fuer Applikationen
 // ****************************************************************************
 BasicApplication::BasicApplication()
-	: m_beVerbose(false)
-	, m_applicationType(Sourcetype_Unknown)
-	, m_sourceId(0)
+  : m_beVerbose(false)
+  , m_applicationType(Sourcetype_Unknown)
+  , m_sourceId(0)
 {
-	infoMessage("BasicApplication: Starting constructor.", m_beVerbose);
+  infoMessage("BasicApplication: Starting constructor.", m_beVerbose);
 }
 
 BasicApplication::~BasicApplication()
 {
-	infoMessage("BasicApplication(): Destructor called.", m_beVerbose);
-	
-	infoMessage("BasicApplication(): Destructor is done - object is dead.", m_beVerbose);
+  infoMessage("BasicApplication(): Destructor called.", m_beVerbose);
+  
+  infoMessage("BasicApplication(): Destructor is done - object is dead.", m_beVerbose);
 }
 
 //
@@ -31,7 +31,7 @@ BasicApplication::~BasicApplication()
 //
 void BasicApplication::setApplicationName(std::string appName)
 {
-	m_applicationName = appName;
+  m_applicationName = appName;
 }
 
 //
@@ -39,7 +39,7 @@ void BasicApplication::setApplicationName(std::string appName)
 //
 std::string BasicApplication::getApplicationName()
 {
-	return m_applicationName;
+  return m_applicationName;
 }
 
 //
@@ -49,7 +49,7 @@ std::string BasicApplication::getApplicationName()
 //
 UINT16 BasicApplication::getApplicationType()
 {
-	return m_applicationType;
+  return m_applicationType;
 }
 
 //
@@ -59,7 +59,7 @@ UINT16 BasicApplication::getApplicationType()
 //
 void BasicApplication::setApplicationType(UINT16 applicationtype)
 {
-	m_applicationType = applicationtype;
+  m_applicationType = applicationtype;
 }
 
 /**
@@ -67,7 +67,7 @@ void BasicApplication::setApplicationType(UINT16 applicationtype)
  */
 UINT16 BasicApplication::getSourceId()
 {
-	return m_sourceId;
+  return m_sourceId;
 }
 
 /**
@@ -75,7 +75,7 @@ UINT16 BasicApplication::getSourceId()
  */
 void BasicApplication::setSourceId(UINT16 sourceId)
 {
-	m_sourceId = sourceId;
+  m_sourceId = sourceId;
 }
 
-}	// namespace application
+}  // namespace application

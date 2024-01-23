@@ -109,7 +109,7 @@ namespace Microstrain
     float beta[3]                 = {0};
     float readback_beta[3]        = {0};
     mip_low_pass_filter_settings filter_settings;
-    float bias_vector[3]		   = {0};
+    float bias_vector[3]       = {0};
     u16 duration = 0;
     gx4_imu_diagnostic_device_status_field imu_diagnostic_field;
     gx4_imu_basic_status_field imu_basic_field;
@@ -164,7 +164,7 @@ namespace Microstrain
     private_nh.param("imu_frame_id",imu_frame_id_, std::string("base_link"));
     private_nh.param("odom_frame_id",odom_frame_id_, std::string("wgs84"));
     private_nh.param("odom_child_frame_id",odom_child_frame_id_,
-		     std::string("base_link"));
+         std::string("base_link"));
     private_nh.param("publish_gps",publish_gps_, true);
     private_nh.param("publish_imu",publish_imu_, true);
     private_nh.param("publish_odom",publish_odom_, true);
@@ -185,7 +185,7 @@ namespace Microstrain
 
     //Initialize the serial interface to the device
     ROS_INFO("Attempting to open serial port <%s> at <%d> \n",
-	     port.c_str(),baudrate);
+       port.c_str(),baudrate);
     if(mip_interface_init(port.c_str(), baudrate, &device_interface_, DEFAULT_PACKET_TIMEOUT_MS) != MIP_INTERFACE_OK){
       ROS_FATAL("Couldn't open serial port!  Is it plugged in?");
     }
@@ -194,18 +194,18 @@ namespace Microstrain
     // Setup device callbacks
     if(mip_interface_add_descriptor_set_callback(&device_interface_, MIP_FILTER_DATA_SET, this, &filter_packet_callback_wrapper) != MIP_INTERFACE_OK)
       {
-	ROS_FATAL("Can't setup filter callback!");
-	return;
+  ROS_FATAL("Can't setup filter callback!");
+  return;
       }
     if(mip_interface_add_descriptor_set_callback(&device_interface_, MIP_AHRS_DATA_SET, this, &ahrs_packet_callback_wrapper) != MIP_INTERFACE_OK)
       {
-	ROS_FATAL("Can't setup ahrs callbacks!");
-	return;
+  ROS_FATAL("Can't setup ahrs callbacks!");
+  return;
       }
     if(mip_interface_add_descriptor_set_callback(&device_interface_, MIP_GPS_DATA_SET, this, &gps_packet_callback_wrapper) != MIP_INTERFACE_OK)
       {
-	ROS_FATAL("Can't setup gpscallbacks!");
-	return;
+  ROS_FATAL("Can't setup gpscallbacks!");
+  return;
       }
 
     ////////////////////////////////////////
@@ -226,7 +226,7 @@ namespace Microstrain
       ROS_INFO("Right mode?");
       if(com_mode != MIP_SDK_GX4_45_IMU_STANDARD_MODE)
       {
-	ROS_ERROR("Appears we didn't get into standard mode!");
+  ROS_ERROR("Appears we didn't get into standard mode!");
       }
 
       // Put into idle mode
@@ -237,194 +237,194 @@ namespace Microstrain
       // AHRS Setup
       // Get base rate
       if (publish_imu_){
-	while(mip_3dm_cmd_get_ahrs_base_rate(&device_interface_, &base_rate) != MIP_INTERFACE_OK){}
-	ROS_INFO("AHRS Base Rate => %d Hz", base_rate);
-	ros::Duration(dT).sleep();
-	// Deterimine decimation to get close to goal rate
-	u8 imu_decimation = (u8)((float)base_rate/ (float)imu_rate_);
-	ROS_INFO("AHRS decimation set to %#04X",imu_decimation);
+  while(mip_3dm_cmd_get_ahrs_base_rate(&device_interface_, &base_rate) != MIP_INTERFACE_OK){}
+  ROS_INFO("AHRS Base Rate => %d Hz", base_rate);
+  ros::Duration(dT).sleep();
+  // Deterimine decimation to get close to goal rate
+  u8 imu_decimation = (u8)((float)base_rate/ (float)imu_rate_);
+  ROS_INFO("AHRS decimation set to %#04X",imu_decimation);
 
-	// AHRS Message Format
-	// Set message format
-	ROS_INFO("Setting the AHRS message format");
-	data_stream_format_descriptors[0] = MIP_AHRS_DATA_ACCEL_SCALED;
-	data_stream_format_descriptors[1] = MIP_AHRS_DATA_GYRO_SCALED;
-	data_stream_format_descriptors[2] = MIP_AHRS_DATA_QUATERNION;
-	data_stream_format_decimation[0]  = imu_decimation;//0x32;
-	data_stream_format_decimation[1]  = imu_decimation;//0x32;
-	data_stream_format_decimation[2]  = imu_decimation;//0x32;
-	data_stream_format_num_entries = 3;
-	while(mip_3dm_cmd_ahrs_message_format(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, &data_stream_format_num_entries, data_stream_format_descriptors, data_stream_format_decimation) != MIP_INTERFACE_OK){}
-	ros::Duration(dT).sleep();
-	// Poll to verify
-	ROS_INFO("Poll AHRS data to verify");
-	while(mip_3dm_cmd_poll_ahrs(&device_interface_, MIP_3DM_POLLING_ENABLE_ACK_NACK, data_stream_format_num_entries, data_stream_format_descriptors) != MIP_INTERFACE_OK){}
-	ros::Duration(dT).sleep();
-	// Save
-	if (save_settings)
-	{
-	  ROS_INFO("Saving AHRS data settings");
-	  while(mip_3dm_cmd_ahrs_message_format(&device_interface_, MIP_FUNCTION_SELECTOR_STORE_EEPROM, 0, NULL,NULL) != MIP_INTERFACE_OK){}
-	  ros::Duration(dT).sleep();
-	}
+  // AHRS Message Format
+  // Set message format
+  ROS_INFO("Setting the AHRS message format");
+  data_stream_format_descriptors[0] = MIP_AHRS_DATA_ACCEL_SCALED;
+  data_stream_format_descriptors[1] = MIP_AHRS_DATA_GYRO_SCALED;
+  data_stream_format_descriptors[2] = MIP_AHRS_DATA_QUATERNION;
+  data_stream_format_decimation[0]  = imu_decimation;//0x32;
+  data_stream_format_decimation[1]  = imu_decimation;//0x32;
+  data_stream_format_decimation[2]  = imu_decimation;//0x32;
+  data_stream_format_num_entries = 3;
+  while(mip_3dm_cmd_ahrs_message_format(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, &data_stream_format_num_entries, data_stream_format_descriptors, data_stream_format_decimation) != MIP_INTERFACE_OK){}
+  ros::Duration(dT).sleep();
+  // Poll to verify
+  ROS_INFO("Poll AHRS data to verify");
+  while(mip_3dm_cmd_poll_ahrs(&device_interface_, MIP_3DM_POLLING_ENABLE_ACK_NACK, data_stream_format_num_entries, data_stream_format_descriptors) != MIP_INTERFACE_OK){}
+  ros::Duration(dT).sleep();
+  // Save
+  if (save_settings)
+  {
+    ROS_INFO("Saving AHRS data settings");
+    while(mip_3dm_cmd_ahrs_message_format(&device_interface_, MIP_FUNCTION_SELECTOR_STORE_EEPROM, 0, NULL,NULL) != MIP_INTERFACE_OK){}
+    ros::Duration(dT).sleep();
+  }
 
-	// Declination Source
-	// Set declination
+  // Declination Source
+  // Set declination
 
-	/*
-	ROS_INFO("Setting declination source to %#04X",declination_source_u8);
-	while(mip_filter_declination_source(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, &declination_source_u8) != MIP_INTERFACE_OK){}
-	ros::Duration(dT).sleep();
+  /*
+  ROS_INFO("Setting declination source to %#04X",declination_source_u8);
+  while(mip_filter_declination_source(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, &declination_source_u8) != MIP_INTERFACE_OK){}
+  ros::Duration(dT).sleep();
 
-	//Read back the declination source
-	ROS_INFO("Reading back declination source");
-	while(mip_filter_declination_source(&device_interface_, MIP_FUNCTION_SELECTOR_READ, &readback_declination_source) != MIP_INTERFACE_OK){}
-	if(declination_source_u8 == readback_declination_source)
-	{
-	  ROS_INFO("Success: Declination source set to %#04X", declination_source_u8);
-	}
-	else
-	{
-	  ROS_WARN("Failed to set the declination source to %#04X!", declination_source_u8);
-	}
-	ros::Duration(dT).sleep();
-	if (save_settings)
-	{
-	  ROS_INFO("Saving declination source settings to EEPROM");
-	  while(mip_filter_declination_source(&device_interface_, 
-					      MIP_FUNCTION_SELECTOR_STORE_EEPROM,
-					      NULL) != MIP_INTERFACE_OK)
-	  {}
-	  ros::Duration(dT).sleep();
-	}
-	*/
-	
+  //Read back the declination source
+  ROS_INFO("Reading back declination source");
+  while(mip_filter_declination_source(&device_interface_, MIP_FUNCTION_SELECTOR_READ, &readback_declination_source) != MIP_INTERFACE_OK){}
+  if(declination_source_u8 == readback_declination_source)
+  {
+    ROS_INFO("Success: Declination source set to %#04X", declination_source_u8);
+  }
+  else
+  {
+    ROS_WARN("Failed to set the declination source to %#04X!", declination_source_u8);
+  }
+  ros::Duration(dT).sleep();
+  if (save_settings)
+  {
+    ROS_INFO("Saving declination source settings to EEPROM");
+    while(mip_filter_declination_source(&device_interface_, 
+                MIP_FUNCTION_SELECTOR_STORE_EEPROM,
+                NULL) != MIP_INTERFACE_OK)
+    {}
+    ros::Duration(dT).sleep();
+  }
+  */
+  
       } // end of AHRS setup
 
       // GPS Setup
       if (publish_gps_){
       
-	while(mip_3dm_cmd_get_gps_base_rate(&device_interface_, &base_rate) != MIP_INTERFACE_OK){}
-	ROS_INFO("GPS Base Rate => %d Hz", base_rate);
-	u8 gps_decimation = (u8)((float)base_rate/ (float)gps_rate_);
-	ros::Duration(dT).sleep();
+  while(mip_3dm_cmd_get_gps_base_rate(&device_interface_, &base_rate) != MIP_INTERFACE_OK){}
+  ROS_INFO("GPS Base Rate => %d Hz", base_rate);
+  u8 gps_decimation = (u8)((float)base_rate/ (float)gps_rate_);
+  ros::Duration(dT).sleep();
       
-	////////// GPS Message Format
-	// Set
-	ROS_INFO("Setting GPS stream format");
-	data_stream_format_descriptors[0] = MIP_GPS_DATA_LLH_POS;
-	data_stream_format_descriptors[1] = MIP_GPS_DATA_NED_VELOCITY;
-	data_stream_format_descriptors[2] = MIP_GPS_DATA_GPS_TIME;
-	data_stream_format_decimation[0]  = gps_decimation; //0x01; //0x04;
-	data_stream_format_decimation[1]  = gps_decimation; //0x01; //0x04;
-	data_stream_format_decimation[2]  = gps_decimation; //0x01; //0x04;
-	data_stream_format_num_entries = 3;
-	while(mip_3dm_cmd_gps_message_format(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, &data_stream_format_num_entries,data_stream_format_descriptors, data_stream_format_decimation) != MIP_INTERFACE_OK){}
-	ros::Duration(dT).sleep();
-	// Save
-	if (save_settings)
-	{
-	  ROS_INFO("Saving GPS data settings");
-	  while(mip_3dm_cmd_gps_message_format(&device_interface_, MIP_FUNCTION_SELECTOR_STORE_EEPROM, 0, NULL,NULL) != MIP_INTERFACE_OK){}
-	  ros::Duration(dT).sleep();
-	}
+  ////////// GPS Message Format
+  // Set
+  ROS_INFO("Setting GPS stream format");
+  data_stream_format_descriptors[0] = MIP_GPS_DATA_LLH_POS;
+  data_stream_format_descriptors[1] = MIP_GPS_DATA_NED_VELOCITY;
+  data_stream_format_descriptors[2] = MIP_GPS_DATA_GPS_TIME;
+  data_stream_format_decimation[0]  = gps_decimation; //0x01; //0x04;
+  data_stream_format_decimation[1]  = gps_decimation; //0x01; //0x04;
+  data_stream_format_decimation[2]  = gps_decimation; //0x01; //0x04;
+  data_stream_format_num_entries = 3;
+  while(mip_3dm_cmd_gps_message_format(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, &data_stream_format_num_entries,data_stream_format_descriptors, data_stream_format_decimation) != MIP_INTERFACE_OK){}
+  ros::Duration(dT).sleep();
+  // Save
+  if (save_settings)
+  {
+    ROS_INFO("Saving GPS data settings");
+    while(mip_3dm_cmd_gps_message_format(&device_interface_, MIP_FUNCTION_SELECTOR_STORE_EEPROM, 0, NULL,NULL) != MIP_INTERFACE_OK){}
+    ros::Duration(dT).sleep();
+  }
       } // end of GPS setup
 
       if (publish_odom_){
-	while(mip_3dm_cmd_get_filter_base_rate(&device_interface_, &base_rate) != MIP_INTERFACE_OK){}
-	ROS_INFO("FILTER Base Rate => %d Hz", base_rate);
-	u8 nav_decimation = (u8)((float)base_rate/ (float)nav_rate_);
-	ros::Duration(dT).sleep();
-	
-	////////// Filter Message Format
-	// Set
-	ROS_INFO("Setting Filter stream format");
-	data_stream_format_descriptors[0] = MIP_FILTER_DATA_LLH_POS;
-	data_stream_format_descriptors[1] = MIP_FILTER_DATA_NED_VEL;
-	//data_stream_format_descriptors[2] = MIP_FILTER_DATA_ATT_EULER_ANGLES;
-	data_stream_format_descriptors[2] = MIP_FILTER_DATA_ATT_QUATERNION;
-	data_stream_format_descriptors[3] = MIP_FILTER_DATA_POS_UNCERTAINTY;
-	data_stream_format_descriptors[4] = MIP_FILTER_DATA_VEL_UNCERTAINTY;
-	data_stream_format_descriptors[5] = MIP_FILTER_DATA_ATT_UNCERTAINTY_EULER;
-	data_stream_format_descriptors[6] = MIP_FILTER_DATA_COMPENSATED_ANGULAR_RATE;
-	data_stream_format_descriptors[7] = MIP_FILTER_DATA_FILTER_STATUS;
-	data_stream_format_decimation[0]  = nav_decimation; //0x32;
-	data_stream_format_decimation[1]  = nav_decimation; //0x32;
-	data_stream_format_decimation[2]  = nav_decimation; //0x32;
-	data_stream_format_decimation[3]  = nav_decimation; //0x32;
-	data_stream_format_decimation[4]  = nav_decimation; //0x32;
-	data_stream_format_decimation[5]  = nav_decimation; //0x32;
-	data_stream_format_decimation[6]  = nav_decimation; //0x32;
-	data_stream_format_decimation[7]  = nav_decimation; //0x32;
-	data_stream_format_num_entries = 8;
-	while(mip_3dm_cmd_filter_message_format(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, &data_stream_format_num_entries,data_stream_format_descriptors, data_stream_format_decimation) != MIP_INTERFACE_OK){}
-	ros::Duration(dT).sleep();
-	// Poll to verify
-	ROS_INFO("Poll filter data to test stream");
-	while(mip_3dm_cmd_poll_filter(&device_interface_, MIP_3DM_POLLING_ENABLE_ACK_NACK, data_stream_format_num_entries, data_stream_format_descriptors) != MIP_INTERFACE_OK){}
-	ros::Duration(dT).sleep();
-	// Save
-	if (save_settings)
-	{
-	  ROS_INFO("Saving Filter data settings");
-	  while(mip_3dm_cmd_filter_message_format(&device_interface_, MIP_FUNCTION_SELECTOR_STORE_EEPROM, 0, NULL,NULL) != MIP_INTERFACE_OK){}
-	  ros::Duration(dT).sleep();
-	}
-	// Dynamics Mode
-	// Set dynamics mode
-	ROS_INFO("Setting dynamics mode to %#04X",dynamics_mode);
-	while(mip_filter_vehicle_dynamics_mode(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, &dynamics_mode) != MIP_INTERFACE_OK){}
-	ros::Duration(dT).sleep();
-	// Readback dynamics mode
-	if (readback_settings)
-	{
-	  // Read the settings back
-	  ROS_INFO("Reading back dynamics mode setting");
-	  while(mip_filter_vehicle_dynamics_mode(&device_interface_, 
-						 MIP_FUNCTION_SELECTOR_READ, 
-						 &readback_dynamics_mode)
-		!= MIP_INTERFACE_OK)
-	  {}
-	  ros::Duration(dT).sleep();
-	  if (dynamics_mode == readback_dynamics_mode)
-	    ROS_INFO("Success: Dynamics mode setting is: %#04X",readback_dynamics_mode);
-	  else
-	    ROS_ERROR("Failure: Dynamics mode set to be %#04X, but reads as %#04X",
-		      dynamics_mode,readback_dynamics_mode);
-	}
-	if (save_settings)
-	{
-	  ROS_INFO("Saving dynamics mode settings to EEPROM");
-	  while(mip_filter_vehicle_dynamics_mode(&device_interface_, 
-						 MIP_FUNCTION_SELECTOR_STORE_EEPROM,
-						 NULL) != MIP_INTERFACE_OK)
-	  {}
-	  ros::Duration(dT).sleep();
-	}
-	
-	// Heading Source
-	ROS_INFO("Set heading source to internal mag.");
-	heading_source = 0x1;
-	ROS_INFO("Setting heading source to %#04X",heading_source);
-	while(mip_filter_heading_source(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, &heading_source) != MIP_INTERFACE_OK)
-	{} 
-	ros::Duration(dT).sleep();
-	
-	ROS_INFO("Read back heading source...");
-	while(mip_filter_heading_source(&device_interface_, 
-					MIP_FUNCTION_SELECTOR_READ, 
-					&readback_headingsource)!= MIP_INTERFACE_OK){}
-	ROS_INFO("Heading source = %#04X",readback_headingsource);
-	ros::Duration(dT).sleep();
-	
-	if (save_settings)
-	{
-	  ROS_INFO("Saving heading source to EEPROM");
-	  while(mip_filter_heading_source(&device_interface_, 
-					  MIP_FUNCTION_SELECTOR_STORE_EEPROM, 
-					  NULL)!= MIP_INTERFACE_OK){}
-	  ros::Duration(dT).sleep();
-	}
+  while(mip_3dm_cmd_get_filter_base_rate(&device_interface_, &base_rate) != MIP_INTERFACE_OK){}
+  ROS_INFO("FILTER Base Rate => %d Hz", base_rate);
+  u8 nav_decimation = (u8)((float)base_rate/ (float)nav_rate_);
+  ros::Duration(dT).sleep();
+  
+  ////////// Filter Message Format
+  // Set
+  ROS_INFO("Setting Filter stream format");
+  data_stream_format_descriptors[0] = MIP_FILTER_DATA_LLH_POS;
+  data_stream_format_descriptors[1] = MIP_FILTER_DATA_NED_VEL;
+  //data_stream_format_descriptors[2] = MIP_FILTER_DATA_ATT_EULER_ANGLES;
+  data_stream_format_descriptors[2] = MIP_FILTER_DATA_ATT_QUATERNION;
+  data_stream_format_descriptors[3] = MIP_FILTER_DATA_POS_UNCERTAINTY;
+  data_stream_format_descriptors[4] = MIP_FILTER_DATA_VEL_UNCERTAINTY;
+  data_stream_format_descriptors[5] = MIP_FILTER_DATA_ATT_UNCERTAINTY_EULER;
+  data_stream_format_descriptors[6] = MIP_FILTER_DATA_COMPENSATED_ANGULAR_RATE;
+  data_stream_format_descriptors[7] = MIP_FILTER_DATA_FILTER_STATUS;
+  data_stream_format_decimation[0]  = nav_decimation; //0x32;
+  data_stream_format_decimation[1]  = nav_decimation; //0x32;
+  data_stream_format_decimation[2]  = nav_decimation; //0x32;
+  data_stream_format_decimation[3]  = nav_decimation; //0x32;
+  data_stream_format_decimation[4]  = nav_decimation; //0x32;
+  data_stream_format_decimation[5]  = nav_decimation; //0x32;
+  data_stream_format_decimation[6]  = nav_decimation; //0x32;
+  data_stream_format_decimation[7]  = nav_decimation; //0x32;
+  data_stream_format_num_entries = 8;
+  while(mip_3dm_cmd_filter_message_format(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, &data_stream_format_num_entries,data_stream_format_descriptors, data_stream_format_decimation) != MIP_INTERFACE_OK){}
+  ros::Duration(dT).sleep();
+  // Poll to verify
+  ROS_INFO("Poll filter data to test stream");
+  while(mip_3dm_cmd_poll_filter(&device_interface_, MIP_3DM_POLLING_ENABLE_ACK_NACK, data_stream_format_num_entries, data_stream_format_descriptors) != MIP_INTERFACE_OK){}
+  ros::Duration(dT).sleep();
+  // Save
+  if (save_settings)
+  {
+    ROS_INFO("Saving Filter data settings");
+    while(mip_3dm_cmd_filter_message_format(&device_interface_, MIP_FUNCTION_SELECTOR_STORE_EEPROM, 0, NULL,NULL) != MIP_INTERFACE_OK){}
+    ros::Duration(dT).sleep();
+  }
+  // Dynamics Mode
+  // Set dynamics mode
+  ROS_INFO("Setting dynamics mode to %#04X",dynamics_mode);
+  while(mip_filter_vehicle_dynamics_mode(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, &dynamics_mode) != MIP_INTERFACE_OK){}
+  ros::Duration(dT).sleep();
+  // Readback dynamics mode
+  if (readback_settings)
+  {
+    // Read the settings back
+    ROS_INFO("Reading back dynamics mode setting");
+    while(mip_filter_vehicle_dynamics_mode(&device_interface_, 
+             MIP_FUNCTION_SELECTOR_READ, 
+             &readback_dynamics_mode)
+    != MIP_INTERFACE_OK)
+    {}
+    ros::Duration(dT).sleep();
+    if (dynamics_mode == readback_dynamics_mode)
+      ROS_INFO("Success: Dynamics mode setting is: %#04X",readback_dynamics_mode);
+    else
+      ROS_ERROR("Failure: Dynamics mode set to be %#04X, but reads as %#04X",
+          dynamics_mode,readback_dynamics_mode);
+  }
+  if (save_settings)
+  {
+    ROS_INFO("Saving dynamics mode settings to EEPROM");
+    while(mip_filter_vehicle_dynamics_mode(&device_interface_, 
+             MIP_FUNCTION_SELECTOR_STORE_EEPROM,
+             NULL) != MIP_INTERFACE_OK)
+    {}
+    ros::Duration(dT).sleep();
+  }
+  
+  // Heading Source
+  ROS_INFO("Set heading source to internal mag.");
+  heading_source = 0x1;
+  ROS_INFO("Setting heading source to %#04X",heading_source);
+  while(mip_filter_heading_source(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, &heading_source) != MIP_INTERFACE_OK)
+  {} 
+  ros::Duration(dT).sleep();
+  
+  ROS_INFO("Read back heading source...");
+  while(mip_filter_heading_source(&device_interface_, 
+          MIP_FUNCTION_SELECTOR_READ, 
+          &readback_headingsource)!= MIP_INTERFACE_OK){}
+  ROS_INFO("Heading source = %#04X",readback_headingsource);
+  ros::Duration(dT).sleep();
+  
+  if (save_settings)
+  {
+    ROS_INFO("Saving heading source to EEPROM");
+    while(mip_filter_heading_source(&device_interface_, 
+            MIP_FUNCTION_SELECTOR_STORE_EEPROM, 
+            NULL)!= MIP_INTERFACE_OK){}
+    ros::Duration(dT).sleep();
+  }
       }  // end of Filter setup
 
       // I believe the auto-init pertains to the kalman filter for the -45
@@ -434,55 +434,55 @@ namespace Microstrain
       ROS_INFO("Setting auto-initinitalization to: %#04X",auto_init);
       auto_init_u8 = auto_init;  // convert bool to u8
       while(mip_filter_auto_initialization(&device_interface_, 
-					   MIP_FUNCTION_SELECTOR_WRITE, 
-					   &auto_init_u8) != MIP_INTERFACE_OK)
+             MIP_FUNCTION_SELECTOR_WRITE, 
+             &auto_init_u8) != MIP_INTERFACE_OK)
       {}
       ros::Duration(dT).sleep();
       
       if (readback_settings)
       {
-	// Read the settings back
-	ROS_INFO("Reading back auto-initialization value");
-	while(mip_filter_auto_initialization(&device_interface_, 
-					     MIP_FUNCTION_SELECTOR_READ, 
-					     &readback_auto_init)!= MIP_INTERFACE_OK)
-	{}
-	ros::Duration(dT).sleep();
-	if (auto_init == readback_auto_init)
-	  ROS_INFO("Success: Auto init. setting is: %#04X",readback_auto_init);
-	else
-	  ROS_ERROR("Failure: Auto init. setting set to be %#04X, but reads as %#04X",
-		    auto_init,readback_auto_init);
+  // Read the settings back
+  ROS_INFO("Reading back auto-initialization value");
+  while(mip_filter_auto_initialization(&device_interface_, 
+               MIP_FUNCTION_SELECTOR_READ, 
+               &readback_auto_init)!= MIP_INTERFACE_OK)
+  {}
+  ros::Duration(dT).sleep();
+  if (auto_init == readback_auto_init)
+    ROS_INFO("Success: Auto init. setting is: %#04X",readback_auto_init);
+  else
+    ROS_ERROR("Failure: Auto init. setting set to be %#04X, but reads as %#04X",
+        auto_init,readback_auto_init);
       }
       if (save_settings)
       {
-	ROS_INFO("Saving auto init. settings to EEPROM");
-	while(mip_filter_auto_initialization(&device_interface_, 
-					     MIP_FUNCTION_SELECTOR_STORE_EEPROM,
-					     NULL) != MIP_INTERFACE_OK)
-	{}
-	ros::Duration(dT).sleep();
+  ROS_INFO("Saving auto init. settings to EEPROM");
+  while(mip_filter_auto_initialization(&device_interface_, 
+               MIP_FUNCTION_SELECTOR_STORE_EEPROM,
+               NULL) != MIP_INTERFACE_OK)
+  {}
+  ros::Duration(dT).sleep();
       }
 
       // Enable Data streams
       dT = 0.25;
       if (publish_imu_){
-	ROS_INFO("Enabling AHRS stream");
-	enable = 0x01;
-	while(mip_3dm_cmd_continuous_data_stream(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, MIP_3DM_AHRS_DATASTREAM, &enable) != MIP_INTERFACE_OK){}
-	ros::Duration(dT).sleep();
+  ROS_INFO("Enabling AHRS stream");
+  enable = 0x01;
+  while(mip_3dm_cmd_continuous_data_stream(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, MIP_3DM_AHRS_DATASTREAM, &enable) != MIP_INTERFACE_OK){}
+  ros::Duration(dT).sleep();
       }
       if (publish_odom_){
-	ROS_INFO("Enabling Filter stream");
-	enable = 0x01;
-	while(mip_3dm_cmd_continuous_data_stream(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, MIP_3DM_INS_DATASTREAM, &enable) != MIP_INTERFACE_OK){}
-	ros::Duration(dT).sleep();
+  ROS_INFO("Enabling Filter stream");
+  enable = 0x01;
+  while(mip_3dm_cmd_continuous_data_stream(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, MIP_3DM_INS_DATASTREAM, &enable) != MIP_INTERFACE_OK){}
+  ros::Duration(dT).sleep();
       }
       if (publish_gps_){
-	ROS_INFO("Enabling GPS stream");
-	enable = 0x01;
-	while(mip_3dm_cmd_continuous_data_stream(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, MIP_3DM_GPS_DATASTREAM, &enable) != MIP_INTERFACE_OK){}
-	ros::Duration(dT).sleep();
+  ROS_INFO("Enabling GPS stream");
+  enable = 0x01;
+  while(mip_3dm_cmd_continuous_data_stream(&device_interface_, MIP_FUNCTION_SELECTOR_WRITE, MIP_3DM_GPS_DATASTREAM, &enable) != MIP_INTERFACE_OK){}
+  ros::Duration(dT).sleep();
       }
 
       ROS_INFO("End of device setup - starting streaming");
@@ -527,7 +527,7 @@ namespace Microstrain
   } // End of ::run()
   
   bool Microstrain::reset_callback(std_srvs::Empty::Request &req,
-				   std_srvs::Empty::Response &resp)
+           std_srvs::Empty::Response &resp)
   {
     ROS_INFO("Reseting the filter");
     while(mip_filter_reset_filter(&device_interface_) != MIP_INTERFACE_OK){}
@@ -548,208 +548,208 @@ namespace Microstrain
     //The packet callback can have several types, process them all
     switch(callback_type)
       {
-	///
-	//Handle valid packets
-	///
+  ///
+  //Handle valid packets
+  ///
 
       case MIP_INTERFACE_CALLBACK_VALID_PACKET:
-	{
-	  filter_valid_packet_count_++;
+  {
+    filter_valid_packet_count_++;
 
-	  ///
-	  //Loop through all of the data fields
-	  ///
+    ///
+    //Loop through all of the data fields
+    ///
 
-	  while(mip_get_next_field(packet, &field_header, &field_data, &field_offset) == MIP_OK)
-	    {
+    while(mip_get_next_field(packet, &field_header, &field_data, &field_offset) == MIP_OK)
+      {
 
-	      ///
-	      // Decode the field
-	      ///
+        ///
+        // Decode the field
+        ///
 
-	      switch(field_header->descriptor)
-		{
-		  ///
-		  // Estimated LLH Position
-		  ///
+        switch(field_header->descriptor)
+    {
+      ///
+      // Estimated LLH Position
+      ///
 
-		case MIP_FILTER_DATA_LLH_POS:
-		  {
-		    memcpy(&curr_filter_pos_, field_data, sizeof(mip_filter_llh_pos));
+    case MIP_FILTER_DATA_LLH_POS:
+      {
+        memcpy(&curr_filter_pos_, field_data, sizeof(mip_filter_llh_pos));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_filter_llh_pos_byteswap(&curr_filter_pos_);
+        //For little-endian targets, byteswap the data field
+        mip_filter_llh_pos_byteswap(&curr_filter_pos_);
 
-		    nav_msg_.header.seq = filter_valid_packet_count_;
-		    nav_msg_.header.stamp = ros::Time::now();
-		    nav_msg_.header.frame_id = odom_frame_id_;
-		    nav_msg_.child_frame_id = odom_child_frame_id_;
-		    nav_msg_.pose.pose.position.y = curr_filter_pos_.latitude;
-		    nav_msg_.pose.pose.position.x = curr_filter_pos_.longitude;
-		    nav_msg_.pose.pose.position.z = curr_filter_pos_.ellipsoid_height;
+        nav_msg_.header.seq = filter_valid_packet_count_;
+        nav_msg_.header.stamp = ros::Time::now();
+        nav_msg_.header.frame_id = odom_frame_id_;
+        nav_msg_.child_frame_id = odom_child_frame_id_;
+        nav_msg_.pose.pose.position.y = curr_filter_pos_.latitude;
+        nav_msg_.pose.pose.position.x = curr_filter_pos_.longitude;
+        nav_msg_.pose.pose.position.z = curr_filter_pos_.ellipsoid_height;
 
-		  }break;
+      }break;
 
-		  ///
-		  // Estimated NED Velocity
-		  ///
+      ///
+      // Estimated NED Velocity
+      ///
 
-		case MIP_FILTER_DATA_NED_VEL:
-		  {
-		    memcpy(&curr_filter_vel_, field_data, sizeof(mip_filter_ned_velocity));
+    case MIP_FILTER_DATA_NED_VEL:
+      {
+        memcpy(&curr_filter_vel_, field_data, sizeof(mip_filter_ned_velocity));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_filter_ned_velocity_byteswap(&curr_filter_vel_);
+        //For little-endian targets, byteswap the data field
+        mip_filter_ned_velocity_byteswap(&curr_filter_vel_);
       
-		    // rotate velocities from NED to sensor coordinates
-		    // Constructor takes x, y, z , w
-		    tf2::Quaternion nav_quat(curr_filter_quaternion_.q[2],
-					     curr_filter_quaternion_.q[1],
-					     -1.0*curr_filter_quaternion_.q[3],
-					     curr_filter_quaternion_.q[0]);
-					     
-		    tf2::Vector3 vel_enu(curr_filter_vel_.east,
-					 curr_filter_vel_.north,
-					 -1.0*curr_filter_vel_.down);
-		    tf2::Vector3 vel_in_sensor_frame = tf2::quatRotate(nav_quat.inverse(),vel_enu);
-		      
-		    nav_msg_.twist.twist.linear.x = vel_in_sensor_frame[0]; //curr_filter_vel_.east;
-		    nav_msg_.twist.twist.linear.y =  vel_in_sensor_frame[1]; //curr_filter_vel_.north;
-		    nav_msg_.twist.twist.linear.z =  vel_in_sensor_frame[2]; //-1*curr_filter_vel_.down;
-		  }break;
+        // rotate velocities from NED to sensor coordinates
+        // Constructor takes x, y, z , w
+        tf2::Quaternion nav_quat(curr_filter_quaternion_.q[2],
+               curr_filter_quaternion_.q[1],
+               -1.0*curr_filter_quaternion_.q[3],
+               curr_filter_quaternion_.q[0]);
+               
+        tf2::Vector3 vel_enu(curr_filter_vel_.east,
+           curr_filter_vel_.north,
+           -1.0*curr_filter_vel_.down);
+        tf2::Vector3 vel_in_sensor_frame = tf2::quatRotate(nav_quat.inverse(),vel_enu);
+          
+        nav_msg_.twist.twist.linear.x = vel_in_sensor_frame[0]; //curr_filter_vel_.east;
+        nav_msg_.twist.twist.linear.y =  vel_in_sensor_frame[1]; //curr_filter_vel_.north;
+        nav_msg_.twist.twist.linear.z =  vel_in_sensor_frame[2]; //-1*curr_filter_vel_.down;
+      }break;
 
-		  ///
-		  // Estimated Attitude, Euler Angles
-		  ///
+      ///
+      // Estimated Attitude, Euler Angles
+      ///
 
-		case MIP_FILTER_DATA_ATT_EULER_ANGLES:
-		  {
-		    memcpy(&curr_filter_angles_, field_data, sizeof(mip_filter_attitude_euler_angles));
+    case MIP_FILTER_DATA_ATT_EULER_ANGLES:
+      {
+        memcpy(&curr_filter_angles_, field_data, sizeof(mip_filter_attitude_euler_angles));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_filter_attitude_euler_angles_byteswap(&curr_filter_angles_);
+        //For little-endian targets, byteswap the data field
+        mip_filter_attitude_euler_angles_byteswap(&curr_filter_angles_);
 
-		  }break;
+      }break;
 
-		  // Quaternion
-		case MIP_FILTER_DATA_ATT_QUATERNION:
-		  {
-		    memcpy(&curr_filter_quaternion_, field_data, sizeof(mip_filter_attitude_quaternion));
+      // Quaternion
+    case MIP_FILTER_DATA_ATT_QUATERNION:
+      {
+        memcpy(&curr_filter_quaternion_, field_data, sizeof(mip_filter_attitude_quaternion));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_filter_attitude_quaternion_byteswap(&curr_filter_quaternion_);
+        //For little-endian targets, byteswap the data field
+        mip_filter_attitude_quaternion_byteswap(&curr_filter_quaternion_);
 
-		    // put into ENU - swap X/Y, invert Z
-		    nav_msg_.pose.pose.orientation.x = curr_filter_quaternion_.q[2];
-		    nav_msg_.pose.pose.orientation.y = curr_filter_quaternion_.q[1];
-		    nav_msg_.pose.pose.orientation.z = -1.0*curr_filter_quaternion_.q[3];
-		    nav_msg_.pose.pose.orientation.w = curr_filter_quaternion_.q[0];
+        // put into ENU - swap X/Y, invert Z
+        nav_msg_.pose.pose.orientation.x = curr_filter_quaternion_.q[2];
+        nav_msg_.pose.pose.orientation.y = curr_filter_quaternion_.q[1];
+        nav_msg_.pose.pose.orientation.z = -1.0*curr_filter_quaternion_.q[3];
+        nav_msg_.pose.pose.orientation.w = curr_filter_quaternion_.q[0];
 
-		  }break;
+      }break;
 
-		  // Angular Rates
-		case MIP_FILTER_DATA_COMPENSATED_ANGULAR_RATE:
-		  {
-		    memcpy(&curr_filter_angular_rate_, field_data, sizeof(mip_filter_compensated_angular_rate));
+      // Angular Rates
+    case MIP_FILTER_DATA_COMPENSATED_ANGULAR_RATE:
+      {
+        memcpy(&curr_filter_angular_rate_, field_data, sizeof(mip_filter_compensated_angular_rate));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_filter_compensated_angular_rate_byteswap(&curr_filter_angular_rate_);
+        //For little-endian targets, byteswap the data field
+        mip_filter_compensated_angular_rate_byteswap(&curr_filter_angular_rate_);
 
-		    nav_msg_.twist.twist.angular.x = curr_filter_angular_rate_.x;
-		    nav_msg_.twist.twist.angular.y = curr_filter_angular_rate_.y;
-		    nav_msg_.twist.twist.angular.z = curr_filter_angular_rate_.z;
+        nav_msg_.twist.twist.angular.x = curr_filter_angular_rate_.x;
+        nav_msg_.twist.twist.angular.y = curr_filter_angular_rate_.y;
+        nav_msg_.twist.twist.angular.z = curr_filter_angular_rate_.z;
 
 
-		  }break;
+      }break;
 
-		  // Position Uncertainty
-		case MIP_FILTER_DATA_POS_UNCERTAINTY:
-		  {
-		    memcpy(&curr_filter_pos_uncertainty_, field_data, sizeof(mip_filter_llh_pos_uncertainty));
+      // Position Uncertainty
+    case MIP_FILTER_DATA_POS_UNCERTAINTY:
+      {
+        memcpy(&curr_filter_pos_uncertainty_, field_data, sizeof(mip_filter_llh_pos_uncertainty));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_filter_llh_pos_uncertainty_byteswap(&curr_filter_pos_uncertainty_);
+        //For little-endian targets, byteswap the data field
+        mip_filter_llh_pos_uncertainty_byteswap(&curr_filter_pos_uncertainty_);
 
-		    //x-axis
-		    nav_msg_.pose.covariance[0] = curr_filter_pos_uncertainty_.east*curr_filter_pos_uncertainty_.east;
-		    nav_msg_.pose.covariance[7] = curr_filter_pos_uncertainty_.north*curr_filter_pos_uncertainty_.north;
-		    nav_msg_.pose.covariance[14] = curr_filter_pos_uncertainty_.down*curr_filter_pos_uncertainty_.down;
-		  }break;
+        //x-axis
+        nav_msg_.pose.covariance[0] = curr_filter_pos_uncertainty_.east*curr_filter_pos_uncertainty_.east;
+        nav_msg_.pose.covariance[7] = curr_filter_pos_uncertainty_.north*curr_filter_pos_uncertainty_.north;
+        nav_msg_.pose.covariance[14] = curr_filter_pos_uncertainty_.down*curr_filter_pos_uncertainty_.down;
+      }break;
 
-		  // Velocity Uncertainty
-		case MIP_FILTER_DATA_VEL_UNCERTAINTY:
-		  {
-		    memcpy(&curr_filter_vel_uncertainty_, field_data, sizeof(mip_filter_ned_vel_uncertainty));
+      // Velocity Uncertainty
+    case MIP_FILTER_DATA_VEL_UNCERTAINTY:
+      {
+        memcpy(&curr_filter_vel_uncertainty_, field_data, sizeof(mip_filter_ned_vel_uncertainty));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_filter_ned_vel_uncertainty_byteswap(&curr_filter_vel_uncertainty_);
+        //For little-endian targets, byteswap the data field
+        mip_filter_ned_vel_uncertainty_byteswap(&curr_filter_vel_uncertainty_);
       
-		    nav_msg_.twist.covariance[0] = curr_filter_vel_uncertainty_.east*curr_filter_vel_uncertainty_.east;
-		    nav_msg_.twist.covariance[7] = curr_filter_vel_uncertainty_.north*curr_filter_vel_uncertainty_.north;
-		    nav_msg_.twist.covariance[14] = curr_filter_vel_uncertainty_.down*curr_filter_vel_uncertainty_.down;
+        nav_msg_.twist.covariance[0] = curr_filter_vel_uncertainty_.east*curr_filter_vel_uncertainty_.east;
+        nav_msg_.twist.covariance[7] = curr_filter_vel_uncertainty_.north*curr_filter_vel_uncertainty_.north;
+        nav_msg_.twist.covariance[14] = curr_filter_vel_uncertainty_.down*curr_filter_vel_uncertainty_.down;
 
-		  }break;
+      }break;
 
-		  // Attitude Uncertainty
-		case MIP_FILTER_DATA_ATT_UNCERTAINTY_EULER:
-		  {
-		    memcpy(&curr_filter_att_uncertainty_, field_data, sizeof(mip_filter_euler_attitude_uncertainty));
+      // Attitude Uncertainty
+    case MIP_FILTER_DATA_ATT_UNCERTAINTY_EULER:
+      {
+        memcpy(&curr_filter_att_uncertainty_, field_data, sizeof(mip_filter_euler_attitude_uncertainty));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_filter_euler_attitude_uncertainty_byteswap(&curr_filter_att_uncertainty_);
-		    nav_msg_.pose.covariance[21] = curr_filter_att_uncertainty_.roll*curr_filter_att_uncertainty_.roll;
-		    nav_msg_.pose.covariance[28] = curr_filter_att_uncertainty_.pitch*curr_filter_att_uncertainty_.pitch;
-		    nav_msg_.pose.covariance[35] = curr_filter_att_uncertainty_.yaw*curr_filter_att_uncertainty_.yaw;
+        //For little-endian targets, byteswap the data field
+        mip_filter_euler_attitude_uncertainty_byteswap(&curr_filter_att_uncertainty_);
+        nav_msg_.pose.covariance[21] = curr_filter_att_uncertainty_.roll*curr_filter_att_uncertainty_.roll;
+        nav_msg_.pose.covariance[28] = curr_filter_att_uncertainty_.pitch*curr_filter_att_uncertainty_.pitch;
+        nav_msg_.pose.covariance[35] = curr_filter_att_uncertainty_.yaw*curr_filter_att_uncertainty_.yaw;
 
-		  }break;
+      }break;
 
-		  // Filter Status
-		case MIP_FILTER_DATA_FILTER_STATUS:
-		  {
-		    memcpy(&curr_filter_status_, field_data, sizeof(mip_filter_status));
+      // Filter Status
+    case MIP_FILTER_DATA_FILTER_STATUS:
+      {
+        memcpy(&curr_filter_status_, field_data, sizeof(mip_filter_status));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_filter_status_byteswap(&curr_filter_status_);
+        //For little-endian targets, byteswap the data field
+        mip_filter_status_byteswap(&curr_filter_status_);
       
-		    nav_status_msg_.data.clear();
-		    ROS_DEBUG_THROTTLE(1.0,"Filter Status: %#06X, Dyn. Mode: %#06X, Filter State: %#06X",
-				       curr_filter_status_.filter_state,
-				       curr_filter_status_.dynamics_mode,
-				       curr_filter_status_.status_flags);
-		    nav_status_msg_.data.push_back(curr_filter_status_.filter_state);
-		    nav_status_msg_.data.push_back(curr_filter_status_.dynamics_mode);
-		    nav_status_msg_.data.push_back(curr_filter_status_.status_flags);
-		    nav_status_pub_.publish(nav_status_msg_);
+        nav_status_msg_.data.clear();
+        ROS_DEBUG_THROTTLE(1.0,"Filter Status: %#06X, Dyn. Mode: %#06X, Filter State: %#06X",
+               curr_filter_status_.filter_state,
+               curr_filter_status_.dynamics_mode,
+               curr_filter_status_.status_flags);
+        nav_status_msg_.data.push_back(curr_filter_status_.filter_state);
+        nav_status_msg_.data.push_back(curr_filter_status_.dynamics_mode);
+        nav_status_msg_.data.push_back(curr_filter_status_.status_flags);
+        nav_status_pub_.publish(nav_status_msg_);
 
 
-		  }break;
+      }break;
 
-		default: break;
-		}
-	    }
+    default: break;
+    }
+      }
 
-	  // Publish
-	  nav_pub_.publish(nav_msg_);
-	}break;
+    // Publish
+    nav_pub_.publish(nav_msg_);
+  }break;
 
 
-	///
-	//Handle checksum error packets
-	///
+  ///
+  //Handle checksum error packets
+  ///
 
       case MIP_INTERFACE_CALLBACK_CHECKSUM_ERROR:
-	{
-	  filter_checksum_error_packet_count_++;
-	}break;
+  {
+    filter_checksum_error_packet_count_++;
+  }break;
 
-	///
-	//Handle timeout packets
-	///
+  ///
+  //Handle timeout packets
+  ///
 
       case MIP_INTERFACE_CALLBACK_TIMEOUT:
-	{
-	  filter_timeout_packet_count_++;
-	}break;
+  {
+    filter_timeout_packet_count_++;
+  }break;
       default: break;
       }
 
@@ -774,120 +774,120 @@ namespace Microstrain
     //The packet callback can have several types, process them all
     switch(callback_type)
       {
-	///
-	//Handle valid packets
-	///
+  ///
+  //Handle valid packets
+  ///
 
       case MIP_INTERFACE_CALLBACK_VALID_PACKET:
-	{
-	  ahrs_valid_packet_count_++;
+  {
+    ahrs_valid_packet_count_++;
 
-	  ///
-	  //Loop through all of the data fields
-	  ///
+    ///
+    //Loop through all of the data fields
+    ///
 
-	  while(mip_get_next_field(packet, &field_header, &field_data, &field_offset) == MIP_OK)
-	    {
+    while(mip_get_next_field(packet, &field_header, &field_data, &field_offset) == MIP_OK)
+      {
 
-	      ///
-	      // Decode the field
-	      ///
+        ///
+        // Decode the field
+        ///
 
-	      switch(field_header->descriptor)
-		{
-		  ///
-		  // Scaled Accelerometer
-		  ///
+        switch(field_header->descriptor)
+    {
+      ///
+      // Scaled Accelerometer
+      ///
 
-		case MIP_AHRS_DATA_ACCEL_SCALED:
-		  {
-		    memcpy(&curr_ahrs_accel_, field_data, sizeof(mip_ahrs_scaled_accel));
+    case MIP_AHRS_DATA_ACCEL_SCALED:
+      {
+        memcpy(&curr_ahrs_accel_, field_data, sizeof(mip_ahrs_scaled_accel));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_ahrs_scaled_accel_byteswap(&curr_ahrs_accel_);
+        //For little-endian targets, byteswap the data field
+        mip_ahrs_scaled_accel_byteswap(&curr_ahrs_accel_);
       
-		    // Stuff into ROS message - acceleration in m/s^2
-		    // Header
-		    imu_msg_.header.seq = ahrs_valid_packet_count_;
-		    imu_msg_.header.stamp = ros::Time::now();
-		    imu_msg_.header.frame_id = imu_frame_id_;
-		    imu_msg_.linear_acceleration.x = 9.81*curr_ahrs_accel_.scaled_accel[0];
-		    imu_msg_.linear_acceleration.y = 9.81*curr_ahrs_accel_.scaled_accel[1];
-		    imu_msg_.linear_acceleration.z = 9.81*curr_ahrs_accel_.scaled_accel[2];
+        // Stuff into ROS message - acceleration in m/s^2
+        // Header
+        imu_msg_.header.seq = ahrs_valid_packet_count_;
+        imu_msg_.header.stamp = ros::Time::now();
+        imu_msg_.header.frame_id = imu_frame_id_;
+        imu_msg_.linear_acceleration.x = 9.81*curr_ahrs_accel_.scaled_accel[0];
+        imu_msg_.linear_acceleration.y = 9.81*curr_ahrs_accel_.scaled_accel[1];
+        imu_msg_.linear_acceleration.z = 9.81*curr_ahrs_accel_.scaled_accel[2];
       
-		  }break;
+      }break;
 
-		  ///
-		  // Scaled Gyro
-		  ///
+      ///
+      // Scaled Gyro
+      ///
 
-		case MIP_AHRS_DATA_GYRO_SCALED:
-		  {
-		    memcpy(&curr_ahrs_gyro_, field_data, sizeof(mip_ahrs_scaled_gyro));
+    case MIP_AHRS_DATA_GYRO_SCALED:
+      {
+        memcpy(&curr_ahrs_gyro_, field_data, sizeof(mip_ahrs_scaled_gyro));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_ahrs_scaled_gyro_byteswap(&curr_ahrs_gyro_);
+        //For little-endian targets, byteswap the data field
+        mip_ahrs_scaled_gyro_byteswap(&curr_ahrs_gyro_);
       
-		    imu_msg_.angular_velocity.x = curr_ahrs_gyro_.scaled_gyro[0];
-		    imu_msg_.angular_velocity.y = curr_ahrs_gyro_.scaled_gyro[1];
-		    imu_msg_.angular_velocity.z = curr_ahrs_gyro_.scaled_gyro[2];
+        imu_msg_.angular_velocity.x = curr_ahrs_gyro_.scaled_gyro[0];
+        imu_msg_.angular_velocity.y = curr_ahrs_gyro_.scaled_gyro[1];
+        imu_msg_.angular_velocity.z = curr_ahrs_gyro_.scaled_gyro[2];
 
-		  }break;
+      }break;
 
-		  ///
-		  // Scaled Magnetometer
-		  ///
+      ///
+      // Scaled Magnetometer
+      ///
 
-		case MIP_AHRS_DATA_MAG_SCALED:
-		  {
-		    memcpy(&curr_ahrs_mag_, field_data, sizeof(mip_ahrs_scaled_mag));
+    case MIP_AHRS_DATA_MAG_SCALED:
+      {
+        memcpy(&curr_ahrs_mag_, field_data, sizeof(mip_ahrs_scaled_mag));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_ahrs_scaled_mag_byteswap(&curr_ahrs_mag_);
+        //For little-endian targets, byteswap the data field
+        mip_ahrs_scaled_mag_byteswap(&curr_ahrs_mag_);
 
-		  }break;
+      }break;
 
-		  // Quaternion
-		case MIP_AHRS_DATA_QUATERNION:
-		  {
-		    memcpy(&curr_ahrs_quaternion_, field_data, sizeof(mip_ahrs_quaternion));
+      // Quaternion
+    case MIP_AHRS_DATA_QUATERNION:
+      {
+        memcpy(&curr_ahrs_quaternion_, field_data, sizeof(mip_ahrs_quaternion));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_ahrs_quaternion_byteswap(&curr_ahrs_quaternion_);
-		    // put into ENU - swap X/Y, invert Z
-		    imu_msg_.orientation.x = curr_ahrs_quaternion_.q[2];
-		    imu_msg_.orientation.y = curr_ahrs_quaternion_.q[1];
-		    imu_msg_.orientation.z = -1.0*curr_ahrs_quaternion_.q[3];
-		    imu_msg_.orientation.w = curr_ahrs_quaternion_.q[0];
+        //For little-endian targets, byteswap the data field
+        mip_ahrs_quaternion_byteswap(&curr_ahrs_quaternion_);
+        // put into ENU - swap X/Y, invert Z
+        imu_msg_.orientation.x = curr_ahrs_quaternion_.q[2];
+        imu_msg_.orientation.y = curr_ahrs_quaternion_.q[1];
+        imu_msg_.orientation.z = -1.0*curr_ahrs_quaternion_.q[3];
+        imu_msg_.orientation.w = curr_ahrs_quaternion_.q[0];
 
-		  }break;
+      }break;
 
-		default: break;
-		}
-	    }
+    default: break;
+    }
+      }
    
-	  // Publish
-	  imu_pub_.publish(imu_msg_);
+    // Publish
+    imu_pub_.publish(imu_msg_);
 
-	}break;
+  }break;
 
-	///
-	//Handle checksum error packets
-	///
+  ///
+  //Handle checksum error packets
+  ///
 
       case MIP_INTERFACE_CALLBACK_CHECKSUM_ERROR:
-	{
-	  ahrs_checksum_error_packet_count_++;
-	}break;
+  {
+    ahrs_checksum_error_packet_count_++;
+  }break;
 
-	///
-	//Handle timeout packets
-	///
+  ///
+  //Handle timeout packets
+  ///
 
       case MIP_INTERFACE_CALLBACK_TIMEOUT:
-	{
-	  ahrs_timeout_packet_count_++;
-	}break;
+  {
+    ahrs_timeout_packet_count_++;
+  }break;
       default: break;
       }
 
@@ -914,106 +914,106 @@ namespace Microstrain
     //The packet callback can have several types, process them all
     switch(callback_type)
       {
-	///
-	//Handle valid packets
-	///
+  ///
+  //Handle valid packets
+  ///
 
       case MIP_INTERFACE_CALLBACK_VALID_PACKET:
-	{
-	  gps_valid_packet_count_++;
+  {
+    gps_valid_packet_count_++;
 
-	  ///
-	  //Loop through all of the data fields
-	  ///
+    ///
+    //Loop through all of the data fields
+    ///
 
-	  while(mip_get_next_field(packet, &field_header, &field_data, &field_offset) == MIP_OK)
-	    {
+    while(mip_get_next_field(packet, &field_header, &field_data, &field_offset) == MIP_OK)
+      {
 
-	      ///
-	      // Decode the field
-	      ///
+        ///
+        // Decode the field
+        ///
 
-	      switch(field_header->descriptor)
-		{
-		  ///
-		  // LLH Position
-		  ///
+        switch(field_header->descriptor)
+    {
+      ///
+      // LLH Position
+      ///
 
-		case MIP_GPS_DATA_LLH_POS:
-		  {
-		    memcpy(&curr_llh_pos_, field_data, sizeof(mip_gps_llh_pos));
+    case MIP_GPS_DATA_LLH_POS:
+      {
+        memcpy(&curr_llh_pos_, field_data, sizeof(mip_gps_llh_pos));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_gps_llh_pos_byteswap(&curr_llh_pos_);
+        //For little-endian targets, byteswap the data field
+        mip_gps_llh_pos_byteswap(&curr_llh_pos_);
 
-		    // push into ROS message
-		    gps_msg_.latitude = curr_llh_pos_.latitude;
-		    gps_msg_.longitude = curr_llh_pos_.longitude;
-		    gps_msg_.altitude = curr_llh_pos_.ellipsoid_height;
-		    gps_msg_.position_covariance_type = 2;  // diagnals known
-		    gps_msg_.position_covariance[0] = curr_llh_pos_.horizontal_accuracy*curr_llh_pos_.horizontal_accuracy;
-		    gps_msg_.position_covariance[4] = curr_llh_pos_.horizontal_accuracy*curr_llh_pos_.horizontal_accuracy;
-		    gps_msg_.position_covariance[8] = curr_llh_pos_.vertical_accuracy*curr_llh_pos_.vertical_accuracy;
-		    gps_msg_.status.status = curr_llh_pos_.valid_flags - 1;
-		    gps_msg_.status.service = 1;  // assumed
-		    // Header
-		    gps_msg_.header.seq = gps_valid_packet_count_;
-		    gps_msg_.header.stamp = ros::Time::now();
-		    gps_msg_.header.frame_id = gps_frame_id_;
+        // push into ROS message
+        gps_msg_.latitude = curr_llh_pos_.latitude;
+        gps_msg_.longitude = curr_llh_pos_.longitude;
+        gps_msg_.altitude = curr_llh_pos_.ellipsoid_height;
+        gps_msg_.position_covariance_type = 2;  // diagnals known
+        gps_msg_.position_covariance[0] = curr_llh_pos_.horizontal_accuracy*curr_llh_pos_.horizontal_accuracy;
+        gps_msg_.position_covariance[4] = curr_llh_pos_.horizontal_accuracy*curr_llh_pos_.horizontal_accuracy;
+        gps_msg_.position_covariance[8] = curr_llh_pos_.vertical_accuracy*curr_llh_pos_.vertical_accuracy;
+        gps_msg_.status.status = curr_llh_pos_.valid_flags - 1;
+        gps_msg_.status.service = 1;  // assumed
+        // Header
+        gps_msg_.header.seq = gps_valid_packet_count_;
+        gps_msg_.header.stamp = ros::Time::now();
+        gps_msg_.header.frame_id = gps_frame_id_;
 
-		  }break;
+      }break;
 
-		  ///
-		  // NED Velocity
-		  ///
+      ///
+      // NED Velocity
+      ///
 
-		case MIP_GPS_DATA_NED_VELOCITY:
-		  {
-		    memcpy(&curr_ned_vel_, field_data, sizeof(mip_gps_ned_vel));
+    case MIP_GPS_DATA_NED_VELOCITY:
+      {
+        memcpy(&curr_ned_vel_, field_data, sizeof(mip_gps_ned_vel));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_gps_ned_vel_byteswap(&curr_ned_vel_);
+        //For little-endian targets, byteswap the data field
+        mip_gps_ned_vel_byteswap(&curr_ned_vel_);
 
-		  }break;
+      }break;
 
-		  ///
-		  // GPS Time
-		  ///
+      ///
+      // GPS Time
+      ///
 
-		case MIP_GPS_DATA_GPS_TIME:
-		  {
-		    memcpy(&curr_gps_time_, field_data, sizeof(mip_gps_time));
+    case MIP_GPS_DATA_GPS_TIME:
+      {
+        memcpy(&curr_gps_time_, field_data, sizeof(mip_gps_time));
 
-		    //For little-endian targets, byteswap the data field
-		    mip_gps_time_byteswap(&curr_gps_time_);
+        //For little-endian targets, byteswap the data field
+        mip_gps_time_byteswap(&curr_gps_time_);
 
-		  }break;
+      }break;
 
-		default: break;
-		}
-	    }
-	}break;
+    default: break;
+    }
+      }
+  }break;
 
 
-	///
-	//Handle checksum error packets
-	///
+  ///
+  //Handle checksum error packets
+  ///
 
       case MIP_INTERFACE_CALLBACK_CHECKSUM_ERROR:
-	{
-	  msgvalid = 0;
-	  gps_checksum_error_packet_count_++;
-	}break;
+  {
+    msgvalid = 0;
+    gps_checksum_error_packet_count_++;
+  }break;
 
-	///
-	//Handle timeout packets
-	///
+  ///
+  //Handle timeout packets
+  ///
 
       case MIP_INTERFACE_CALLBACK_TIMEOUT:
-	{
-	  msgvalid = 0;
-	  gps_timeout_packet_count_++;
-	}break;
+  {
+    msgvalid = 0;
+    gps_timeout_packet_count_++;
+  }break;
       default: break;
       }
 
@@ -1028,8 +1028,8 @@ namespace Microstrain
   void Microstrain::print_packet_stats()
   {
     ROS_DEBUG_THROTTLE(1.0,"%u FILTER (%u errors)    %u AHRS (%u errors)    %u GPS (%u errors) Packets", filter_valid_packet_count_,  filter_timeout_packet_count_ + filter_checksum_error_packet_count_,
-		       ahrs_valid_packet_count_, ahrs_timeout_packet_count_ + ahrs_checksum_error_packet_count_,
-		       gps_valid_packet_count_,  gps_timeout_packet_count_ + gps_checksum_error_packet_count_);
+           ahrs_valid_packet_count_, ahrs_timeout_packet_count_ + ahrs_checksum_error_packet_count_,
+           gps_valid_packet_count_,  gps_timeout_packet_count_ + gps_checksum_error_packet_count_);
   } // print_packet_stats
 
 

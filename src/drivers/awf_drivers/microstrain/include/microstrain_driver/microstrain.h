@@ -48,8 +48,8 @@ extern "C" {
 #include "std_msgs/MultiArrayLayout.h"
 #include "std_srvs/Empty.h"
 
-#define MIP_SDK_GX4_45_IMU_STANDARD_MODE	0x01
-#define MIP_SDK_GX4_45_IMU_DIRECT_MODE	0x02
+#define MIP_SDK_GX4_45_IMU_STANDARD_MODE  0x01
+#define MIP_SDK_GX4_45_IMU_DIRECT_MODE  0x02
 
 #define NUM_COMMAND_LINE_ARGUMENTS 3
 
@@ -93,7 +93,7 @@ namespace Microstrain
   private:
   //! @brief Reset KF service callback
   bool reset_callback(std_srvs::Empty::Request &req,
-		      std_srvs::Empty::Response &resp);
+          std_srvs::Empty::Response &resp);
   //! @brief Convience for printing packet stats
   void print_packet_stats();
 

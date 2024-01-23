@@ -56,7 +56,7 @@
 class OpenCVConnector {
 
 public:
-	/* Constructor */
+  /* Constructor */
   OpenCVConnector(std::string topic_name, std::string camera_frame_id, std::string cam_info_file, int buffer);
   /* Destructor */
   ~OpenCVConnector();
@@ -65,7 +65,7 @@ public:
   void WriteToJpeg(uint8_t* data, uint32_t compressed_size);
 
   /* Ros node and image transport variables */
-	ros::NodeHandle nh;
+  ros::NodeHandle nh;
   image_transport::ImageTransport it;
   image_transport::Publisher pub;
   ros::Publisher pub_jpg;
@@ -75,8 +75,8 @@ public:
   /* Ros camera info manager */
   sensor_msgs::CameraInfo camera_info;
   camera_info_manager::CameraInfoManager camera_info_manager;
-	ros::Publisher pub_caminfo;
-	std::string calib_folder;
+  ros::Publisher pub_caminfo;
+  std::string calib_folder;
 
 };
 

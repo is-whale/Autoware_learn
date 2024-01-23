@@ -40,7 +40,7 @@ void G30esliROS::updateAutoCommand(const autoware_msgs::VehicleCmd& msg, const b
 
   // speed
   double speed_kmph = msg.ctrl_cmd.linear_velocity * 3.6;  // [m/s] -> [km/h]
-  cmd.command.speed = (engage && !reset_command_) ? speed_kmph : 0.0;
+  cmd.command.speed = (engage && !reset_command_) ? fabs(speed_kmph) : 0.0;
 
   // steer
   double steering_angle_deg = msg.ctrl_cmd.steering_angle / M_PI * 180.0;  // [rad] -> [deg]
@@ -64,19 +64,28 @@ void G30esliROS::updateAutoCommand(const autoware_msgs::VehicleCmd& msg, const b
   }
 
   // shift
-  if (msg.gear == 1)
+  bool is_valid_gear = (msg.gear_cmd.gear == autoware_msgs::Gear::DRIVE && msg.ctrl_cmd.linear_velocity >= 0.0) ||
+                       (msg.gear_cmd.gear == autoware_msgs::Gear::REVERSE && msg.ctrl_cmd.linear_velocity <= 0.0);
+  if (is_valid_gear)
   {
-    cmd.command.shift = G30ESLI_SHIFT_DRIVE;
+    if (msg.gear_cmd.gear == autoware_msgs::Gear::DRIVE)
+    {
+      cmd.command.shift = G30ESLI_SHIFT_DRIVE;
+    }
+    else if (msg.gear_cmd.gear == autoware_msgs::Gear::REVERSE)
+    {
+      cmd.command.shift = G30ESLI_SHIFT_REVERSE;
+    }
+    else if (msg.gear_cmd.gear == autoware_msgs::Gear::NEUTRAL)
+    {
+      cmd.command.shift = G30ESLI_SHIFT_NEUTRAL;
+    }
   }
-  else if (msg.gear == 2)
-  {
-    cmd.command.shift = G30ESLI_SHIFT_REVERSE;
-  }
-  else if (msg.gear == 4)
+  else
   {
     cmd.command.shift = G30ESLI_SHIFT_NEUTRAL;
   }
-
+  
   // flasher
   if (msg.lamp_cmd.l == 0 && msg.lamp_cmd.r == 0)
   {
@@ -162,9 +171,10 @@ void G30esliROS::receiveStatus(const double& steering_offset_deg)
   g30esli_.readStatus(status_.status);
 
   ros::Time now = ros::Time::now();
+  double sign = status_.status.shift != G30ESLI_SHIFT_REVERSE ? 1.0 : -1.0;
 
   // update twist
-  double lv = status_.status.speed.actual / 3.6;                                    // [km/h] -> [m/s]
+  double lv = sign * status_.status.speed.actual / 3.6;                             // [km/h] -> [m/s]
   double th = (-status_.status.steer.actual - steering_offset_deg) * M_PI / 180.0;  // [deg] -> [rad]
   double az = std::tan(th) * lv / G30ESLI_WHEEL_BASE;                               // [rad] -> [rad/s]
   current_twist_.header.frame_id = "base_link";
@@ -190,19 +200,19 @@ void G30esliROS::receiveStatus(const double& steering_offset_deg)
   // gearshift
   if (status_.status.shift == G30ESLI_SHIFT_DRIVE)
   {
-    vehicle_status_.gearshift = 1;
+    vehicle_status_.current_gear.gear = autoware_msgs::Gear::DRIVE;
   }
   else if (status_.status.shift == G30ESLI_SHIFT_REVERSE)
   {
-    vehicle_status_.gearshift = 2;
+    vehicle_status_.current_gear.gear = autoware_msgs::Gear::REVERSE;
   }
   else if (status_.status.shift == G30ESLI_SHIFT_NEUTRAL)
   {
-    vehicle_status_.gearshift = 4;
+    vehicle_status_.current_gear.gear = autoware_msgs::Gear::NEUTRAL;
   }
 
   // speed
-  vehicle_status_.speed = status_.status.speed.actual;  // [kmph]
+  vehicle_status_.speed = sign * status_.status.speed.actual;  // [kmph]
 
   // drivepedal
   vehicle_status_.drivepedal = status_.status.override.accel;  // [-]
@@ -265,7 +275,7 @@ void G30esliROS::checkRestart(const MODE& mode)
 
   Command& cmd = commands_[(int)mode];
   bool is_positive_command = (cmd.command.speed > 0.0);
-  bool is_stopped = (vehicle_status_.speed < 0.01);
+  bool is_stopped = (fabs(vehicle_status_.speed) < 0.01);
 
   if (!reset_command_)
   {

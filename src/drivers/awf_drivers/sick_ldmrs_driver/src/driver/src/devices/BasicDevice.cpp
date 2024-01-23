@@ -12,20 +12,20 @@ namespace devices
 //     Basisklasse fuer Devices
 // ****************************************************************************
 BasicDevice::BasicDevice()
-	: m_beVerbose(false)
+  : m_beVerbose(false)
 {
-	infoMessage("BasicDevice: Starting constructor.", m_beVerbose);
-	
-	m_devicetype = Sourcetype_Unknown;
-	m_deviceName = "(uninitialized)";
-	m_sourceId = 0xFFFF;
+  infoMessage("BasicDevice: Starting constructor.", m_beVerbose);
+  
+  m_devicetype = Sourcetype_Unknown;
+  m_deviceName = "(uninitialized)";
+  m_sourceId = 0xFFFF;
 }
 
 BasicDevice::~BasicDevice()
 {
-	infoMessage("BasicDevice(): Destructor called.", m_beVerbose);
-	
-	infoMessage("BasicDevice(): Destructor is done - object is dead.", m_beVerbose);
+  infoMessage("BasicDevice(): Destructor called.", m_beVerbose);
+  
+  infoMessage("BasicDevice(): Destructor is done - object is dead.", m_beVerbose);
 }
 
 /**
@@ -33,7 +33,7 @@ BasicDevice::~BasicDevice()
  */
 UINT16 BasicDevice::getDevicetype()
 {
-	return m_devicetype;
+  return m_devicetype;
 }
 
 /**
@@ -41,7 +41,7 @@ UINT16 BasicDevice::getDevicetype()
  */
 void BasicDevice::setDevicetype(UINT16 devicetype)
 {
-	m_devicetype = devicetype;
+  m_devicetype = devicetype;
 }
 
 /**
@@ -49,7 +49,7 @@ void BasicDevice::setDevicetype(UINT16 devicetype)
  */
 UINT16 BasicDevice::getSourceId()
 {
-	return m_sourceId;
+  return m_sourceId;
 }
 
 /**
@@ -57,7 +57,7 @@ UINT16 BasicDevice::getSourceId()
  */
 void BasicDevice::setSourceId(UINT16 sourceId)
 {
-	m_sourceId = sourceId;
+  m_sourceId = sourceId;
 }
 
 //
@@ -65,7 +65,7 @@ void BasicDevice::setSourceId(UINT16 sourceId)
 //
 void BasicDevice::setDeviceName(std::string name)
 {
-	m_deviceName = name;
+  m_deviceName = name;
 }
 
 //
@@ -73,7 +73,7 @@ void BasicDevice::setDeviceName(std::string name)
 //
 std::string BasicDevice::getDeviceName()
 {
-	return m_deviceName;
+  return m_deviceName;
 }
 
 

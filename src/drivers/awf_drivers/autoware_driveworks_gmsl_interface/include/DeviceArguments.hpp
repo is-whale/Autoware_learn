@@ -53,7 +53,7 @@ public:
   DeviceArguments(const std::vector<option_t>& options);
   /* Destructor */
   ~DeviceArguments();
-	/* Print arguments on screen */
+  /* Print arguments on screen */
   void printArguments();
   /* Get arguments */
   const std::string& get(const char *name) const;

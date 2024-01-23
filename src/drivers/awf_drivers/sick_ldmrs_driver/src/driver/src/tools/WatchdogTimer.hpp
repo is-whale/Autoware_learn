@@ -16,24 +16,24 @@
 class WatchdogTimer
 {
 public:
-	/// Constructor
-	WatchdogTimer();
+  /// Constructor
+  WatchdogTimer();
 
-	/// Destructor
-	virtual ~WatchdogTimer();
+  /// Destructor
+  virtual ~WatchdogTimer();
 
-	void reset();	/// Restarts the timer. Call this as "ok" signal.
+  void reset();  /// Restarts the timer. Call this as "ok" signal.
 
-	void start(UINT32 seconds);	// Initializes and starts the timer.
+  void start(UINT32 seconds);  // Initializes and starts the timer.
 
-	/// Initializes and starts the timer. interval = time in [s]
-	void start(const TimeDuration interval);
+  /// Initializes and starts the timer. interval = time in [s]
+  void start(const TimeDuration interval);
 
-	bool isElapsed();
+  bool isElapsed();
 
 private:
-	Time m_nextElapseTime;
-	TimeDuration m_timeoutInterval;
+  Time m_nextElapseTime;
+  TimeDuration m_timeoutInterval;
 };
 
 

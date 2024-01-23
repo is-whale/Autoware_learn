@@ -6,24 +6,21 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 )
 
-
-## Generate messages in the 'msg' folder
 add_message_files(
   DIRECTORY msg
   FILES
-    CANInfo.msg
     CANData.msg
+    CANInfo.msg
     CANPacket.msg
 )
 
-## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
-  std_msgs
+    std_msgs
 )
 
 catkin_package(
   CATKIN_DEPENDS
-  message_runtime
-  std_msgs
+    message_runtime
+    std_msgs
 )

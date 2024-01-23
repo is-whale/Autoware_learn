@@ -6,49 +6,45 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
 )
 
-## Generate messages in the 'msg' folder
 add_message_files(
   DIRECTORY msg
   FILES
-
-  ## Runtime Manager ##
-  ConfigApproximateNDTMapping.msg
-  ConfigCarDPM.msg
-  ConfigCarFusion.msg
-  ConfigCarKF.msg
-  ConfigCompareMapFilter.msg
-  ConfigDecisionMaker.msg
-  ConfigDistanceFilter.msg
-  ConfigICP.msg
-  ConfigLaneRule.msg
-  ConfigLaneSelect.msg
-  ConfigLaneStop.msg
-  ConfigLatticeVelocitySet.msg
-  ConfigNDTMapping.msg
-  ConfigNDTMappingOutput.msg
-  ConfigNDT.msg
-  ConfigPedestrianDPM.msg
-  ConfigPedestrianFusion.msg
-  ConfigPedestrianKF.msg
-  ConfigPlannerSelector.msg
-  ConfigPoints2Polygon.msg
-  ConfigRandomFilter.msg
-  ConfigRayGroundFilter.msg
-  ConfigRcnn.msg
-  ConfigRingFilter.msg
-  ConfigRingGroundFilter.msg
-  ConfigSSD.msg
-  ConfigTwistFilter.msg
-  ConfigVelocitySet.msg
-  ConfigVoxelGridFilter.msg
-  ConfigWaypointFollower.msg
-  ConfigWaypointReplanner.msg
+    ConfigApproximateNDTMapping.msg
+    ConfigCarDPM.msg
+    ConfigCarFusion.msg
+    ConfigCarKF.msg
+    ConfigCompareMapFilter.msg
+    ConfigDecisionMaker.msg
+    ConfigDistanceFilter.msg
+    ConfigICP.msg
+    ConfigLaneRule.msg
+    ConfigLaneSelect.msg
+    ConfigLaneStop.msg
+    ConfigLatticeVelocitySet.msg
+    ConfigNDT.msg
+    ConfigNDTMapping.msg
+    ConfigNDTMappingOutput.msg
+    ConfigPedestrianDPM.msg
+    ConfigPedestrianFusion.msg
+    ConfigPedestrianKF.msg
+    ConfigPlannerSelector.msg
+    ConfigPoints2Polygon.msg
+    ConfigRandomFilter.msg
+    ConfigRayGroundFilter.msg
+    ConfigRcnn.msg
+    ConfigRingFilter.msg
+    ConfigRingGroundFilter.msg
+    ConfigSSD.msg
+    ConfigTwistFilter.msg
+    ConfigVelocitySet.msg
+    ConfigVoxelGridFilter.msg
+    ConfigWaypointFollower.msg
+    ConfigWaypointReplanner.msg
 )
 
-## Generate added messages and services with any dependencies listed here
 generate_messages(
   DEPENDENCIES
-  std_msgs
+    std_msgs
 )
 
 catkin_package(CATKIN_DEPENDS

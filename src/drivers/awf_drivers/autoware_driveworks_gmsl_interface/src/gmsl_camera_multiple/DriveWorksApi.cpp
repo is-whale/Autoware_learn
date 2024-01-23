@@ -48,8 +48,8 @@ namespace DriveWorks
 DriveWorksApi::DriveWorksApi(DeviceArguments arguments, ImageConfig imageConfig):
 g_arguments(arguments), g_imageConfig(imageConfig)
 {
-	// init image publishing configuration
-	g_imageWidth = imageConfig.pub_width;
+  // init image publishing configuration
+  g_imageWidth = imageConfig.pub_width;
   g_imageHeight = imageConfig.pub_height;
   gImageCompressed = imageConfig.pub_compressed;
   JPEG_quality = imageConfig.pub_compressed_quality;
@@ -87,7 +87,7 @@ void DriveWorksApi::initSAL(dwSALHandle_t *sal, dwContextHandle_t context)
   result = dwSAL_initialize(sal, context);
   if (result != DW_SUCCESS)
   {
-	  std::cerr << "Cannot initialize SAL: " << dwGetStatusName(result) << std::endl;
+    std::cerr << "Cannot initialize SAL: " << dwGetStatusName(result) << std::endl;
     exit(1);
   }
 }
@@ -108,10 +108,10 @@ void DriveWorksApi::initSensors(std::vector<Camera> *cameras, uint32_t *numCamer
   std::string port[3] = {"ab", "cd", "ef"};
   for (size_t i = 0; i < selector.length() && i < 12; i++, idx++)
   {
-		const char s = selector[i];
-		if (s == '1')
-		{
-			cnt[idx / 4]++;
+    const char s = selector[i];
+    if (s == '1')
+    {
+      cnt[idx / 4]++;
     }
   }
 
@@ -164,7 +164,7 @@ void DriveWorksApi::initSensors(std::vector<Camera> *cameras, uint32_t *numCamer
         cam.width = cameraImageProperties.width;
         cam.height = cameraImageProperties.height;
         cam.numSiblings = cameraProperties.siblings;
-		    cameras->push_back(cam);
+        cameras->push_back(cam);
 
         (*numCameras) += cam.numSiblings;
       }
@@ -195,7 +195,7 @@ void DriveWorksApi::initFramesStart()
   if (cameras.size() == 0)
   {
     std::cerr << "Need to specify at least 1 at most 12 cameras to be used" << std::endl;
-	  exit(-1);
+    exit(-1);
   }
 
   // allocate frameRGBA pointer
@@ -203,17 +203,17 @@ void DriveWorksApi::initFramesStart()
   {
     std::vector<dwImageNvMedia*> pool;
     std::vector<uint8_t*> pool_jpeg;
-		std::vector< uint32_t> poolsize;
+    std::vector< uint32_t> poolsize;
     for (size_t cameraIdx = 0; cameraIdx < cameras[csiPort].numSiblings; ++cameraIdx)
     {
-			pool.push_back(nullptr);
-			pool_jpeg.push_back(nullptr);
-			poolsize.push_back(0);
+      pool.push_back(nullptr);
+      pool_jpeg.push_back(nullptr);
+      poolsize.push_back(0);
     }
     // assign to class variables for later use
     g_frameRGBAPtr.push_back(pool);
     g_frameJPGPtr.push_back(pool_jpeg);
-		g_compressedSize.push_back(poolsize);
+    g_compressedSize.push_back(poolsize);
 
   }
 
@@ -221,8 +221,8 @@ void DriveWorksApi::initFramesStart()
   for (size_t csiPort = 0; csiPort < cameras.size() && g_run; csiPort++)
   {
     initFrameImage(&cameras[csiPort]);
-	  // record a number of connected camera
-	  g_numCameraPort.push_back(cameras[csiPort].numSiblings);
+    // record a number of connected camera
+    g_numCameraPort.push_back(cameras[csiPort].numSiblings);
   }
 }
 
@@ -256,58 +256,58 @@ void DriveWorksApi::initFrameImage(Camera* camera)
     result = dwImageFormatConverter_initialize(&camera->yuv2rgba, cameraImageProperties.type, sdk);
     if (result != DW_SUCCESS)
     {
-	    std::cerr << "Cannot create pixel format converter : yuv->rgba" << dwGetStatusName(result) <<  std::endl;
+      std::cerr << "Cannot create pixel format converter : yuv->rgba" << dwGetStatusName(result) <<  std::endl;
       g_run = false;
     }
 
     // allocate image pool
     for(uint32_t cameraIdx = 0; cameraIdx < camera->numSiblings; cameraIdx++)
     {
-	    for(int32_t k = 0; k < pool_size; k++)
-	    {
-		    dwImageNvMedia rgba{};
+      for(int32_t k = 0; k < pool_size; k++)
+      {
+        dwImageNvMedia rgba{};
         result = dwImageNvMedia_create(&rgba, &displayImageProperties, sdk);
         if (result != DW_SUCCESS)
         {
-		      std::cerr << "Cannot create nvmedia image for pool:" << dwGetStatusName(result) << std::endl;
+          std::cerr << "Cannot create nvmedia image for pool:" << dwGetStatusName(result) << std::endl;
           g_run = false;
           break;
         }
         // don't forget to delete dwImage via g_frameRGBA when exit
-		    g_frameRGBA.push_back(rgba);
+        g_frameRGBA.push_back(rgba);
         camera->rgbaPool.push(&g_frameRGBA.back());
       }
     }
 
 
     // NVMedia image compression definition.
-		for(uint32_t cameraIdx = 0; cameraIdx < camera->numSiblings; cameraIdx++)
-		{
-			NvMediaDevice *device;
-			device = NvMediaDeviceCreate();
-			if(!device)
-			{
-				std::cerr << "main: NvMediaDeviceCreate failed\n" <<  std::endl;
-				g_run = false;
-			}
-			NvMediaIJPE* jpegEncoder = NULL;
-			jpegEncoder = NvMediaIJPECreate(device, NvMediaSurfaceType_Image_YUV_420,(uint8_t) 1, max_jpeg_bytes );
-			if(!jpegEncoder)
-			{
-				std::cerr << "main: NvMediaIJPECreate failed\n" <<  std::endl;
-				g_run = false;
-			}
-			else
-			{
-				camera->jpegEncoders.push_back(jpegEncoder);
-			}
-		}
-		// allocate compressed image pool
-		for(uint32_t cameraIdx = 0; cameraIdx < camera->numSiblings; cameraIdx++)
-		{
-			for (int32_t k = 0; k < pool_size; k++)
-			{
-				uint8_t* jpeg_img = (uint8_t*) malloc( max_jpeg_bytes );
+    for(uint32_t cameraIdx = 0; cameraIdx < camera->numSiblings; cameraIdx++)
+    {
+      NvMediaDevice *device;
+      device = NvMediaDeviceCreate();
+      if(!device)
+      {
+        std::cerr << "main: NvMediaDeviceCreate failed\n" <<  std::endl;
+        g_run = false;
+      }
+      NvMediaIJPE* jpegEncoder = NULL;
+      jpegEncoder = NvMediaIJPECreate(device, NvMediaSurfaceType_Image_YUV_420,(uint8_t) 1, max_jpeg_bytes );
+      if(!jpegEncoder)
+      {
+        std::cerr << "main: NvMediaIJPECreate failed\n" <<  std::endl;
+        g_run = false;
+      }
+      else
+      {
+        camera->jpegEncoders.push_back(jpegEncoder);
+      }
+    }
+    // allocate compressed image pool
+    for(uint32_t cameraIdx = 0; cameraIdx < camera->numSiblings; cameraIdx++)
+    {
+      for (int32_t k = 0; k < pool_size; k++)
+      {
+        uint8_t* jpeg_img = (uint8_t*) malloc( max_jpeg_bytes );
         camera->jpegPool.push(jpeg_img);
       }
     }
@@ -321,135 +321,135 @@ void DriveWorksApi::initFrameImage(Camera* camera)
 
 void DriveWorksApi::startCameraPipline()
 {
-	std::cout << "Start camera pipline  " << std::endl;
-	std::vector<std::thread> camThreads;
-	for (uint32_t i = 0; i < cameras.size(); ++i)
+  std::cout << "Start camera pipline  " << std::endl;
+  std::vector<std::thread> camThreads;
+  for (uint32_t i = 0; i < cameras.size(); ++i)
   {
-		camThreads.push_back(std::thread(&DriveWorksApi::threadCameraPipeline, this, &cameras[i], i, sdk));
+    camThreads.push_back(std::thread(&DriveWorksApi::threadCameraPipeline, this, &cameras[i], i, sdk));
   }
 
   // loop through all cameras check if they have provided the first frame
   /*
   for (size_t csiPort = 0; csiPort < cameras.size() && g_run; csiPort++)
   {
-		for (uint32_t cameraIdx = 0;cameraIdx < cameras[csiPort].numSiblings && g_run;cameraIdx++)
-		{
-			while (!g_frameRGBAPtr[csiPort][cameraIdx] && g_run)
-			{
-				std::this_thread::yield();
+    for (uint32_t cameraIdx = 0;cameraIdx < cameras[csiPort].numSiblings && g_run;cameraIdx++)
+    {
+      while (!g_frameRGBAPtr[csiPort][cameraIdx] && g_run)
+      {
+        std::this_thread::yield();
       }
     }
   }*/
 
   // start camera threads and release
-	for (uint32_t i = 0; i < cameras.size(); ++i)
-	{
-		camThreads.at(i).detach();
+  for (uint32_t i = 0; i < cameras.size(); ++i)
+  {
+    camThreads.at(i).detach();
   }
 }
 
 
 void DriveWorksApi::threadCameraPipeline(Camera* cameraSensor, uint32_t port, dwContextHandle_t sdk)
 {
-	std::cout << "Start camera thread for port:  " << port << std::endl;
-	// cv publishers
-	std::vector<std::unique_ptr<OpenCVConnector>> cv_connectors;
-	// init multiple cv cameras connection and topic name
+  std::cout << "Start camera thread for port:  " << port << std::endl;
+  // cv publishers
+  std::vector<std::unique_ptr<OpenCVConnector>> cv_connectors;
+  // init multiple cv cameras connection and topic name
   for (uint32_t cameraIdx = 0; cameraIdx < cameraSensor->numSiblings; cameraIdx++)
   {
-	 // Topic mapping e.g. gmsl_image_raw_<nvidia cam port A=0, B=1, C=2>_<sibling id 0,1,2,3> : port_0/camera_1/(image_raw,image_raw/compressed)
-		const std::string topic = std::string("port_") + std::to_string(port) + std::string("/camera_") + std::to_string(cameraIdx);
+   // Topic mapping e.g. gmsl_image_raw_<nvidia cam port A=0, B=1, C=2>_<sibling id 0,1,2,3> : port_0/camera_1/(image_raw,image_raw/compressed)
+    const std::string topic = std::string("port_") + std::to_string(port) + std::string("/camera_") + std::to_string(cameraIdx);
     const std::string camera_frame_id = std::string("gmsl_camera_") + std::to_string(port) + std::string("_") + std::to_string(cameraIdx);
     const std::string cam_info_file = std::string("file://") + std::string(g_calibFolder) + std::to_string(port) + std::to_string(cameraIdx) + std::string("_calibration.yml");
     std::unique_ptr<OpenCVConnector> cvPtr(new OpenCVConnector(topic, camera_frame_id, cam_info_file, 10));
-		cv_connectors.push_back(std::move(cvPtr));
-	}
+    cv_connectors.push_back(std::move(cvPtr));
+  }
 
-	while (g_run && ros::ok())
-	{
-		bool eofAny = false;
-		// capture from all csi-ports
+  while (g_run && ros::ok())
+  {
+    bool eofAny = false;
+    // capture from all csi-ports
     // NOTE if cross-csi-synch is active, all cameras will capture at the same time
     {
-			if (eof)
-			{
-				eofAny = true;
+      if (eof)
+      {
+        eofAny = true;
         continue;
       }
 
       if (cameraSensor->rgbaPool.empty())
       {
-				std::cerr << "Ran out of RGBA buffers, continuing" << std::endl;
-				continue;
-			}
+        std::cerr << "Ran out of RGBA buffers, continuing" << std::endl;
+        continue;
+      }
 
       // capture from all cameras within a csi port
-			for (uint32_t cameraIdx = 0;cameraIdx < cameraSensor->numSiblings && !cameraSensor->rgbaPool.empty();cameraIdx++)
-			{
-				// capture, convert to rgba and return it
+      for (uint32_t cameraIdx = 0;cameraIdx < cameraSensor->numSiblings && !cameraSensor->rgbaPool.empty();cameraIdx++)
+      {
+        // capture, convert to rgba and return it
         eof = captureCamera(cameraSensor->rgbaPool.front(),
                             cameraSensor->sensor,
                             port, cameraIdx,
                             cameraSensor->yuv2rgba,
                             cameraSensor->jpegPool.front(),
                             cameraSensor->jpegEncoders[cameraIdx]);
-				g_frameRGBAPtr[port][cameraIdx] = cameraSensor->rgbaPool.front();
+        g_frameRGBAPtr[port][cameraIdx] = cameraSensor->rgbaPool.front();
         cameraSensor->rgbaPool.pop();
 
         g_frameJPGPtr[port][cameraIdx] =  cameraSensor->jpegPool.front();
-				cameraSensor->jpegPool.pop();
+        cameraSensor->jpegPool.pop();
 
         if (!eof)
         {
-					cameraSensor->rgbaPool.push(g_frameRGBAPtr[port][cameraIdx]);
-					cameraSensor->jpegPool.push(g_frameJPGPtr[port][cameraIdx]);
-				}
+          cameraSensor->rgbaPool.push(g_frameRGBAPtr[port][cameraIdx]);
+          cameraSensor->jpegPool.push(g_frameJPGPtr[port][cameraIdx]);
+        }
 
-					eofAny |= eof;
-			}
+          eofAny |= eof;
+      }
      }
 
      // stop to take screenshot (will cause a delay)
      if (gTakeScreenshot)
      {
-			{
+      {
 
-				for (uint32_t cameraIdx = 0; cameraIdx < cameraSensor->numSiblings && !cameraSensor->rgbaPool.empty(); cameraIdx++)
-				{
-					//copy to memory replacing by //takeScreenshot(g_frameRGBAPtr[port][cameraIdx], port, cameraIdx);
-					dwImageNvMedia *frameNVMrgba = g_frameRGBAPtr[port][cameraIdx];
-					NvMediaImageSurfaceMap surfaceMap;
+        for (uint32_t cameraIdx = 0; cameraIdx < cameraSensor->numSiblings && !cameraSensor->rgbaPool.empty(); cameraIdx++)
+        {
+          //copy to memory replacing by //takeScreenshot(g_frameRGBAPtr[port][cameraIdx], port, cameraIdx);
+          dwImageNvMedia *frameNVMrgba = g_frameRGBAPtr[port][cameraIdx];
+          NvMediaImageSurfaceMap surfaceMap;
 
-					if (NvMediaImageLock(frameNVMrgba->img, NVMEDIA_IMAGE_ACCESS_READ, &surfaceMap) == NVMEDIA_STATUS_OK)
-					{
-						// publish an image
-						if(gImageCompressed)
-						{
-							// compressed
-							cv_connectors[cameraIdx]->WriteToJpeg( g_frameJPGPtr[port][cameraIdx],  g_compressedSize[port][cameraIdx]);
-						}
-						else
-						{
-							//raw (resize if set)
-							cv_connectors[cameraIdx]->WriteToOpenCV((unsigned char*)surfaceMap.surface[0].mapping,
-																											frameNVMrgba->prop.width, frameNVMrgba->prop.height,
-																											g_imageWidth,
-																											g_imageHeight);
-						}
+          if (NvMediaImageLock(frameNVMrgba->img, NVMEDIA_IMAGE_ACCESS_READ, &surfaceMap) == NVMEDIA_STATUS_OK)
+          {
+            // publish an image
+            if(gImageCompressed)
+            {
+              // compressed
+              cv_connectors[cameraIdx]->WriteToJpeg( g_frameJPGPtr[port][cameraIdx],  g_compressedSize[port][cameraIdx]);
+            }
+            else
+            {
+              //raw (resize if set)
+              cv_connectors[cameraIdx]->WriteToOpenCV((unsigned char*)surfaceMap.surface[0].mapping,
+                                                      frameNVMrgba->prop.width, frameNVMrgba->prop.height,
+                                                      g_imageWidth,
+                                                      g_imageHeight);
+            }
 
-						NvMediaImageUnlock(frameNVMrgba->img);
-					}
-					else
-					{
-						std::cout << "CANNOT LOCK NVMEDIA IMAGE - NO SCREENSHOT\n";
-					}
+            NvMediaImageUnlock(frameNVMrgba->img);
+          }
+          else
+          {
+            std::cout << "CANNOT LOCK NVMEDIA IMAGE - NO SCREENSHOT\n";
+          }
 
-				}
-			}
+        }
+      }
       gScreenshotCount++;
      }
-		 std::this_thread::sleep_for(std::chrono::milliseconds(5));
-		 g_run = g_run && !eofAny;
+     std::this_thread::sleep_for(std::chrono::milliseconds(5));
+     g_run = g_run && !eofAny;
     }//end while
 }
 
@@ -487,18 +487,18 @@ dwStatus DriveWorksApi::captureCamera(dwImageNvMedia *frameNVMrgba,
 
   if(gImageCompressed)
   {
-		NvMediaStatus nvStatus = NvMediaIJPEFeedFrame(jpegEncoder,frameNVMyuv->img,JPEG_quality);
-		if(nvStatus != NVMEDIA_STATUS_OK)
-		{
-			std::cerr <<"NvMediaIJPEFeedFrameQuality failed: %x\n" << nvStatus <<  std::endl;
-		}
-		nvStatus = NvMediaIJPEBitsAvailable(jpegEncoder, &g_compressedSize[port][sibling],NVMEDIA_ENCODE_BLOCKING_TYPE_IF_PENDING , 10000);
-		nvStatus = NvMediaIJPEGetBits(jpegEncoder, &g_compressedSize[port][sibling], jpeg_image, 0);
-		if(nvStatus != NVMEDIA_STATUS_OK && nvStatus != NVMEDIA_STATUS_NONE_PENDING)
-		{
-			std::cerr <<"main: Error getting encoded bits\n"<<  std::endl;
-		}
-	}
+    NvMediaStatus nvStatus = NvMediaIJPEFeedFrame(jpegEncoder,frameNVMyuv->img,JPEG_quality);
+    if(nvStatus != NVMEDIA_STATUS_OK)
+    {
+      std::cerr <<"NvMediaIJPEFeedFrameQuality failed: %x\n" << nvStatus <<  std::endl;
+    }
+    nvStatus = NvMediaIJPEBitsAvailable(jpegEncoder, &g_compressedSize[port][sibling],NVMEDIA_ENCODE_BLOCKING_TYPE_IF_PENDING , 10000);
+    nvStatus = NvMediaIJPEGetBits(jpegEncoder, &g_compressedSize[port][sibling], jpeg_image, 0);
+    if(nvStatus != NVMEDIA_STATUS_OK && nvStatus != NVMEDIA_STATUS_NONE_PENDING)
+    {
+      std::cerr <<"main: Error getting encoded bits\n"<<  std::endl;
+    }
+  }
   result = dwSensorCamera_returnFrame(&frameHandle);
   if( result != DW_SUCCESS )
   {
@@ -529,10 +529,10 @@ void DriveWorksApi::releaseCameras(Camera* cameraSensor)
   // cleanup nvmedia preallocate image frames
   for (dwImageNvMedia& frame : cameraSensor->frameRGBA)
   {
-	  dwStatus result = dwImageNvMedia_destroy(&frame);
+    dwStatus result = dwImageNvMedia_destroy(&frame);
     if (result != DW_SUCCESS)
     {
-	    std::cerr << "Cannot destroy nvmedia: " << dwGetStatusName(result) << std::endl;
+      std::cerr << "Cannot destroy nvmedia: " << dwGetStatusName(result) << std::endl;
       g_run = false;
       break;
     }
@@ -541,7 +541,7 @@ void DriveWorksApi::releaseCameras(Camera* cameraSensor)
   // cleanup jpeg compression
   for (auto jpegEncoder_ : cameraSensor->jpegEncoders)
   {
-		NvMediaIJPEDestroy(jpegEncoder_);
+    NvMediaIJPEDestroy(jpegEncoder_);
   }
 }
 

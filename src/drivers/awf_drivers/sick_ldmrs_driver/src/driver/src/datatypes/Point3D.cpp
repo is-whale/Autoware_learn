@@ -10,7 +10,7 @@
 
 namespace datatypes
 {
-	
+  
 //
 // Some of the non-trivial member functions
 //
@@ -19,11 +19,11 @@ namespace datatypes
 // Constructs a point from the given ScanPoint
 //
 Point3D::Point3D(const Point2D& p)
-	: m_x(double(p.getX()))
-	, m_y(double(p.getY()))
-	, m_z(0.0)
+  : m_x(double(p.getX()))
+  , m_y(double(p.getY()))
+  , m_z(0.0)
 {
-	m_datatype = Datatype_Point3D;
+  m_datatype = Datatype_Point3D;
 }
 
 
@@ -34,21 +34,21 @@ Point3D::Point3D(const Point2D& p)
  */
 bool Point3D::isZero() const
 {
-	return (fuzzyCompare(m_x, 0.0) &&
-			fuzzyCompare(m_y, 0.0) &&
-			fuzzyCompare(m_z, 0.0));
+  return (fuzzyCompare(m_x, 0.0) &&
+      fuzzyCompare(m_y, 0.0) &&
+      fuzzyCompare(m_z, 0.0));
 }
 
 
 double Point3D::dist( const Point3D& point ) const
 {
-	return hypot(m_x - point.getX(), m_y - point.getY(), m_z - point.getZ());
+  return hypot(m_x - point.getX(), m_y - point.getY(), m_z - point.getZ());
 }
 
 Point2D Point3D::toPoint2D() const
 {
-	Point2D result(m_x, m_y);
-	return result;
+  Point2D result(m_x, m_y);
+  return result;
 }
 
 /**
@@ -57,13 +57,13 @@ Point2D Point3D::toPoint2D() const
  */
 Point3D Point3D::vectorProduct(const Point3D& v1, const Point3D& v2)
 {
-	Point3D kreuz;
+  Point3D kreuz;
 
-	kreuz.m_x = + ((v1.getY() * v2.getZ()) - (v1.getZ() * v2.getY()));
-	kreuz.m_y = -((v1.getX() * v2.getZ()) - (v1.getZ() * v2.getX()));
-	kreuz.m_z = + ((v1.getX() * v2.getY()) - (v1.getY() * v2.getX()));
+  kreuz.m_x = + ((v1.getY() * v2.getZ()) - (v1.getZ() * v2.getY()));
+  kreuz.m_y = -((v1.getX() * v2.getZ()) - (v1.getZ() * v2.getX()));
+  kreuz.m_z = + ((v1.getX() * v2.getY()) - (v1.getY() * v2.getX()));
 
-	return kreuz;
+  return kreuz;
 }
 
 /**
@@ -73,19 +73,19 @@ Point3D Point3D::vectorProduct(const Point3D& v1, const Point3D& v2)
  */
 void Point3D::normalize()
 {
-	if (isZero())
-		// Vector has zero length. Such a vector will be left unchanged.
-		return;
+  if (isZero())
+    // Vector has zero length. Such a vector will be left unchanged.
+    return;
 
-	double len = length();
-	// To be really sure about avoiding division-by-zero, we check again here
-	if (fuzzyCompare(len, 0.0))
-	{
-		// Vector has zero length. Such a vector will be left unchanged.
-		return;
-	}
+  double len = length();
+  // To be really sure about avoiding division-by-zero, we check again here
+  if (fuzzyCompare(len, 0.0))
+  {
+    // Vector has zero length. Such a vector will be left unchanged.
+    return;
+  }
 
-	*this /= len;
+  *this /= len;
 }
 
 
@@ -95,14 +95,14 @@ void Point3D::normalize()
  */
 void Point3D::rotateAroundZ(double yawAngle)
 {
-	double dCos = cos(yawAngle);
-	double dSin = sin(yawAngle);
+  double dCos = cos(yawAngle);
+  double dSin = sin(yawAngle);
 
-	double x = m_x * dCos - m_y * dSin;
-	double y = m_x * dSin + m_y * dCos;
+  double x = m_x * dCos - m_y * dSin;
+  double y = m_x * dSin + m_y * dCos;
 
-	m_x = x;
-	m_y = y;
+  m_x = x;
+  m_y = y;
 }
 
 
@@ -112,14 +112,14 @@ void Point3D::rotateAroundZ(double yawAngle)
  */
 void Point3D::rotateAroundX(double rollAngle)
 {
-	double dCos = cos(rollAngle);
-	double dSin = sin(rollAngle);
+  double dCos = cos(rollAngle);
+  double dSin = sin(rollAngle);
 
-	double y = -m_z * dSin + m_y * dCos;
-	double z = m_z * dCos + m_y * dSin;
+  double y = -m_z * dSin + m_y * dCos;
+  double z = m_z * dCos + m_y * dSin;
 
-	m_z = z;
-	m_y = y;
+  m_z = z;
+  m_y = y;
 }
 
 /**
@@ -128,14 +128,14 @@ void Point3D::rotateAroundX(double rollAngle)
  */
 void Point3D::rotateAroundY(double pitchAngle)
 {
-	double dCos = cos(pitchAngle);
-	double dSin = sin(pitchAngle);
+  double dCos = cos(pitchAngle);
+  double dSin = sin(pitchAngle);
 
-	double x = m_z * dSin + m_x * dCos;
-	double z = m_z * dCos - m_x * dSin;
+  double x = m_z * dSin + m_x * dCos;
+  double z = m_z * dCos - m_x * dSin;
 
-	m_z = z;
-	m_x = x;
+  m_z = z;
+  m_x = x;
 }
 
 
@@ -145,7 +145,7 @@ void Point3D::rotateAroundY(double pitchAngle)
  */
 double Point3D::distFromOrigin() const
 {
-	return hypot(m_x, m_y, m_z);
+  return hypot(m_x, m_y, m_z);
 }
 
 /**
@@ -154,7 +154,7 @@ double Point3D::distFromOrigin() const
  */
 double Point3D::length() const
 {
-	return distFromOrigin();
+  return distFromOrigin();
 }
 
 
@@ -178,12 +178,12 @@ double Point3D::length() const
  */
 double Point3D::getAngleAroundZ() const
 {
-	double angle;
+  double angle;
 
-	// atan2(y,x) returns the angle against the x-axis
-	angle = std::atan2(m_y, m_x);
+  // atan2(y,x) returns the angle against the x-axis
+  angle = std::atan2(m_y, m_x);
 
-	return angle;
+  return angle;
 }
 
 /**
@@ -206,12 +206,12 @@ double Point3D::getAngleAroundZ() const
  */
 double Point3D::getAngleAroundY() const
 {
-	double angle;
+  double angle;
 
-	// atan2(y,x) returns the angle against the x-axis
-	angle = std::atan2(m_x, m_z);
+  // atan2(y,x) returns the angle against the x-axis
+  angle = std::atan2(m_x, m_z);
 
-	return angle;
+  return angle;
 }
 
 
@@ -234,12 +234,12 @@ double Point3D::getAngleAroundY() const
  */
 double Point3D::getAngleAroundX() const
 {
-	double angle;
+  double angle;
 
-	// atan2(z,y) returns the angle against the y-axis
-	angle = std::atan2(m_z, m_y);
+  // atan2(z,y) returns the angle against the y-axis
+  angle = std::atan2(m_z, m_y);
 
-	return angle;
+  return angle;
 }
 
 
@@ -249,7 +249,7 @@ double Point3D::getAngleAroundX() const
  */
 double Point3D::getDistanceBetweenPoints(const Point3D& pt1, const Point3D& pt2)
 {
-	return pt1.dist(pt2);
+  return pt1.dist(pt2);
 }
 
 
@@ -261,10 +261,10 @@ double Point3D::getDistanceBetweenPoints(const Point3D& pt1, const Point3D& pt2)
  */
 std::string Point3D::toString() const
 {
-//	std::string text;
-	std::ostringstream ostr;
-	ostr << *this;
-	return ostr.str();
+//  std::string text;
+  std::ostringstream ostr;
+  ostr << *this;
+  return ostr.str();
 }
 
 /**
@@ -272,8 +272,8 @@ std::string Point3D::toString() const
  */
 std::ostream& operator<<(std::ostream& os, const Point3D& point)
 {
-	os << "(" << point.getX() << ", " << point.getY() << ", " << point.getZ() << ")";
-	return os;
+  os << "(" << point.getX() << ", " << point.getY() << ", " << point.getZ() << ")";
+  return os;
 }
 
 
@@ -291,26 +291,26 @@ std::ostream& operator<<(std::ostream& os, const Point3D& point)
  * Is this function better located in geom3D?
  */
 Point3D Point3D::calcIntersectionPointOfVectorWithPlane(const Point3D& PlaneStartpoint,
-		const Point3D& PlaneNormal,
-		const Point3D& VectorStartpoint,
-		const Point3D& VectorDirection)
+    const Point3D& PlaneNormal,
+    const Point3D& VectorStartpoint,
+    const Point3D& VectorDirection)
 {
-	Point3D intersectionPoint;
-	double nenner;
+  Point3D intersectionPoint;
+  double nenner;
 
-	nenner = PlaneNormal * VectorDirection;
-	if (fuzzyCompare(nenner, 0.0) == false)
-	{
-		// Calc intersection point
-		intersectionPoint = VectorStartpoint + ((PlaneNormal * (PlaneStartpoint - VectorStartpoint)) / nenner) * VectorDirection;
-	}
-	else
-	{
-		// Vector points "along" the plane, so there is no intersection point.
-		intersectionPoint.setXYZ(NaN_double, NaN_double, NaN_double);
-	}
+  nenner = PlaneNormal * VectorDirection;
+  if (fuzzyCompare(nenner, 0.0) == false)
+  {
+    // Calc intersection point
+    intersectionPoint = VectorStartpoint + ((PlaneNormal * (PlaneStartpoint - VectorStartpoint)) / nenner) * VectorDirection;
+  }
+  else
+  {
+    // Vector points "along" the plane, so there is no intersection point.
+    intersectionPoint.setXYZ(NaN_double, NaN_double, NaN_double);
+  }
 
-	return intersectionPoint;
+  return intersectionPoint;
 }
 
-}	// namespace datatypes
+}  // namespace datatypes

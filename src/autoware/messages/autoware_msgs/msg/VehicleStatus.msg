@@ -7,7 +7,7 @@ int32 steeringmode
 int32 MODE_MANUAL=0
 int32 MODE_AUTO=1
 
-int32 gearshift
+autoware_msgs/Gear current_gear
 
 float64 speed # vehicle velocity [km/s]
 int32 drivepedal

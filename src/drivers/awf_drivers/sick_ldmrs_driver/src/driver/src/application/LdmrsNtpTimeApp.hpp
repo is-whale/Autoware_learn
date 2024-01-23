@@ -15,8 +15,8 @@ namespace application
 
 struct ntp_time_t
 {
-	uint32_t   second;		// Seconds since 1.1.1900
-	uint32_t   fraction;
+  uint32_t   second;    // Seconds since 1.1.1900
+  uint32_t   fraction;
 };
 
 //
@@ -25,27 +25,27 @@ struct ntp_time_t
 class LdmrsNtpTimeApp : public BasicApplication
 {
 public:
-	LdmrsNtpTimeApp(Manager* manager);
-	virtual ~LdmrsNtpTimeApp();
+  LdmrsNtpTimeApp(Manager* manager);
+  virtual ~LdmrsNtpTimeApp();
 
 protected:
-	void setData(BasicData& data);	// Receiver
-	
+  void setData(BasicData& data);  // Receiver
+  
 private:
-	ntp_time_t convertUnixTimeToNtpTime(struct timeval& unixTime);
-	
-//	void checkResolution(Scan& scan);
-	void changeThreadFunction(bool& endThread, UINT16& waitTimeMs);
-//	bool changeFlexResConfiguration(const ScannerInfo::ResolutionMap& configuredRM);
-//	bool changeAngularResolutionType(devices::AngularResolutionType type);
-//	bool readDetailedErrorCode(UINT32* code = NULL);
+  ntp_time_t convertUnixTimeToNtpTime(struct timeval& unixTime);
+  
+//  void checkResolution(Scan& scan);
+  void changeThreadFunction(bool& endThread, UINT16& waitTimeMs);
+//  bool changeFlexResConfiguration(const ScannerInfo::ResolutionMap& configuredRM);
+//  bool changeAngularResolutionType(devices::AngularResolutionType type);
+//  bool readDetailedErrorCode(UINT32* code = NULL);
 
 private:
-	bool m_beVerbose;
-	Manager* m_manager;
-	SickThread<LdmrsNtpTimeApp, &LdmrsNtpTimeApp::changeThreadFunction> m_changeThread;
+  bool m_beVerbose;
+  Manager* m_manager;
+  SickThread<LdmrsNtpTimeApp, &LdmrsNtpTimeApp::changeThreadFunction> m_changeThread;
 };
 
-}	// namespace application
+}  // namespace application
 
 #endif

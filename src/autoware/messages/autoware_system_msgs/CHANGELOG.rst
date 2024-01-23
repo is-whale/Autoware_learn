@@ -2,6 +2,15 @@
 Changelog for package autoware_system_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.13.0 (2019-12-03)
+-------------------
+* Update emergency category in DiagnosticStatus message
+* Update package.xml files to Format 2.
+* Contributors: Joshua Whitley, Yuma Nihei
+
+1.12.0 (2019-07-12)
+-------------------
+
 1.11.0 (2019-03-21)
 -------------------
 * Revert "Fix/health checker (`#2012 <https://github.com/CPFL/Autoware/issues/2012>`_)" (`#2037 <https://github.com/CPFL/Autoware/issues/2037>`_)

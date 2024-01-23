@@ -45,6 +45,7 @@ private:
   // ros param
   std::string device_;
   bool use_ds4_;
+  bool enable_reverse_motion_;
   double steering_offset_deg_;
   double command_timeout_;
   double brake_threshold_;

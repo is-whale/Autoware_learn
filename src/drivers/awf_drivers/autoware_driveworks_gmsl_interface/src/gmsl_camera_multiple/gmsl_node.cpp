@@ -94,8 +94,8 @@ int main(int argc, const char **argv)
   // other main thread: waiting for a signal to stop&shutdown
   while(running & ros::ok())
   {
-	 ros::spinOnce();
-	 loop_rate.sleep();
+   ros::spinOnce();
+   loop_rate.sleep();
   }
 
   // Gmsl camera signal termination- call camera cleanup

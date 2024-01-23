@@ -54,31 +54,31 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#define MIP_BASE_COMMAND_DESC_SET						0x01
+#define MIP_BASE_COMMAND_DESC_SET            0x01
 
 ////////////////////////////////////////////////////////////////////////////////
 // BASE COMMAND DESCRIPTORS (command desc are < 0x80)
 ////////////////////////////////////////////////////////////////////////////////
 
-#define MIP_CMD_DESC_BASE_PING           				0x01	 
-#define MIP_CMD_DESC_BASE_SET_TO_IDLE      				0x02	 
-#define MIP_CMD_DESC_BASE_GET_DEVICE_INFO           	0x03	 
-#define MIP_CMD_DESC_BASE_GET_DEVICE_DESCRIPTORS       	0x04	 
-#define MIP_CMD_DESC_BASE_BUILT_IN_TEST              	0x05	
-#define MIP_CMD_DESC_BASE_RESUME          				0x06
+#define MIP_CMD_DESC_BASE_PING                   0x01   
+#define MIP_CMD_DESC_BASE_SET_TO_IDLE              0x02   
+#define MIP_CMD_DESC_BASE_GET_DEVICE_INFO             0x03   
+#define MIP_CMD_DESC_BASE_GET_DEVICE_DESCRIPTORS         0x04   
+#define MIP_CMD_DESC_BASE_BUILT_IN_TEST                0x05  
+#define MIP_CMD_DESC_BASE_RESUME                  0x06
 
 #define MIP_CMD_DESC_BASE_GPS_TIME_BROADCAST            0x71
-#define MIP_CMD_DESC_BASE_FIRMWARE_UPDATE            	0x7D	 
-#define MIP_CMD_DESC_BASE_SOFT_RESET                 	0x7E	 
-#define MIP_CMD_DESC_BASE_PRODUCTION_TEST            	0x7F	 
+#define MIP_CMD_DESC_BASE_FIRMWARE_UPDATE              0x7D   
+#define MIP_CMD_DESC_BASE_SOFT_RESET                   0x7E   
+#define MIP_CMD_DESC_BASE_PRODUCTION_TEST              0x7F   
 
 ////////////////////////////////////////////////////////////////////////////////
 // BASE REPLY DESCRIPTORS (reply desc are >= 0x80)
 ////////////////////////////////////////////////////////////////////////////////
 
-#define MIP_REPLY_DESC_BASE_DEVICE_INFO    				0x81	
-#define MIP_REPLY_DESC_BASE_DEVICE_DESCRIPTORS    		0x82	
-#define MIP_REPLY_DESC_BASE_BUILT_IN_TEST    			0x83	
+#define MIP_REPLY_DESC_BASE_DEVICE_INFO            0x81  
+#define MIP_REPLY_DESC_BASE_DEVICE_DESCRIPTORS        0x82  
+#define MIP_REPLY_DESC_BASE_BUILT_IN_TEST          0x83  
 
 
 ////////////////////////////////////////////////////////////////////////////////

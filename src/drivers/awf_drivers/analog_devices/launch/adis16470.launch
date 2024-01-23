@@ -28,13 +28,13 @@
   </group>
 
   <node if="$(arg with_rviz)"
-	name="rviz" pkg="rviz" type="rviz" args="-d $(find adi_driver)/launch/imu.rviz"/>
+  name="rviz" pkg="rviz" type="rviz" args="-d $(find adi_driver)/launch/imu.rviz"/>
 
   <group ns="plot" if="$(arg with_plot)">
     <node name="gyro" pkg="rqt_plot" type="rqt_plot"
-	  args="/imu_raw/angular_velocity/x:y:z"/>
+    args="/imu_raw/angular_velocity/x:y:z"/>
     <node name="accl" pkg="rqt_plot" type="rqt_plot"
-	  args="/imu_raw/linear_acceleration/x:y:z"/>
+    args="/imu_raw/linear_acceleration/x:y:z"/>
   </group>
 
   <!-- Connect sensors before tests -->

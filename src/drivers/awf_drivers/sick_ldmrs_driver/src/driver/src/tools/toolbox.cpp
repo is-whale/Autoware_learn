@@ -9,8 +9,8 @@
 #include <string.h>     /* for memset() */
 #include "toolbox.hpp"
 #include <iostream>
-#include <iomanip>		// for std::setprecision
-#include <sstream>		// for std::stringstream
+#include <iomanip>    // for std::setprecision
+#include <sstream>    // for std::stringstream
 #include "errorhandler.hpp"
 
 //
@@ -19,30 +19,30 @@
 //
 void traceBuffer(std::string headerText, BYTE* buffer, UINT32 len)
 {
-	// Table header
-	printInfoMessage(headerText, true);
+  // Table header
+  printInfoMessage(headerText, true);
 
-	// Length
-	std::string line;
-	line = "Length= " + toString(len) + " bytes.";
-	printInfoMessage(line, true);
-	
-	// Contents
-	UINT32 pos = 0;
-	while (pos < len)
-	{
-		line = toHexString(pos) + ": ";
-		for (UINT16 i=0; i< 16; i++)
-		{
-			line += toHexString(buffer[pos]) +  " ";
-			pos++;
-			if (pos >= len)
-			{
-				break;
-			}
-		}
-		printInfoMessage(line, true);
-	}
+  // Length
+  std::string line;
+  line = "Length= " + toString(len) + " bytes.";
+  printInfoMessage(line, true);
+  
+  // Contents
+  UINT32 pos = 0;
+  while (pos < len)
+  {
+    line = toHexString(pos) + ": ";
+    for (UINT16 i=0; i< 16; i++)
+    {
+      line += toHexString(buffer[pos]) +  " ";
+      pos++;
+      if (pos >= len)
+      {
+        break;
+      }
+    }
+    printInfoMessage(line, true);
+  }
 }
 
 //
@@ -51,17 +51,17 @@ void traceBuffer(std::string headerText, BYTE* buffer, UINT32 len)
 //
 std::string toHexStringNibble(UINT8 val)
 {
-	std::string s = "0123456789ABCDEF";
-	std::string c;
-	if (val < 16)
-	{
-		c = s.substr(val, 1);
-	}
-	else
-	{
-		c = "x";
-	}
-	return c;
+  std::string s = "0123456789ABCDEF";
+  std::string c;
+  if (val < 16)
+  {
+    c = s.substr(val, 1);
+  }
+  else
+  {
+    c = "x";
+  }
+  return c;
 }
 
 //
@@ -70,28 +70,28 @@ std::string toHexStringNibble(UINT8 val)
 //
 std::string toHexString(UINT32 val)
 {
-	std::string s = toHexString((UINT16)(val >> 16));
-	s += toHexString((UINT16)(val & 0xFFFF));
-	return s;
+  std::string s = toHexString((UINT16)(val >> 16));
+  s += toHexString((UINT16)(val & 0xFFFF));
+  return s;
 }
 
 // Ergebnis: "xxxx"
 std::string toHexString(UINT16 val)
 {
-	std::string s = toHexStringNibble((UINT8)(val >> 12));
-	s += toHexStringNibble((UINT8)((val >> 8) & 0xF));
-	s += toHexStringNibble((UINT8)((val >> 4) & 0xF));
-	s += toHexStringNibble((UINT8)(val & 0xF));
-	return s;
+  std::string s = toHexStringNibble((UINT8)(val >> 12));
+  s += toHexStringNibble((UINT8)((val >> 8) & 0xF));
+  s += toHexStringNibble((UINT8)((val >> 4) & 0xF));
+  s += toHexStringNibble((UINT8)(val & 0xF));
+  return s;
 }
 
 // Ergebnis: "xx"
 std::string toHexString(UINT8 val)
 {
-	std::string s1 = toHexStringNibble((UINT8)(val >> 4));
-	std::string s2 = toHexStringNibble((UINT8)(val & 0x0F));
-	std::string s = s1 + s2;
-	return s;
+  std::string s1 = toHexStringNibble((UINT8)(val >> 4));
+  std::string s2 = toHexStringNibble((UINT8)(val & 0x0F));
+  std::string s = s1 + s2;
+  return s;
 }
 
 
@@ -100,21 +100,21 @@ std::string toHexString(UINT8 val)
 //
 std::string toLower(const std::string& text)
 {
-	std::string low;
-	UINT32 i;
-	unsigned char c;
-	for (i=0; i < text.length(); i++)
-	{
-		c = text.at(i);
-		if ((c >= 'A') || (c <= 'Z'))
-		{
-			// Grossbuchstabe umwandeln
-			c += ('a' - 'A');
-		}
-		low += c;
-	}
-	
-	return low;
+  std::string low;
+  UINT32 i;
+  unsigned char c;
+  for (i=0; i < text.length(); i++)
+  {
+    c = text.at(i);
+    if ((c >= 'A') || (c <= 'Z'))
+    {
+      // Grossbuchstabe umwandeln
+      c += ('a' - 'A');
+    }
+    low += c;
+  }
+  
+  return low;
 }
 
 
@@ -124,30 +124,30 @@ std::string toLower(const std::string& text)
 //
 std::string convertMeterToFeetAndInch(double m)
 {
-	std::ostringstream os;
-	std::string text;
+  std::ostringstream os;
+  std::string text;
 
-	// Vorzeichen verarbeiten
-	if (m < 0.0)
-	{
-		os << "-";
-		m = -m;
-	}
+  // Vorzeichen verarbeiten
+  if (m < 0.0)
+  {
+    os << "-";
+    m = -m;
+  }
 
-	INT32 feet = (INT32)(m / 0.3048);
-	INT32 inch = (INT32)((m - ((double)feet * 0.3048)) / 0.0254);
-	if (feet > 0)
-	{
-		os << feet << "'";
-	}
-	if ((inch > 0) || (feet == 0))
-	{
-		os << inch << "\"";
-	}
-	text = os.str();
+  INT32 feet = (INT32)(m / 0.3048);
+  INT32 inch = (INT32)((m - ((double)feet * 0.3048)) / 0.0254);
+  if (feet > 0)
+  {
+    os << feet << "'";
+  }
+  if ((inch > 0) || (feet == 0))
+  {
+    os << inch << "\"";
+  }
+  text = os.str();
 
-	// Ausgabe
-	return text;
+  // Ausgabe
+  return text;
 }
 
 
@@ -157,14 +157,14 @@ std::string convertMeterToFeetAndInch(double m)
 //
 UINT16 fromString(const std::string& text)
 {
-	int value;
-	int conversions = sscanf(text.c_str(), "%d", &value);
-	if (conversions == 1)
-	{
-		return (UINT16)value;
-	}
-	
-	return 0;
+  int value;
+  int conversions = sscanf(text.c_str(), "%d", &value);
+  if (conversions == 1)
+  {
+    return (UINT16)value;
+  }
+  
+  return 0;
 }
 
 /**
@@ -172,22 +172,22 @@ UINT16 fromString(const std::string& text)
  */
 int hexCharToValue(char c)
 {
-	int value = 0;
-	
-	if ((c >= '0') && (c <= '9'))
-	{
-		value = c - '0';
-	}
-	else if ((c >= 'A') && (c <= 'F'))
-	{
-		value = c - 'A' + 10;
-	}
-	else if ((c >= 'a') && (c <= 'f'))
-	{
-		value = c - 'a' + 10;
-	}
-	
-	return value;
+  int value = 0;
+  
+  if ((c >= '0') && (c <= '9'))
+  {
+    value = c - '0';
+  }
+  else if ((c >= 'A') && (c <= 'F'))
+  {
+    value = c - 'A' + 10;
+  }
+  else if ((c >= 'a') && (c <= 'f'))
+  {
+    value = c - 'a' + 10;
+  }
+  
+  return value;
 }
 
 
@@ -196,27 +196,27 @@ int hexCharToValue(char c)
  */
 char convertNibbleToHexChar(int value, bool useLowerCaseLetters)
 {
-	char c;
-	
-	if (value < 10)
-	{
-		c = '0' + value;
-	}
-	else
-	{
-		if (useLowerCaseLetters == false)
-		{
-			// Grossbuchstaben
-			c = 'A' + value - 10;
-		}
-		else
-		{
-			// Kleinbuchstaben
-			c = 'a' + value - 10;
-		}
-	}
-	
-	return c;
+  char c;
+  
+  if (value < 10)
+  {
+    c = '0' + value;
+  }
+  else
+  {
+    if (useLowerCaseLetters == false)
+    {
+      // Grossbuchstaben
+      c = 'A' + value - 10;
+    }
+    else
+    {
+      // Kleinbuchstaben
+      c = 'a' + value - 10;
+    }
+  }
+  
+  return c;
 }
 
 /**
@@ -226,10 +226,10 @@ char convertNibbleToHexChar(int value, bool useLowerCaseLetters)
  */
 void convertUINT8toHexString(UINT8 byte, char* buffer)
 {
-	UINT8 value = (byte >> 4);
-	buffer[0] = convertNibbleToHexChar(value);
-	value = byte & 0x0F;
-	buffer[1] = convertNibbleToHexChar(value);
+  UINT8 value = (byte >> 4);
+  buffer[0] = convertNibbleToHexChar(value);
+  value = byte & 0x0F;
+  buffer[1] = convertNibbleToHexChar(value);
 }
 
 /**
@@ -239,9 +239,9 @@ void convertUINT8toHexString(UINT8 byte, char* buffer)
  */
 void convertRGBtoHexString(UINT8 r, UINT8 g, UINT8 b, char* buffer)
 {
-	convertUINT8toHexString(r, buffer);
-	convertUINT8toHexString(g, &buffer[2]);
-	convertUINT8toHexString(b, &buffer[4]);
+  convertUINT8toHexString(r, buffer);
+  convertUINT8toHexString(g, &buffer[2]);
+  convertUINT8toHexString(b, &buffer[4]);
 }
 
 
@@ -251,18 +251,18 @@ void convertRGBtoHexString(UINT8 r, UINT8 g, UINT8 b, char* buffer)
  */
 double makeAngleValid(double angle)
 {
-	const double twoPi = (2.0 * PI);
-	
-	while (angle >= PI)
-	{
-		angle -= twoPi;
-	}
-	while (angle < -PI)
-	{
-		angle += twoPi;
-	}
-	
-	return angle;
+  const double twoPi = (2.0 * PI);
+  
+  while (angle >= PI)
+  {
+    angle -= twoPi;
+  }
+  while (angle < -PI)
+  {
+    angle += twoPi;
+  }
+  
+  return angle;
 }
 
 /**
@@ -270,9 +270,9 @@ double makeAngleValid(double angle)
  */
 std::string toString(INT32 value)
 {
-	char c[16];
-	sprintf(c, "%i", value);
-	return (std::string(c));
+  char c[16];
+  sprintf(c, "%i", value);
+  return (std::string(c));
 }
 
 /**
@@ -280,17 +280,17 @@ std::string toString(INT32 value)
  */
 std::string toString(UINT32 value)
 {
-	char c[16];
-	sprintf(c, "%i", value);
-	return (std::string(c));
+  char c[16];
+  sprintf(c, "%i", value);
+  return (std::string(c));
 }
 
 #if INTPTR_MAX != INT32_MAX
 std::string toString(size_t value)
 {
-	char c[16];
-	sprintf(c, "%zu", value);
-	return (std::string(c));
+  char c[16];
+  sprintf(c, "%zu", value);
+  return (std::string(c));
 }
 #endif
 
@@ -305,55 +305,55 @@ std::string toString(size_t value)
  * "digits_before_decimal_point", dann ist er entsprechend laenger.
  */
 std::string doubleToString(double val,
-						   std::string::size_type digits_before_decimal_point,
-						   std::string::size_type digits_after_decimal_point)
+               std::string::size_type digits_before_decimal_point,
+               std::string::size_type digits_after_decimal_point)
 {
-	// Konvertierung in String
-	std::string text = doubleToString(val, digits_after_decimal_point);
+  // Konvertierung in String
+  std::string text = doubleToString(val, digits_after_decimal_point);
 
-	// Laengen festlegen: Zuerst vor dem Dezimalpunkt
-	const std::string::size_type dotPosition = text.find_first_of('.', 0);
-	if (dotPosition != std::string::npos)
-	{
-		// Punkt gefunden
-		if (dotPosition < digits_before_decimal_point)
-		{
-			// Zu kurz, also vorne auffuellen
-			std::string::size_type numExtraSpaces = digits_before_decimal_point - dotPosition;
-			text = std::string(numExtraSpaces, ' ') + text;
-		}
-	}
+  // Laengen festlegen: Zuerst vor dem Dezimalpunkt
+  const std::string::size_type dotPosition = text.find_first_of('.', 0);
+  if (dotPosition != std::string::npos)
+  {
+    // Punkt gefunden
+    if (dotPosition < digits_before_decimal_point)
+    {
+      // Zu kurz, also vorne auffuellen
+      std::string::size_type numExtraSpaces = digits_before_decimal_point - dotPosition;
+      text = std::string(numExtraSpaces, ' ') + text;
+    }
+  }
 
-	// Gesamtlaenge pruefen und ggf. verlaengern. NOTE: This will
-	// never happen because the first doubleToString() will always fill
-	// up with zero at the end, doesn't it?
-	if (text.length() < (digits_before_decimal_point + digits_after_decimal_point + 1))
-	{
-		// Spaces hinten anfuegen
-		std::string::size_type numExtraSpaces =
-			(digits_before_decimal_point + digits_after_decimal_point + 1) -  text.length();
-		text += std::string(numExtraSpaces, ' ');
-	}
+  // Gesamtlaenge pruefen und ggf. verlaengern. NOTE: This will
+  // never happen because the first doubleToString() will always fill
+  // up with zero at the end, doesn't it?
+  if (text.length() < (digits_before_decimal_point + digits_after_decimal_point + 1))
+  {
+    // Spaces hinten anfuegen
+    std::string::size_type numExtraSpaces =
+      (digits_before_decimal_point + digits_after_decimal_point + 1) -  text.length();
+    text += std::string(numExtraSpaces, ' ');
+  }
 
-	return text;
+  return text;
 }
 
 /**
  * Konvertiere Double-Zahl in String.
  */
 std::string doubleToString(double val,
-						   int digits_after_decimal_point)
+               int digits_after_decimal_point)
 {
-	// Konvertierung in String
-	std::stringstream sstr;
-	sstr << std::fixed << std::setprecision(digits_after_decimal_point) << val;
+  // Konvertierung in String
+  std::stringstream sstr;
+  sstr << std::fixed << std::setprecision(digits_after_decimal_point) << val;
 
-	return sstr.str();
+  return sstr.str();
 }
 
 std::string toString(double val, int digits_after_decimal_point)
 {
-	return doubleToString(val, digits_after_decimal_point);
+  return doubleToString(val, digits_after_decimal_point);
 }
 
 
@@ -364,40 +364,40 @@ std::string toString(double val, int digits_after_decimal_point)
 //
 void stringToIpTarget(std::string ipAdrStr, UINT32& ipAddress, UINT16& port)
 {
-	std::string addrStr;
-	std::string portStr;
-	
-	if (ipAdrStr.length() < 3)
-	{
-		// Ungueltig
-		return;
-	}
-	
-	UINT32 adrVal = INADDR_NONE;
-	UINT16 portVal = 0;
-	
-	// Port extrahieren
-	size_t pos = ipAdrStr.find_first_of(':');
-	if ((pos > 0) && (pos < (ipAdrStr.length() - 1)))
-	{
-		addrStr = ipAdrStr.substr(0, pos);
-		portStr = ipAdrStr.substr(pos+1);
-	}
-	else
-	{
-		addrStr = ipAdrStr;
-	}
+  std::string addrStr;
+  std::string portStr;
+  
+  if (ipAdrStr.length() < 3)
+  {
+    // Ungueltig
+    return;
+  }
+  
+  UINT32 adrVal = INADDR_NONE;
+  UINT16 portVal = 0;
+  
+  // Port extrahieren
+  size_t pos = ipAdrStr.find_first_of(':');
+  if ((pos > 0) && (pos < (ipAdrStr.length() - 1)))
+  {
+    addrStr = ipAdrStr.substr(0, pos);
+    portStr = ipAdrStr.substr(pos+1);
+  }
+  else
+  {
+    addrStr = ipAdrStr;
+  }
 
-	// Adresse
-	adrVal = (UINT32)inet_addr(addrStr.c_str());	// 	inet_addr("127.0.0.1");
-	ipAddress = adrVal;
-	
-	// Port
-	if (portStr.length() > 0)
-	{
-		portVal = fromString(portStr);
-		port = portVal;
-	}
+  // Adresse
+  adrVal = (UINT32)inet_addr(addrStr.c_str());  //   inet_addr("127.0.0.1");
+  ipAddress = adrVal;
+  
+  // Port
+  if (portStr.length() > 0)
+  {
+    portVal = fromString(portStr);
+    port = portVal;
+  }
 }
 
 
@@ -406,14 +406,14 @@ void stringToIpTarget(std::string ipAdrStr, UINT32& ipAddress, UINT16& port)
 //
 std::string ipTargetToString(UINT32 ipAddress, UINT16 port)
 {
-	std::string addr;
-	addr = ipAdrToString(ipAddress);
-	
-	// Port
-	addr += ":";
-	addr += toString((UINT16)port);
-	
-	return addr;
+  std::string addr;
+  addr = ipAdrToString(ipAddress);
+  
+  // Port
+  addr += ":";
+  addr += toString((UINT16)port);
+  
+  return addr;
 }
 
 
@@ -423,13 +423,13 @@ std::string ipTargetToString(UINT32 ipAddress, UINT16 port)
 //
 std::string ipAdrToString(UINT32 ipAddress)
 {
-	std::string addr;
-	addr =  toString((UINT16)((ipAddress >> 0 ) & 0xFF)) + "." +
-			toString((UINT16)((ipAddress >> 8 ) & 0xFF)) + "." +
-			toString((UINT16)((ipAddress >> 16) & 0xFF)) + "." +
-			toString((UINT16)((ipAddress >> 24) & 0xFF));
+  std::string addr;
+  addr =  toString((UINT16)((ipAddress >> 0 ) & 0xFF)) + "." +
+      toString((UINT16)((ipAddress >> 8 ) & 0xFF)) + "." +
+      toString((UINT16)((ipAddress >> 16) & 0xFF)) + "." +
+      toString((UINT16)((ipAddress >> 24) & 0xFF));
 
-	return addr;
+  return addr;
 }
 
 
@@ -438,12 +438,12 @@ std::string ipAdrToString(UINT32 ipAddress)
 //
 UINT32 memread_UINT32(BYTE*& buffer)
 {
-	UINT32 value = (((UINT32)buffer[0]) << 24) +
-					(((UINT32)buffer[1]) << 16) +
-					(((UINT32)buffer[2]) << 8 ) +
-					(((UINT32)buffer[3])      );
-	buffer += 4;
-	return value;
+  UINT32 value = (((UINT32)buffer[0]) << 24) +
+          (((UINT32)buffer[1]) << 16) +
+          (((UINT32)buffer[2]) << 8 ) +
+          (((UINT32)buffer[3])      );
+  buffer += 4;
+  return value;
 }
 
 
@@ -452,10 +452,10 @@ UINT32 memread_UINT32(BYTE*& buffer)
 //
 UINT16 memread_UINT16(BYTE*& buffer)
 {
-	UINT16 value = (((UINT16)buffer[0]) << 8) +
-					((UINT16)buffer[1]);
-	buffer += 2;
-	return value;
+  UINT16 value = (((UINT16)buffer[0]) << 8) +
+          ((UINT16)buffer[1]);
+  buffer += 2;
+  return value;
 }
 
 //
@@ -463,9 +463,9 @@ UINT16 memread_UINT16(BYTE*& buffer)
 //
 UINT8 memread_UINT8(BYTE*& buffer)
 {
-	UINT8 value = buffer[0];
-	buffer++;
-	return value;
+  UINT8 value = buffer[0];
+  buffer++;
+  return value;
 }
 
 //
@@ -473,10 +473,10 @@ UINT8 memread_UINT8(BYTE*& buffer)
 //
 INT16 memread_INT16(BYTE*& buffer)
 {
-	UINT16 value = (((UINT16)buffer[0]) << 8) +
-					((UINT16)buffer[1]);
-	buffer += 2;
-	return (INT16)value;
+  UINT16 value = (((UINT16)buffer[0]) << 8) +
+          ((UINT16)buffer[1]);
+  buffer += 2;
+  return (INT16)value;
 }
 
 //
@@ -484,12 +484,12 @@ INT16 memread_INT16(BYTE*& buffer)
 //
 INT32 memread_INT32(BYTE*& buffer)
 {
-	UINT32 value = (((UINT32)buffer[0]) << 24) +
-					(((UINT32)buffer[1]) << 16) +
-					(((UINT32)buffer[2]) << 8 ) +
-					(((UINT32)buffer[3])      );
-	buffer += 4;
-	return (INT32)value;
+  UINT32 value = (((UINT32)buffer[0]) << 24) +
+          (((UINT32)buffer[1]) << 16) +
+          (((UINT32)buffer[2]) << 8 ) +
+          (((UINT32)buffer[3])      );
+  buffer += 4;
+  return (INT32)value;
 }
 
 //
@@ -497,23 +497,23 @@ INT32 memread_INT32(BYTE*& buffer)
 //
 std::string memread_string(BYTE*& buffer, UINT16 length)
 {
-	std::string text;
-	
-	for (UINT16 i = 0; i<length; i++)
-	{
-		text += buffer[i];
-	}
-	buffer += length;
-	
-	return text;
+  std::string text;
+  
+  for (UINT16 i = 0; i<length; i++)
+  {
+    text += buffer[i];
+  }
+  buffer += length;
+  
+  return text;
 }
 
 
 /// Internal: Structure for reading/writing a float as an UINT32
 union FloatInt
 {
-	float value_float;
-	UINT32 value_int;
+  float value_float;
+  UINT32 value_int;
 };
 
 //
@@ -522,9 +522,9 @@ union FloatInt
 //
 float memread_float(BYTE*& buffer)
 {
-	FloatInt floatint;
-	floatint.value_int = memread_UINT32(buffer);
-	return floatint.value_float;
+  FloatInt floatint;
+  floatint.value_int = memread_UINT32(buffer);
+  return floatint.value_float;
 }
 
 //
@@ -533,9 +533,9 @@ float memread_float(BYTE*& buffer)
 //
 void memwrite_float(BYTE*& buffer, float value)
 {
-	FloatInt floatint;
-	floatint.value_float = value;
-	memwrite_UINT32(buffer, floatint.value_int);
+  FloatInt floatint;
+  floatint.value_float = value;
+  memwrite_UINT32(buffer, floatint.value_int);
 }
 
 //
@@ -544,7 +544,7 @@ void memwrite_float(BYTE*& buffer, float value)
 //
 void memwrite_INT32(BYTE*& buffer, INT32 value)
 {
-	memwrite_UINT32(buffer, (UINT32)value);
+  memwrite_UINT32(buffer, (UINT32)value);
 }
 
 //
@@ -553,11 +553,11 @@ void memwrite_INT32(BYTE*& buffer, INT32 value)
 //
 void memwrite_UINT32(BYTE*& buffer, UINT32 value)
 {
-	buffer[0] = ((value >> 24) & 0xFF);
-	buffer[1] = ((value >> 16) & 0xFF);
-	buffer[2] = ((value >> 8 ) & 0xFF);
-	buffer[3] = ((value      ) & 0xFF);
-	buffer += 4;
+  buffer[0] = ((value >> 24) & 0xFF);
+  buffer[1] = ((value >> 16) & 0xFF);
+  buffer[2] = ((value >> 8 ) & 0xFF);
+  buffer[3] = ((value      ) & 0xFF);
+  buffer += 4;
 }
 
 //
@@ -566,7 +566,7 @@ void memwrite_UINT32(BYTE*& buffer, UINT32 value)
 //
 void memwrite_INT16(BYTE*& buffer, INT16 value)
 {
-	memwrite_UINT16(buffer, (UINT16)value);
+  memwrite_UINT16(buffer, (UINT16)value);
 }
 
 //
@@ -575,9 +575,9 @@ void memwrite_INT16(BYTE*& buffer, INT16 value)
 //
 void memwrite_UINT16(BYTE*& buffer, UINT16 value)
 {
-	buffer[0] = ((value >> 8 ) & 0xFF);
-	buffer[1] = ((value      ) & 0xFF);
-	buffer += 2;
+  buffer[0] = ((value >> 8 ) & 0xFF);
+  buffer[1] = ((value      ) & 0xFF);
+  buffer += 2;
 }
 
 //
@@ -585,8 +585,8 @@ void memwrite_UINT16(BYTE*& buffer, UINT16 value)
 //
 void memwrite_UINT8(BYTE*& buffer, UINT8 value)
 {
-	buffer[0] = value;
-	buffer++;
+  buffer[0] = value;
+  buffer++;
 }
 
 //
@@ -594,8 +594,8 @@ void memwrite_UINT8(BYTE*& buffer, UINT8 value)
 //
 void memwrite_INT8(BYTE*& buffer, INT8 value)
 {
-	buffer[0] = value;
-	buffer++;
+  buffer[0] = value;
+  buffer++;
 }
 
 //
@@ -603,6 +603,6 @@ void memwrite_INT8(BYTE*& buffer, INT8 value)
 //
 void memwrite_string(BYTE*& buffer, std::string text)
 {
-	strncpy((char*)buffer, text.c_str(), text.length());
-	buffer += text.length();
+  strncpy((char*)buffer, text.c_str(), text.length());
+  buffer += text.length();
 }

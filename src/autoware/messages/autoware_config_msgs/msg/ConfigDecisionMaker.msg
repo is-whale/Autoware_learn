@@ -4,6 +4,8 @@ bool auto_engage
 bool auto_mission_change
 bool use_fms
 bool disuse_vector_map
+bool sim_mode
+bool insert_stop_line_wp
 uint32 num_of_steer_behind
 float64 change_threshold_dist
 float64 change_threshold_angle

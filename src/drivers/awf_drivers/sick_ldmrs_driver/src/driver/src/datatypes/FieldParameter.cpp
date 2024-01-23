@@ -6,7 +6,7 @@
 //
 
 #include "FieldParameter.hpp"
-#include "../tools/errorhandler.hpp"	// for print...
+#include "../tools/errorhandler.hpp"  // for print...
 //#include "StringToolbox.hpp"
 
 namespace datatypes
@@ -14,13 +14,13 @@ namespace datatypes
 
 FieldParameter::FieldParameter()
 {
-	m_datatype = Datatype_FieldParameter;
-	
-	m_layerFilterBitmap = 0;
-	m_enableLayerFilter = false;
-	m_field = NULL;
-	m_fieldNumber = 0;		// 0 = invalid
-	m_versionNumber = 1;	// Default is v1
+  m_datatype = Datatype_FieldParameter;
+  
+  m_layerFilterBitmap = 0;
+  m_enableLayerFilter = false;
+  m_field = NULL;
+  m_fieldNumber = 0;    // 0 = invalid
+  m_versionNumber = 1;  // Default is v1
 }
 
 FieldParameter::~FieldParameter()
@@ -29,14 +29,14 @@ FieldParameter::~FieldParameter()
 
 const UINT32 FieldParameter::getUsedMemory() const
 {
-	UINT32 length = sizeof(*this)+
-					m_fieldName.length() +
-					m_comment.length();
-	if (m_field != NULL)
-	{
-		length += m_field->getUsedMemory();
-	}
-	return length;
+  UINT32 length = sizeof(*this)+
+          m_fieldName.length() +
+          m_comment.length();
+  if (m_field != NULL)
+  {
+    length += m_field->getUsedMemory();
+  }
+  return length;
 }
 
 //
@@ -44,44 +44,44 @@ const UINT32 FieldParameter::getUsedMemory() const
 //
 const bool FieldParameter::isValid() const
 {
-	if ((m_fieldNumber == 0) || (m_field == NULL))
-	{
-		// Invalid
-		return false;
-	}
-	
-	return true;
+  if ((m_fieldNumber == 0) || (m_field == NULL))
+  {
+    // Invalid
+    return false;
+  }
+  
+  return true;
 }
 
 
 UINT32 FieldParameter::getAngleScaleFactor() const
 {
-	return m_angleScaleFactor;
+  return m_angleScaleFactor;
 }
 
 INT32 FieldParameter::getAngleScaleOffset() const
 {
-	return m_angleScaleOffset;
+  return m_angleScaleOffset;
 }
 
 double FieldParameter::getDistScaleFactor() const
 {
-	return m_distScaleFactor;
+  return m_distScaleFactor;
 }
 
 double FieldParameter::getDistScaleOffset() const
 {
-	return m_distScaleOffset;
+  return m_distScaleOffset;
 }
 
 FieldDescription* FieldParameter::getField() const
 {
-	return m_field;
+  return m_field;
 }
 
 FieldParameter::FieldTypeIntern FieldParameter::getFieldTypeIntern() const
 {
-	return m_fieldTypeIntern;
+  return m_fieldTypeIntern;
 }
 
 //
@@ -89,52 +89,52 @@ FieldParameter::FieldTypeIntern FieldParameter::getFieldTypeIntern() const
 //
 std::string FieldParameter::getFieldTypeInternAsString() const
 {
-	switch (m_fieldTypeIntern)
-	{
-		case FieldTypeIntern_RECTANGLE:
-			return "Rectangle";
-		case FieldTypeIntern_SEGMENTED:
-			return "Segmented";
-		case FieldTypeIntern_RADIAL:
-			return "Radial (not supported)";
-		case FieldTypeintern_DYNAMIC:
-			return "Dynamic (not supported)";
-		default:
-			return "(unknown)";
-	}
-	
-	return "(unknown)";
+  switch (m_fieldTypeIntern)
+  {
+    case FieldTypeIntern_RECTANGLE:
+      return "Rectangle";
+    case FieldTypeIntern_SEGMENTED:
+      return "Segmented";
+    case FieldTypeIntern_RADIAL:
+      return "Radial (not supported)";
+    case FieldTypeintern_DYNAMIC:
+      return "Dynamic (not supported)";
+    default:
+      return "(unknown)";
+  }
+  
+  return "(unknown)";
 }
 
 
 void FieldParameter::setAngleScaleFactor(UINT32 angleScaleFactor)
 {
-	this->m_angleScaleFactor = angleScaleFactor;
+  this->m_angleScaleFactor = angleScaleFactor;
 }
 
 void FieldParameter::setAngleScaleOffset(INT32 angleScaleOffset)
 {
-	this->m_angleScaleOffset = angleScaleOffset;
+  this->m_angleScaleOffset = angleScaleOffset;
 }
 
 void FieldParameter::setDistScaleFactor(double distScaleFactor)
 {
-	this->m_distScaleFactor = distScaleFactor;
+  this->m_distScaleFactor = distScaleFactor;
 }
 
 void FieldParameter::setDistScaleOffset(double distScaleOffset)
 {
-	this->m_distScaleOffset = distScaleOffset;
+  this->m_distScaleOffset = distScaleOffset;
 }
 
 void FieldParameter::setField(FieldDescription* field)
 {
-	this->m_field = field;
+  this->m_field = field;
 }
 
 void FieldParameter::setFieldNumber(UINT16 fieldNumber)
 {
-	this->m_fieldNumber = fieldNumber;
+  this->m_fieldNumber = fieldNumber;
 }
 
 //
@@ -148,7 +148,7 @@ void FieldParameter::setFieldNumber(UINT16 fieldNumber)
 //
 void FieldParameter::setFieldTypeIntern(FieldTypeIntern fieldTypeIntern)
 {
-	this->m_fieldTypeIntern = fieldTypeIntern;
+  this->m_fieldTypeIntern = fieldTypeIntern;
 }
 
 //
@@ -162,18 +162,18 @@ void FieldParameter::setFieldTypeIntern(FieldTypeIntern fieldTypeIntern)
 //
 void FieldParameter::setFieldTypeIntern(UINT8 fieldTypeIntern)
 {
-	this->m_fieldTypeIntern = (FieldTypeIntern)fieldTypeIntern;
+  this->m_fieldTypeIntern = (FieldTypeIntern)fieldTypeIntern;
 }
 
 
 const std::string& FieldParameter::getComment() const
 {
-	return m_comment;
+  return m_comment;
 }
 
 const std::string& FieldParameter::getFieldName() const
 {
-	return m_fieldName;
+  return m_fieldName;
 }
 
 //
@@ -181,11 +181,11 @@ const std::string& FieldParameter::getFieldName() const
 //
 void FieldParameter::setComment(const std::string& comment)
 {
-	m_comment = comment;
-	if (m_comment.length() > 128)
-	{
-		m_comment = m_comment.substr(0, 128);
-	}
+  m_comment = comment;
+  if (m_comment.length() > 128)
+  {
+    m_comment = m_comment.substr(0, 128);
+  }
 }
 
 //
@@ -193,53 +193,53 @@ void FieldParameter::setComment(const std::string& comment)
 //
 void FieldParameter::setFieldName(const std::string& fieldName)
 {
-	this->m_fieldName = fieldName;
-	if (m_fieldName.length() > 32)
-	{
-		m_fieldName = m_fieldName.substr(0, 32);
-	}
+  this->m_fieldName = fieldName;
+  if (m_fieldName.length() > 32)
+  {
+    m_fieldName = m_fieldName.substr(0, 32);
+  }
 
 }
 
 UINT8 FieldParameter::getVersionNumber() const
 {
-	return m_versionNumber;
+  return m_versionNumber;
 }
 
 void FieldParameter::setVersionNumber(UINT8 versionNumber)
 {
-	this->m_versionNumber = versionNumber;
+  this->m_versionNumber = versionNumber;
 }
 
 
 FieldParameter::CaseResult FieldParameter::getLastKnownInfringementState() const
 {
-	return m_lastKnownInfringementState;
+  return m_lastKnownInfringementState;
 }
 
 void FieldParameter::setLastKnownInfringementState(FieldParameter::CaseResult m_lastKnownInfringementState)
 {
-	this->m_lastKnownInfringementState = m_lastKnownInfringementState;
+  this->m_lastKnownInfringementState = m_lastKnownInfringementState;
 }
 
 UINT8 FieldParameter::getLayerFilterBitmap() const
 {
-	return m_layerFilterBitmap;
+  return m_layerFilterBitmap;
 }
 
 bool FieldParameter::isLayerFilterEnabled() const
 {
-	return m_enableLayerFilter;
+  return m_enableLayerFilter;
 }
 
 void FieldParameter::setEnableLayerFilter(bool m_enableLayerFilter)
 {
-	this->m_enableLayerFilter = m_enableLayerFilter;
+  this->m_enableLayerFilter = m_enableLayerFilter;
 }
 
 void FieldParameter::setLayerFilterBitmap(UINT8 m_layerFilterBitmap)
 {
-	this->m_layerFilterBitmap = m_layerFilterBitmap;
+  this->m_layerFilterBitmap = m_layerFilterBitmap;
 }
 
 //
@@ -248,35 +248,35 @@ void FieldParameter::setLayerFilterBitmap(UINT8 m_layerFilterBitmap)
 //
 const FieldDescription::FieldType FieldParameter::getFieldType() const
 {
-	if (m_field == NULL)
-	{
-		// There is no associated field data structure, so we do not have a field type.
-		return FieldDescription::Undefined;
-	}
-	else
-	{
-		// Check if the internal datatype and the field type match
-		if ((m_field->getFieldType() == datatypes::FieldDescription::Rectangle) &&
-			(getFieldTypeIntern() == FieldTypeIntern_RECTANGLE))
-		{
-			return FieldDescription::Rectangle;
-		}
-		if ((m_field->getFieldType() == datatypes::FieldDescription::Segmented) &&
-			(getFieldTypeIntern() == FieldTypeIntern_SEGMENTED))
-		{
-			return FieldDescription::Segmented;
-		}
-		
-		// No match!
-		printError("FieldParameter::getFieldType(): The internal field type and the associated field structure do no match, returning UNDEFINED!");
-	}
-	
-	return FieldDescription::Undefined;
+  if (m_field == NULL)
+  {
+    // There is no associated field data structure, so we do not have a field type.
+    return FieldDescription::Undefined;
+  }
+  else
+  {
+    // Check if the internal datatype and the field type match
+    if ((m_field->getFieldType() == datatypes::FieldDescription::Rectangle) &&
+      (getFieldTypeIntern() == FieldTypeIntern_RECTANGLE))
+    {
+      return FieldDescription::Rectangle;
+    }
+    if ((m_field->getFieldType() == datatypes::FieldDescription::Segmented) &&
+      (getFieldTypeIntern() == FieldTypeIntern_SEGMENTED))
+    {
+      return FieldDescription::Segmented;
+    }
+    
+    // No match!
+    printError("FieldParameter::getFieldType(): The internal field type and the associated field structure do no match, returning UNDEFINED!");
+  }
+  
+  return FieldDescription::Undefined;
 }
 
 const UINT16 FieldParameter::getFieldNumber() const
 {
-	return m_fieldNumber;
+  return m_fieldNumber;
 }
 
 

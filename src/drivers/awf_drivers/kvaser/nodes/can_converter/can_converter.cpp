@@ -73,9 +73,9 @@ void chatterCallback(const autoware_can_msgs::CANPacket::ConstPtr& msg)
   if(changed){
     if(!log_fp)log_fp=fopen("/tmp/can_log","w");
     fprintf(log_fp,"%f %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d %d\n",
-	    msg->header.stamp.toSec(),msg->time,steer,shift,speed,speed2,speed3,enc_sum,enc_diff,brake,
-	    wheel1,wheel2,wheel3,wheel4,
-	    accx,accy,accz,gyro);
+      msg->header.stamp.toSec(),msg->time,steer,shift,speed,speed2,speed3,enc_sum,enc_diff,brake,
+      wheel1,wheel2,wheel3,wheel4,
+      accx,accy,accz,gyro);
   }  
 }
 

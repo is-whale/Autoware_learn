@@ -9,23 +9,23 @@
 
 namespace application
 {
-	
+  
 //
 // LdmrsApp
 //
 class LdmrsApp : public BasicApplication
 {
 public:
-	LdmrsApp(Manager* manager);
-	virtual ~LdmrsApp();
+  LdmrsApp(Manager* manager);
+  virtual ~LdmrsApp();
 
 protected:
-	void setData(BasicData& data);	// Receiver
-	
+  void setData(BasicData& data);  // Receiver
+  
 private:
-	bool m_beVerbose;
+  bool m_beVerbose;
 };
 
-}	// namespace application
+}  // namespace application
 
 #endif

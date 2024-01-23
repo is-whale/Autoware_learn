@@ -55,7 +55,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#define MIP_GPS_DATA_SET					0x81
+#define MIP_GPS_DATA_SET          0x81
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -68,24 +68,24 @@
 // GPS LEGACY (RAW) DATA DESCRIPTORS
 ////////////////////////////////////////////////////////////////////////////////
 
-#define MIP_GPS_DATA_NMEA	           		0x01		// uBlox NMEA packet 
-#define MIP_GPS_DATA_UBX		   			0x02		// uBlox packet 
+#define MIP_GPS_DATA_NMEA                 0x01    // uBlox NMEA packet 
+#define MIP_GPS_DATA_UBX             0x02    // uBlox packet 
 
 ////////////////////////////////////////////////////////////////////////////////
 // GPS DATA DESCRIPTORS
 ////////////////////////////////////////////////////////////////////////////////
 
-#define MIP_GPS_DATA_LLH_POS   			   	0x03
-#define MIP_GPS_DATA_ECEF_POS		   		0x04
-#define MIP_GPS_DATA_NED_VELOCITY		   	0x05
-#define MIP_GPS_DATA_ECEF_VELOCITY	  		0x06
-#define MIP_GPS_DATA_DOP		           	0x07
-#define MIP_GPS_DATA_UTC_TIME	           	0x08
-#define MIP_GPS_DATA_GPS_TIME  	           	0x09
-#define MIP_GPS_DATA_CLOCK_INFO  	      	0x0A
-#define MIP_GPS_DATA_FIX_INFO            	0x0B
-#define MIP_GPS_DATA_SV_INFO             	0x0C
-#define MIP_GPS_DATA_HW_STATUS	           	0x0D
+#define MIP_GPS_DATA_LLH_POS              0x03
+#define MIP_GPS_DATA_ECEF_POS           0x04
+#define MIP_GPS_DATA_NED_VELOCITY         0x05
+#define MIP_GPS_DATA_ECEF_VELOCITY        0x06
+#define MIP_GPS_DATA_DOP                 0x07
+#define MIP_GPS_DATA_UTC_TIME               0x08
+#define MIP_GPS_DATA_GPS_TIME                 0x09
+#define MIP_GPS_DATA_CLOCK_INFO            0x0A
+#define MIP_GPS_DATA_FIX_INFO              0x0B
+#define MIP_GPS_DATA_SV_INFO               0x0C
+#define MIP_GPS_DATA_HW_STATUS               0x0D
 
 
 ////////////////////////////////////////////////////////////////////////////////

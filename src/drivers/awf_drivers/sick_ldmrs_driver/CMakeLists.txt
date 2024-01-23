@@ -22,25 +22,24 @@ find_package(Boost REQUIRED COMPONENTS system)
 generate_dynamic_reconfigure_options(cfg/SickLDMRSDriver.cfg)
 
 catkin_package(
-    DEPENDS Boost
-    CATKIN_DEPENDS roscpp sensor_msgs diagnostic_updater dynamic_reconfigure pcl_conversions sick_ldmrs_msgs
-#    LIBRARIES 
-    INCLUDE_DIRS include
-    )
+  DEPENDS Boost
+)
 
 include_directories(include 
-	src/driver/src
-	${catkin_INCLUDE_DIRS}
-	)
+  src/driver/src
+  ${catkin_INCLUDE_DIRS}
+)
 
 add_executable(sick_ldmrs_node
-    src/sick_ldmrs_node.cpp)
+  src/sick_ldmrs_node.cpp
+)
 
 # sick_ldmrs is an imported target from libsick_ldmrs (in src/driver), we'd use
 # ${SICK_LDMRS_LIBRARIES} as defined by find_package(SickLDMRS) otherwise
 target_link_libraries(sick_ldmrs_node
-    ${catkin_LIBRARIES}
-    sick_ldmrs)
+  ${catkin_LIBRARIES}
+  sick_ldmrs
+)
 add_dependencies(sick_ldmrs_node ${PROJECT_NAME}_gencfg)
 add_dependencies(sick_ldmrs_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
@@ -50,13 +49,8 @@ install(DIRECTORY include/${PROJECT_NAME}/
   FILES_MATCHING PATTERN "*.hpp"
 )
 
-install(TARGETS sick_ldmrs_node
-    RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+install(TARGETS sick_ldmrs_node RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
 install(DIRECTORY config DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
 install(DIRECTORY launch DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION})
-
-#############
-## Testing ##
-#############
 
 roslaunch_add_file_check(launch)

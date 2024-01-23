@@ -52,8 +52,8 @@
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-#define MIP_SDK_GX4_45_IMU_STANDARD_MODE	0x01
-#define MIP_SDK_GX4_45_IMU_DIRECT_MODE	0x02
+#define MIP_SDK_GX4_45_IMU_STANDARD_MODE  0x01
+#define MIP_SDK_GX4_45_IMU_DIRECT_MODE  0x02
 
 #define NUM_COMMAND_LINE_ARGUMENTS 3
 

@@ -10,7 +10,7 @@
 
 Timer::Timer()
 {
-	restart();
+  restart();
 }
 
 Timer::~Timer ()
@@ -22,8 +22,8 @@ Timer::~Timer ()
 //
 void Timer::startWatchdog(TimeDuration watchdogTime)
 {
-	m_watchdogTime = watchdogTime;
-	restart();
+  m_watchdogTime = watchdogTime;
+  restart();
 }
 
 //
@@ -31,15 +31,15 @@ void Timer::startWatchdog(TimeDuration watchdogTime)
 //
 bool Timer::isElapsed()
 {
-	Time t = Time::now();
-	
-	if (t >= (m_startTime + m_watchdogTime))
-	{
-		// Timer ist abgelaufen
-		return true;
-	}
-	
-	return false;
+  Time t = Time::now();
+  
+  if (t >= (m_startTime + m_watchdogTime))
+  {
+    // Timer ist abgelaufen
+    return true;
+  }
+  
+  return false;
 }
 
 //
@@ -47,7 +47,7 @@ bool Timer::isElapsed()
 //
 void Timer::reset()
 {
-	restart();
+  restart();
 }
 
 //
@@ -55,9 +55,9 @@ void Timer::reset()
 //
 void Timer::restart()
 {
-	timeval t;
-	gettimeofday(&t, NULL);
-	m_startTime.set(t);
+  timeval t;
+  gettimeofday(&t, NULL);
+  m_startTime.set(t);
 }
 
 /**
@@ -66,9 +66,9 @@ void Timer::restart()
 /*
 timeval Timer::now()
 {
-	timeval now;
-	gettimeofday(&now, NULL);
-	return now;
+  timeval now;
+  gettimeofday(&now, NULL);
+  return now;
 }
 */
 
@@ -77,16 +77,16 @@ timeval Timer::now()
  */
 TimeDuration Timer::elapsed () const
 {
-//	timeval now;
-//	UINT32 seconds, useconds;
-	TimeDuration duration;
-	
-	Time now = Time::now();	// gettimeofday(&now, NULL);
-	Time diff = now - m_startTime;
-//	seconds  = now.tv_sec  - m_startTime.m_time.tv.sec;
-//	useconds = now.tv_usec - m_startTime.tv_usec;
-	duration = diff.seconds();	//  (double)seconds + ((double)useconds / 1000000.0);
-	return duration;
+//  timeval now;
+//  UINT32 seconds, useconds;
+  TimeDuration duration;
+  
+  Time now = Time::now();  // gettimeofday(&now, NULL);
+  Time diff = now - m_startTime;
+//  seconds  = now.tv_sec  - m_startTime.m_time.tv.sec;
+//  useconds = now.tv_usec - m_startTime.tv_usec;
+  duration = diff.seconds();  //  (double)seconds + ((double)useconds / 1000000.0);
+  return duration;
 }
 
 /**
@@ -94,9 +94,9 @@ TimeDuration Timer::elapsed () const
  */
 UINT32 Timer::elapsedMilliseconds () const
 {
-	TimeDuration elapsedTime = elapsed();
-	UINT32 ms = elapsedTime.total_milliseconds();
-	return ms;
+  TimeDuration elapsedTime = elapsed();
+  UINT32 ms = elapsedTime.total_milliseconds();
+  return ms;
 }
 
 /**
@@ -104,9 +104,9 @@ UINT32 Timer::elapsedMilliseconds () const
  */
 UINT32 Timer::elapsedMicroseconds () const
 {
-	TimeDuration elapsedTime = elapsed();
-	UINT32 us = (UINT32)((elapsedTime.m_duration * 1000000.0) + 0.5);
-	return us;
+  TimeDuration elapsedTime = elapsed();
+  UINT32 us = (UINT32)((elapsedTime.m_duration * 1000000.0) + 0.5);
+  return us;
 }
 
 
@@ -116,22 +116,22 @@ UINT32 Timer::elapsedMicroseconds () const
  * to this function.
  * Usage:
  *
- *		t;
- *		// ...
- *		t.elapsedMillisecondsSinceLastCall();
- *		// ... functions to be timed ...
- *		UINT32 time1 = t.elapsedMillisecondsSinceLastCall();
- *		// ... next functions to be timed ...
- *		UINT32 time2 = t.elapsedMillisecondsSinceLastCall();
+ *    t;
+ *    // ...
+ *    t.elapsedMillisecondsSinceLastCall();
+ *    // ... functions to be timed ...
+ *    UINT32 time1 = t.elapsedMillisecondsSinceLastCall();
+ *    // ... next functions to be timed ...
+ *    UINT32 time2 = t.elapsedMillisecondsSinceLastCall();
  *      // ...
  *
  * Thats it!
  */
 UINT32 Timer::elapsedMillisecondsSinceLastCall()
 {
-	UINT32 ms = elapsedMilliseconds();
-	restart();
-	return ms;
+  UINT32 ms = elapsedMilliseconds();
+  restart();
+  return ms;
 }
 
 
@@ -140,8 +140,8 @@ UINT32 Timer::elapsedMillisecondsSinceLastCall()
  */
 UINT32 Timer::elapsedMicrosecondsSinceLastCall()
 {
-	UINT32 us = elapsedMicroseconds();
-	restart();
-	return us;
+  UINT32 us = elapsedMicroseconds();
+  restart();
+  return us;
 }
 

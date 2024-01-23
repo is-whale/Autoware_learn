@@ -11,21 +11,21 @@
 //     Buffer fuer BasicData
 // ****************************************************************************
 BasicDataBuffer::BasicDataBuffer()
-	: m_beVerbose(false)
-	, m_bytesMax(0)
-	, m_bytesUsed(0)
+  : m_beVerbose(false)
+  , m_bytesMax(0)
+  , m_bytesUsed(0)
 {
-	infoMessage("BasicDataBuffer: Starting constructor.", m_beVerbose);
-	
-	infoMessage("BasicDataBuffer(): Constructor is done.", m_beVerbose);
+  infoMessage("BasicDataBuffer: Starting constructor.", m_beVerbose);
+  
+  infoMessage("BasicDataBuffer(): Constructor is done.", m_beVerbose);
 }
 
 BasicDataBuffer::~BasicDataBuffer()
 {
-	infoMessage("~BasicDataBuffer(): Destructor called.", m_beVerbose);
-	
-	
-	infoMessage("~BasicDataBuffer(): Destructor is done - object is dead.", m_beVerbose);
+  infoMessage("~BasicDataBuffer(): Destructor called.", m_beVerbose);
+  
+  
+  infoMessage("~BasicDataBuffer(): Destructor is done - object is dead.", m_beVerbose);
 }
 
 /**
@@ -36,7 +36,7 @@ BasicDataBuffer::~BasicDataBuffer()
  */
 void BasicDataBuffer::setLimit(UINT32 maxBytesToBeUsed)
 {
-	m_bytesMax = maxBytesToBeUsed;
+  m_bytesMax = maxBytesToBeUsed;
 }
 
 
@@ -46,7 +46,7 @@ void BasicDataBuffer::setLimit(UINT32 maxBytesToBeUsed)
  */
 UINT32 BasicDataBuffer::getUsedBytes()
 {
-	return m_bytesUsed;
+  return m_bytesUsed;
 }
 
 /**
@@ -55,7 +55,7 @@ UINT32 BasicDataBuffer::getUsedBytes()
  */
 UINT32 BasicDataBuffer::getBufferSize()
 {
-	return m_buffer.size();
+  return m_buffer.size();
 }
 
 //
@@ -66,28 +66,28 @@ UINT32 BasicDataBuffer::getBufferSize()
 //
 bool BasicDataBuffer::pushData(BasicData* data)
 {
-	ScopedLock lock(&m_mutex);	// .lock();
-	
-	// Gibt es ein Limit?
-	UINT32 sizeOfNewData = data->getUsedMemory();
-	if (m_bytesMax > 0)
-	{
-		// Es gibt ein Limit, also pruefen
-		UINT32 newSize = m_bytesUsed + sizeOfNewData;	// sizeof(*data);
-		if (newSize > m_bytesMax)
-		{
-			// Das Limit wird ueberschritten, also dieses Datum ablehnen.
-			m_mutex.unlock();
-			return false;
-		}
-	}
-	
-	// Datum speichern
-	m_buffer.push_back(data);
-	m_bytesUsed += sizeOfNewData;
-	
-//	m_mutex.unlock();
-	return true;
+  ScopedLock lock(&m_mutex);  // .lock();
+  
+  // Gibt es ein Limit?
+  UINT32 sizeOfNewData = data->getUsedMemory();
+  if (m_bytesMax > 0)
+  {
+    // Es gibt ein Limit, also pruefen
+    UINT32 newSize = m_bytesUsed + sizeOfNewData;  // sizeof(*data);
+    if (newSize > m_bytesMax)
+    {
+      // Das Limit wird ueberschritten, also dieses Datum ablehnen.
+      m_mutex.unlock();
+      return false;
+    }
+  }
+  
+  // Datum speichern
+  m_buffer.push_back(data);
+  m_bytesUsed += sizeOfNewData;
+  
+//  m_mutex.unlock();
+  return true;
 }
 
 //
@@ -98,18 +98,18 @@ bool BasicDataBuffer::pushData(BasicData* data)
 //
 BasicData* BasicDataBuffer::popData()
 {
-	ScopedLock lock(&m_mutex);
-	
-	BasicData* data = NULL;
-	
-	// Sind noch Daten im Puffer?
-	if (m_buffer.size() > 0)
-	{
-		data = m_buffer.front();
-		m_buffer.pop_front();
-		m_bytesUsed -= data->getUsedMemory();
-	}
-	
-//	m_mutex.unlock();
-	return data;
+  ScopedLock lock(&m_mutex);
+  
+  BasicData* data = NULL;
+  
+  // Sind noch Daten im Puffer?
+  if (m_buffer.size() > 0)
+  {
+    data = m_buffer.front();
+    m_buffer.pop_front();
+    m_bytesUsed -= data->getUsedMemory();
+  }
+  
+//  m_mutex.unlock();
+  return data;
 }

@@ -19,37 +19,37 @@ class ThreadWrapperBase
   protected:
     void* pthis;
   public:
-	
-	ThreadWrapperBase() {pthis = NULL;};
-	virtual ~ThreadWrapperBase() {};
-	  
+  
+  ThreadWrapperBase() {pthis = NULL;};
+  virtual ~ThreadWrapperBase() {};
+    
     void run(void* classptr)
-	{
-		if (pthis == NULL)
-		{
-			pthis = classptr;
-			pthread_create(&t_id, NULL, wrapper_prerun, this);
-		}
+  {
+    if (pthis == NULL)
+    {
+      pthis = classptr;
+      pthread_create(&t_id, NULL, wrapper_prerun, this);
+    }
     }
     
     bool isRunning()
-	{
-		if (pthis == NULL)
-		{
-			return false;
-		}
-		
-		return true;
-	}
-	
+  {
+    if (pthis == NULL)
+    {
+      return false;
+    }
+    
+    return true;
+  }
+  
     void join()
-	{
-		pthread_join(t_id, NULL);
-		pthis = NULL;
+  {
+    pthread_join(t_id, NULL);
+    pthis = NULL;
     }
     
     pthread_t* get_thread_id()
-	{
+  {
       return &t_id;
     }
 };
@@ -79,48 +79,48 @@ class ThreadWrapperBase
 template <typename T, void (T::*M)(bool&, UINT16&)>
 class SickThread : public ThreadWrapperBase
 {
- 	void thread_entry()
- 	{
- 		T* pt = static_cast<T*>(pthis);
-		
-		m_threadShouldRun = true;
-		bool endThread = false;
-		UINT16 sleepTimeMs = 0;
-		
-		while ((m_threadShouldRun == true) && (endThread == false))
-		{
-			usleep(((UINT32)sleepTimeMs) * 1000);
-			(pt->*M)(endThread, sleepTimeMs);
-		}
- 	}
- 	
-		
+   void thread_entry()
+   {
+     T* pt = static_cast<T*>(pthis);
+    
+    m_threadShouldRun = true;
+    bool endThread = false;
+    UINT16 sleepTimeMs = 0;
+    
+    while ((m_threadShouldRun == true) && (endThread == false))
+    {
+      usleep(((UINT32)sleepTimeMs) * 1000);
+      (pt->*M)(endThread, sleepTimeMs);
+    }
+   }
+   
+    
 public:
- 	void join()
-	{
-		m_threadShouldRun = false;
-		ThreadWrapperBase::join();
-	}
-	
-	SickThread(){m_threadShouldRun = true;}
-	virtual ~SickThread(){};
-	bool m_threadShouldRun;
+   void join()
+  {
+    m_threadShouldRun = false;
+    ThreadWrapperBase::join();
+  }
+  
+  SickThread(){m_threadShouldRun = true;}
+  virtual ~SickThread(){};
+  bool m_threadShouldRun;
 };
 
 /*
 template <typename T, void (T::*M)()>
 class SickThread : public ThreadWrapperBase
 {
- 	void thread_entry()
- 	{
- 		T* pt = static_cast<T*>(pthis);
-		
-		
- 		(pt->*M)();
- 	}
+   void thread_entry()
+   {
+     T* pt = static_cast<T*>(pthis);
+    
+    
+     (pt->*M)();
+   }
 public:
-	SickThread(){}
-	virtual ~SickThread(){};
+  SickThread(){}
+  virtual ~SickThread(){};
 };
 */
 
@@ -129,85 +129,85 @@ public:
 // class SickThread
 // {
 // public:
-// 	/**
-// 	 * The thread callback function.
-// 	 *
-// 	 * \param endThisThread A bool flag that may be set by the callback function
-// 	 *  to "false" in case the thread function decides this thread
-// 	 *  needs to end.
-// 	 *
-// 	 * \param sleepTimeMs The sleep time, in ms, that will be spent between
-// 	 *  subsequent calls to the callback function. Default is 10 ms, but
-// 	 *  other times may be set. Note that not all operating systems may be
-// 	 *  able to schedule very short sleep times.
-// 	 */
-// //	int (*comp)(const void *, const void *)
-// 	typedef void (*ThreadFunction) (bool& endThisThread, UINT16& sleepTimeMs);
+//   /**
+//    * The thread callback function.
+//    *
+//    * \param endThisThread A bool flag that may be set by the callback function
+//    *  to "false" in case the thread function decides this thread
+//    *  needs to end.
+//    *
+//    * \param sleepTimeMs The sleep time, in ms, that will be spent between
+//    *  subsequent calls to the callback function. Default is 10 ms, but
+//    *  other times may be set. Note that not all operating systems may be
+//    *  able to schedule very short sleep times.
+//    */
+// //  int (*comp)(const void *, const void *)
+//   typedef void (*ThreadFunction) (bool& endThisThread, UINT16& sleepTimeMs);
 // 
-// 	/**
-// 	 * The thread callback function (simpler version).
-// 	 *
-// 	 * \return True if the thread should continue to run and
-// 	 * continuously call this function (after potentially some waiting
-// 	 * time). False if this thread should end now.
-// 	 */
-// //	typedef boost::function < bool (void) > ThreadFunctionSimple;
+//   /**
+//    * The thread callback function (simpler version).
+//    *
+//    * \return True if the thread should continue to run and
+//    * continuously call this function (after potentially some waiting
+//    * time). False if this thread should end now.
+//    */
+// //  typedef boost::function < bool (void) > ThreadFunctionSimple;
 // 
-// 	/// Default constructor.
-// 	SickThread();
+//   /// Default constructor.
+//   SickThread();
 // 
-// 	/// Destructor. Will call stop() if thread is not yet stopped, and
-// 	/// wait for its completion before destructing this object.
-// 	~SickThread();
+//   /// Destructor. Will call stop() if thread is not yet stopped, and
+//   /// wait for its completion before destructing this object.
+//   ~SickThread();
 // 
-// 	/// Start the thread.
-// 	bool start();
+//   /// Start the thread.
+//   bool start();
 // 
-// 	/// Start the thread and also set the thread function. \sa start()
-// 	bool start(ThreadFunction function);
+//   /// Start the thread and also set the thread function. \sa start()
+//   bool start(ThreadFunction function);
 // 
-// 	/// Returns true if this thread was started and is running.
-// 	bool isRunning() const;
+//   /// Returns true if this thread was started and is running.
+//   bool isRunning() const;
 // 
-// 	/// Stops this thread and waits for its completion.
-// 	void stop();
+//   /// Stops this thread and waits for its completion.
+//   void stop();
 // 
-// 	/// Set whether we want verbose debug output
-// 	void setVerboseDebugOutput(bool enableVerboseDebugOutput);
+//   /// Set whether we want verbose debug output
+//   void setVerboseDebugOutput(bool enableVerboseDebugOutput);
 // 
-// 	/// Set the thread's "run" function
-// 	void setFunction(ThreadFunction threadFunction);
+//   /// Set the thread's "run" function
+//   void setFunction(ThreadFunction threadFunction);
 // 
-// 	/// Set the thread's "run" function, simpler version
-// //	void setFunctionSimple(ThreadFunctionSimple threadFunctionSimple);
+//   /// Set the thread's "run" function, simpler version
+// //  void setFunctionSimple(ThreadFunctionSimple threadFunctionSimple);
 // 
-// 	/// Set the sleep time between subsequent ThreadFunctionSimple calls in [milliseconds]
-// 	void setSleepTimeMilliseconds(unsigned v);
+//   /// Set the sleep time between subsequent ThreadFunctionSimple calls in [milliseconds]
+//   void setSleepTimeMilliseconds(unsigned v);
 // 
-// 	/// Returns the sleep time between subsequent ThreadFunctionSimple
-// 	/// calls in [milliseconds]. (Default value is zero.)
-// 	unsigned getSleepTimeMilliseconds() const { return m_sleepTimeMilliseconds; }
+//   /// Returns the sleep time between subsequent ThreadFunctionSimple
+//   /// calls in [milliseconds]. (Default value is zero.)
+//   unsigned getSleepTimeMilliseconds() const { return m_sleepTimeMilliseconds; }
 // 
 // private:
-// 	static void* thread(void* ptr);			// The thread function
-// 	void thread2();							// The member thread function
+//   static void* thread(void* ptr);      // The thread function
+//   void thread2();              // The member thread function
 // 
-// //	typedef boost::mutex Mutex;
+// //  typedef boost::mutex Mutex;
 // 
-// 	pthread_mutex_t m_mutex;	//  = PTHREAD_MUTEX_INITIALIZER;
-// //	mutable Mutex m_threadMutex;
-// //	boost::condition m_threadCondition;
-// 	ThreadFunction m_function;
-// //	ThreadFunctionSimple m_functionSimple;
+//   pthread_mutex_t m_mutex;  //  = PTHREAD_MUTEX_INITIALIZER;
+// //  mutable Mutex m_threadMutex;
+// //  boost::condition m_threadCondition;
+//   ThreadFunction m_function;
+// //  ThreadFunctionSimple m_functionSimple;
 // 
-// //	boost::scoped_ptr<boost::thread> m_threadPtr;
-// 	bool m_threadShouldRun;
-// 	bool m_threadIsRunning;
-// 	bool m_beVerbose;
-// 	unsigned m_sleepTimeMilliseconds;
-// 	
-// 	// The thread
-// 	pthread_t m_thread;
+// //  boost::scoped_ptr<boost::thread> m_threadPtr;
+//   bool m_threadShouldRun;
+//   bool m_threadIsRunning;
+//   bool m_beVerbose;
+//   unsigned m_sleepTimeMilliseconds;
+//   
+//   // The thread
+//   pthread_t m_thread;
 // 
 // };
 

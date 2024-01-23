@@ -71,8 +71,8 @@ namespace detail
 template<typename T>
 inline T read (const std::string& str)
 {
-//	BOOST_STATIC_ASSERT(sizeof(T) == 0); // must not be instantiated
-	return T(); // to avoid additional compiler errors
+//  BOOST_STATIC_ASSERT(sizeof(T) == 0); // must not be instantiated
+  return T(); // to avoid additional compiler errors
 }
 template<> inline double read<double>(const std::string& rxData) { return decodeReal(rxData); }
 template<> inline INT16 read<INT16>(const std::string& rxData) { return decodeINT16(rxData); }

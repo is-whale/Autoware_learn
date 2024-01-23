@@ -1268,6 +1268,7 @@ class MyFrame(rtmgr.MyFrame):
 		for cam_id in ids:
 			(pdic_a, gdic_a, _) = self.name_to_pdic_gdic_prm(cam_id)
 			pdic = pdic_a if pdic_a else self.load_dic_pdic_setup(cam_id, {})
+			pdic['camera_id'] = cam_id
 			pdic_baks[cam_id] = pdic.copy()
 			gdic = gdic_a if gdic_a else gdic_org.copy()
 			gdic['flags'] = flags
@@ -2113,10 +2114,10 @@ class MyFrame(rtmgr.MyFrame):
 		return [ self.obj_get(pf + key) for pf in pfs if self.obj_get(pf + key) ]
 
 	def name_get(self, obj):
-		return next( (nm for nm in dir(self) if getattr(self, nm) is obj), None)
+		return next( (nm for nm in self.__dict__ if getattr(self, nm) is obj), None)
 
 	def name_get_cond(self, obj, cond=(lambda s : True), def_ret=None):
-		return next( (nm for nm in dir(self) if cond(nm) and getattr(self, nm) is obj), def_ret)
+		return next( (nm for nm in self.__dict__ if cond(nm) and getattr(self, nm) is obj), None)
 
 	def val_get(self, name):
 		obj = self.obj_get(name)

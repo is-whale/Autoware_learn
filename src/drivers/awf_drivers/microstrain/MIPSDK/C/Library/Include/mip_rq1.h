@@ -55,12 +55,12 @@
 
 #define RQ1_MODEL_NUMBER    6232
 
-#define RQ1_BASIC_STATUS_SEL		1
-#define RQ1_DIAGNOSTICS_STATUS_SEL	2
+#define RQ1_BASIC_STATUS_SEL    1
+#define RQ1_DIAGNOSTICS_STATUS_SEL  2
 
 #define RQ1_SYSTEM_STATE_INITIALIZATION 0x0001
-#define RQ1_SYSTEM_STATE_SENSOR_STARTUP	0x0002
-#define RQ1_SYSTEM_STATE_RUNNING	0x0003
+#define RQ1_SYSTEM_STATE_SENSOR_STARTUP  0x0002
+#define RQ1_SYSTEM_STATE_RUNNING  0x0003
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -77,8 +77,8 @@
 
 typedef struct _rq1_basic_status_field
 {
- u16 device_model;		// always RQ1_MODEL_NUMBER
- u8  status_selector;	// always RQ1_BASIC_STATUS_SEL
+ u16 device_model;    // always RQ1_MODEL_NUMBER
+ u8  status_selector;  // always RQ1_BASIC_STATUS_SEL
  
  u32 status_flags;
  
@@ -95,8 +95,8 @@ typedef struct _rq1_basic_status_field
 
 typedef struct _rq1_diagnostic_status_field
 {
- u16 device_model;		// always RQ1_MODEL_NUMBER
- u8  status_selector;	// always RQ1_DIAGNOSTICS_STATUS_SEL
+ u16 device_model;    // always RQ1_MODEL_NUMBER
+ u8  status_selector;  // always RQ1_DIAGNOSTICS_STATUS_SEL
  
  u32 status_flags;
  

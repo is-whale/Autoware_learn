@@ -5,32 +5,27 @@ add_compile_options(-std=c++11)
 
 find_package(catkin REQUIRED COMPONENTS
   message_generation
-  std_msgs
   rosgraph_msgs
+  std_msgs
 )
 
 add_message_files(
   FILES
-  DiagnosticStatus.msg
-  DiagnosticStatusArray.msg
-  SystemStatus.msg
-  NodeStatus.msg
-  HardwareStatus.msg
+    DiagnosticStatus.msg
+    DiagnosticStatusArray.msg
+    HardwareStatus.msg
+    NodeStatus.msg
+    SystemStatus.msg
 )
 
 generate_messages(DEPENDENCIES
-  std_msgs
   rosgraph_msgs
+  std_msgs
 )
 
 catkin_package(
   CATKIN_DEPENDS
-  message_runtime
-  std_msgs
-  rosgraph_msgs
+    message_runtime
+    rosgraph_msgs
+    std_msgs
 )
-
-foreach(dir msg)
-  install(DIRECTORY ${dir}/
-    DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/${dir})
-endforeach(dir)

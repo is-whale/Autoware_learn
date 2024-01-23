@@ -8,7 +8,7 @@
 
   <group ns="plot" if="$(arg with_plot)">
     <node name="accl" pkg="rqt_plot" type="rqt_plot"
-	  args="/adxl345/data_raw/linear_acceleration/x:y:z"/>
+    args="/adxl345/data_raw/linear_acceleration/x:y:z"/>
   </group>
 
   <!-- Connect sensors before tests -->

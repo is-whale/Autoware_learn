@@ -54,7 +54,7 @@
 
 #define GX4_45_MODEL_NUMBER    6236
 
-#define GX4_45_BASIC_STATUS_SEL		  1
+#define GX4_45_BASIC_STATUS_SEL      1
 #define GX4_45_DIAGNOSTICS_STATUS_SEL 2
 
 #define GX4_45_SYSTEM_STATE_INIT           0x01
@@ -77,8 +77,8 @@
 
 typedef struct _gx4_45_basic_status_field
 {
- u16 device_model;		// always GX4_45_MODEL_NUMBER
- u8  status_selector;	// always GX4_45_BASIC_STATUS_SEL
+ u16 device_model;    // always GX4_45_MODEL_NUMBER
+ u8  status_selector;  // always GX4_45_BASIC_STATUS_SEL
  
  u32 status_flags;
  
@@ -95,8 +95,8 @@ typedef struct _gx4_45_basic_status_field
 
 typedef struct _gx4_45_diagnostic_status_field
 {
- u16 device_model;		// always GX4_45_MODEL_NUMBER
- u8  status_selector;	// always GX4_45_DIAGNOSTICS_STATUS_SEL
+ u16 device_model;    // always GX4_45_MODEL_NUMBER
+ u8  status_selector;  // always GX4_45_DIAGNOSTICS_STATUS_SEL
  
  u32 status_flags;
  

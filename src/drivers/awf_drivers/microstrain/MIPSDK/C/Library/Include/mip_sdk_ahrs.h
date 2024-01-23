@@ -53,7 +53,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#define MIP_AHRS_DATA_SET					0x80
+#define MIP_AHRS_DATA_SET          0x80
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -62,30 +62,30 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
-#define MIP_AHRS_DATA_ACCEL_RAW					0x01	// 12: 3 single (vector) (no units)
-#define MIP_AHRS_DATA_GYRO_RAW		      		0x02	// 12: 3 single (vector) (no units)
-#define MIP_AHRS_DATA_MAG_RAW		      		0x03	// 12: 3 single (vector) (no units)
-#define MIP_AHRS_DATA_ACCEL_SCALED		  		0x04	// 12: 3 single (vector) (g)
-#define MIP_AHRS_DATA_GYRO_SCALED		  		0x05	// 12: 3 single (vector) (radians/second)
-#define MIP_AHRS_DATA_MAG_SCALED		 		0x06 	// 12: 3 single (vector) (gauss)
-#define MIP_AHRS_DATA_DELTA_THETA		  		0x07	// 12: 3 single (vector) (radians/second)
-#define MIP_AHRS_DATA_DELTA_VELOCITY	   		0x08	// 12: 3 single (vector) (meters/second)
-#define MIP_AHRS_DATA_ORIENTATION_MATRIX 		0x09	// 36: 9 single (Matrix) (no units)
-#define MIP_AHRS_DATA_QUATERNION				0x0A	// 16: 4 single (Quaternion) (no units)
-#define MIP_AHRS_DATA_ORIENTATION_UPDATE_MATRIX 0x0B	// 36: 9 single (Matrix) (no units)
-#define MIP_AHRS_DATA_EULER_ANGLES				0x0C 
-#define MIP_AHRS_DATA_TEMPERATURE_RAW	 		0x0D 	// 8:  4 u16  		(no units)
-#define MIP_AHRS_DATA_TIME_STAMP_INTERNAL		0x0E	// 4:  1 u32 (Integer) (device specific)
-#define MIP_AHRS_DATA_TIME_STAMP_PPS			0x0F	// 9:  u8 flags u32 seconds u32 nanoseconds
-#define MIP_AHRS_DATA_STAB_MAG	      			0x10	// 12: 3 single (vector) (Gauss)
-#define MIP_AHRS_DATA_STAB_ACCEL				0x11	// 12: 3 single (vector) (g)
-#define MIP_AHRS_DATA_TIME_STAMP_GPS			0x12	// 14: double GPS TOW u16 GPS week number u16 flags 
-#define MIP_AHRS_DATA_PRESSURE_SCALED		    0x17 
+#define MIP_AHRS_DATA_ACCEL_RAW          0x01  // 12: 3 single (vector) (no units)
+#define MIP_AHRS_DATA_GYRO_RAW              0x02  // 12: 3 single (vector) (no units)
+#define MIP_AHRS_DATA_MAG_RAW              0x03  // 12: 3 single (vector) (no units)
+#define MIP_AHRS_DATA_ACCEL_SCALED          0x04  // 12: 3 single (vector) (g)
+#define MIP_AHRS_DATA_GYRO_SCALED          0x05  // 12: 3 single (vector) (radians/second)
+#define MIP_AHRS_DATA_MAG_SCALED         0x06   // 12: 3 single (vector) (gauss)
+#define MIP_AHRS_DATA_DELTA_THETA          0x07  // 12: 3 single (vector) (radians/second)
+#define MIP_AHRS_DATA_DELTA_VELOCITY         0x08  // 12: 3 single (vector) (meters/second)
+#define MIP_AHRS_DATA_ORIENTATION_MATRIX     0x09  // 36: 9 single (Matrix) (no units)
+#define MIP_AHRS_DATA_QUATERNION        0x0A  // 16: 4 single (Quaternion) (no units)
+#define MIP_AHRS_DATA_ORIENTATION_UPDATE_MATRIX 0x0B  // 36: 9 single (Matrix) (no units)
+#define MIP_AHRS_DATA_EULER_ANGLES        0x0C 
+#define MIP_AHRS_DATA_TEMPERATURE_RAW       0x0D   // 8:  4 u16      (no units)
+#define MIP_AHRS_DATA_TIME_STAMP_INTERNAL    0x0E  // 4:  1 u32 (Integer) (device specific)
+#define MIP_AHRS_DATA_TIME_STAMP_PPS      0x0F  // 9:  u8 flags u32 seconds u32 nanoseconds
+#define MIP_AHRS_DATA_STAB_MAG              0x10  // 12: 3 single (vector) (Gauss)
+#define MIP_AHRS_DATA_STAB_ACCEL        0x11  // 12: 3 single (vector) (g)
+#define MIP_AHRS_DATA_TIME_STAMP_GPS      0x12  // 14: double GPS TOW u16 GPS week number u16 flags 
+#define MIP_AHRS_DATA_PRESSURE_SCALED        0x17 
 
 
 
-#define MIP_AHRS_DATA_ASPP			      		0x81	// MicroStrain ASPP packet
-#define MIP_AHRS_DATA_GXSB		         		0x82	// MicroStrain GX series single byte command
+#define MIP_AHRS_DATA_ASPP                0x81  // MicroStrain ASPP packet
+#define MIP_AHRS_DATA_GXSB                 0x82  // MicroStrain GX series single byte command
 
 
 
@@ -272,11 +272,11 @@ typedef struct _mip_complementary_filter_settings
 
 typedef struct _mip_low_pass_filter_settings
 {
- u8		data_type;
- u8		filter_type_selector;
- u8		manual_cutoff;
- u16	cutoff_frequency;
- u8		reserved;	
+ u8    data_type;
+ u8    filter_type_selector;
+ u8    manual_cutoff;
+ u16  cutoff_frequency;
+ u8    reserved;  
 }mip_low_pass_filter_settings;
 
 #pragma pack()

@@ -8,7 +8,7 @@
 #define COLAB_HPP
 
 #include "../BasicDatatypes.hpp"
-#include <memory.h>	// for memread<>
+#include <memory.h>  // for memread<>
 
 //
 // Parser functions for a partly implementation of the CoLa-B
@@ -37,7 +37,7 @@ void addStringToBuffer(BYTE* buffer, const std::string& stringValue);
 
 
 /**
- *	Returns bytes from pos to pos+length as string.
+ *  Returns bytes from pos to pos+length as string.
  *          pos points to the next byte after (pos+length)
  */
 std::string getStringFromBuffer(UINT8* buffer, UINT16& pos, UINT16 length);
@@ -45,7 +45,7 @@ std::string getStringFromBuffer(UINT8* buffer, UINT16& pos, UINT16 length);
 
 
 /**
- *	Returns bytes from 0 to length as string.
+ *  Returns bytes from 0 to length as string.
  *          buffer will be shifted to be able to read the next value
  */
 std::string getStringFromBuffer(BYTE*& buffer, UINT16 length);
@@ -61,10 +61,10 @@ std::string getCommandStringFromBuffer(UINT8* buffer);
 
 
 /**
- * 	buffer should point to the BEGIN of the buffer (incl. magic word),
+ *   buffer should point to the BEGIN of the buffer (incl. magic word),
  *  bufferLength is the length of the full buffer (incl. magic word and checksum).
  *
- *	Returns the variable or method identifier from buffer.
+ *  Returns the variable or method identifier from buffer.
  *          pos points to the begin of the next data after identifier.
  *          is pos == 0, there is no more data
  */
@@ -98,19 +98,19 @@ UINT16 decodeUINT16(BYTE* buffer);
  *  If width of intValue is greater than given type T, the higher bytes are truncated.
  *
  *  The intValue will be stored in BigEndian byte order (as required for CoLaB).
- * 	pos points then to the first byte of the next data field..
+ *   pos points then to the first byte of the next data field..
  */
 template<typename T>
 void addIntegerToBuffer(UINT8* buffer, UINT16& pos, T intValue)
 {
-	UINT16 width = sizeof(T);
+  UINT16 width = sizeof(T);
 
-	for (int i = 0; i < width; i++)
-	{
-		buffer[pos+width-1-i] = (intValue >> (8 * i)) & 0xff; // BIG ENDIAN: width-1-i
-	}
+  for (int i = 0; i < width; i++)
+  {
+    buffer[pos+width-1-i] = (intValue >> (8 * i)) & 0xff; // BIG ENDIAN: width-1-i
+  }
 
-	pos += width;
+  pos += width;
 }
 
 
@@ -123,19 +123,19 @@ void addIntegerToBuffer(UINT8* buffer, UINT16& pos, T intValue)
 template<typename T>
 T getIntegerFromBuffer(UINT8* buffer, UINT16& pos)
 {
-	UINT16 width = sizeof(T);
-//		UINT8* buffer2 = buffer;
-//		T intValue = memread<T>(buffer2);
+  UINT16 width = sizeof(T);
+//    UINT8* buffer2 = buffer;
+//    T intValue = memread<T>(buffer2);
 
-	T intValue = 0;
+  T intValue = 0;
 
-	for (int i = 0; i < width; i++)
-	{
-		intValue += buffer[pos+width-1-i] << (8 * i);
-	}
+  for (int i = 0; i < width; i++)
+  {
+    intValue += buffer[pos+width-1-i] << (8 * i);
+  }
 
-	pos += width;
-	return intValue;
+  pos += width;
+  return intValue;
 }
 
 
@@ -146,16 +146,16 @@ T getIntegerFromBuffer(UINT8* buffer, UINT16& pos)
  *  Accepts float and double.
  *
  *  The floatValue will be stored in BigEndian byte order (as required for CoLaB).
- * 	pos points then to the first byte of the next data field.
+ *   pos points then to the first byte of the next data field.
  */
 template<typename T>
 void addFloatToBuffer(UINT8* buffer, UINT16& pos, T floatValue)
 {
-	UINT16 width = sizeof(T);
+  UINT16 width = sizeof(T);
 
 
 
-	pos += width;
+  pos += width;
 }
 
 

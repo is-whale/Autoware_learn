@@ -43,57 +43,57 @@
 class vssp::vsspDriver
 {
 private:
-	boost::asio::io_service io_service;
-	boost::asio::ip::tcp::socket socket;
-	boost::asio::deadline_timer timer;
-	bool closed;
-	aux_factor_array aux_factor;
+  boost::asio::io_service io_service;
+  boost::asio::ip::tcp::socket socket;
+  boost::asio::deadline_timer timer;
+  bool closed;
+  aux_factor_array aux_factor;
 
-	boost::function<void(const vssp::header&,
+  boost::function<void(const vssp::header&,
                          const vssp::range_header&,
                          const vssp::range_index&,
                          const boost::shared_array<vssp::xyzi>&,
                          const std::chrono::microseconds &delayRead,
                          const vssp::data_range_size&)> cbPoint;
-	boost::function<void(const vssp::header&,
+  boost::function<void(const vssp::header&,
                          const vssp::aux_header&,
                          const boost::shared_array<vssp::aux>&,
                          const std::chrono::microseconds &delayRead)> cbAux;
-	boost::function<void(const vssp::header&,
+  boost::function<void(const vssp::header&,
                          const std::chrono::microseconds&)> cbPing;
-	boost::function<void(bool)> cbConnect;
-	boost::shared_array<double> tblH;
-	boost::shared_array<table_sincos> tblV;
-	bool tblH_loaded;
-	bool tblV_loaded;
-	double timeout;
+  boost::function<void(bool)> cbConnect;
+  boost::shared_array<double> tblH;
+  boost::shared_array<table_sincos> tblV;
+  bool tblH_loaded;
+  bool tblV_loaded;
+  double timeout;
 
-	std::chrono::time_point<std::chrono::system_clock> timeReadLast;
-	boost::asio::streambuf buf;
+  std::chrono::time_point<std::chrono::system_clock> timeReadLast;
+  boost::asio::streambuf buf;
 
 public:
-	vsspDriver() :
-		socket(io_service),
-		timer(io_service),
-		closed(false),
-		aux_factor(aux_factor_default),
-		cbPoint(0),
-		cbAux(0),
-		cbPing(0),
-		tblH_loaded(false),
-		tblV_loaded(false),
-		timeout(1.0)
+  vsspDriver() :
+    socket(io_service),
+    timer(io_service),
+    closed(false),
+    aux_factor(aux_factor_default),
+    cbPoint(0),
+    cbAux(0),
+    cbPing(0),
+    tblH_loaded(false),
+    tblV_loaded(false),
+    timeout(1.0)
         {
         };
-	void setTimeout(double to)
+  void setTimeout(double to)
         {
             timeout = to;
         };
-	void connect(const char *ip, unsigned int port, decltype(cbConnect) cb)
+  void connect(const char *ip, unsigned int port, decltype(cbConnect) cb)
         {
             cbConnect = cb;
             boost::asio::ip::tcp::endpoint endpoint(
-				boost::asio::ip::address::from_string(ip), port);
+        boost::asio::ip::address::from_string(ip), port);
             timer.expires_from_now(boost::posix_time::seconds(timeout));
             timer.async_wait(boost::bind(&vsspDriver::on_timeout_connect, this,
                                          boost::asio::placeholders::error));
@@ -103,39 +103,39 @@ public:
                                              boost::asio::placeholders::error));
             timeReadLast = std::chrono::system_clock::now();
         };
-	void registerCallback(decltype(cbPoint) cb)
+  void registerCallback(decltype(cbPoint) cb)
         {
             cbPoint = cb;
         };
-	void registerAuxCallback(decltype(cbAux) cb)
+  void registerAuxCallback(decltype(cbAux) cb)
         {
             cbAux = cb;
         };
-	void registerPingCallback(decltype(cbPing) cb)
+  void registerPingCallback(decltype(cbPing) cb)
         {
             cbPing = cb;
         };
-	void setInterlace(int itl)
+  void setInterlace(int itl)
         {
             send((boost::format("SET:_itl=0,%02d\n") % itl).str());
         };
-	void requestVerticalTable()
+  void requestVerticalTable()
         {
             send(std::string("GET:tblv\n"));
         };
-	void requestHorizontalTable()
+  void requestHorizontalTable()
         {
             send(std::string("GET:tblh\n"));
         };
-	void requestPing()
+  void requestPing()
         {
             send(std::string("PNG\n"));
         };
-	void requestAuxData(bool start = 1)
+  void requestAuxData(bool start = 1)
         {
             send((boost::format("DAT:ax=%d\n") % (int)start).str());
         }
-	void requestData(bool intensity = 1, bool start = 1)
+  void requestData(bool intensity = 1, bool start = 1)
         {
             if(intensity)
             {
@@ -146,23 +146,23 @@ public:
                 send((boost::format("DAT:ro=%d\n") % (int)start).str());
             }
         };
-	void receivePackets()
+  void receivePackets()
         {
             timer.cancel();
             timer.expires_from_now(boost::posix_time::seconds(timeout));
             timer.async_wait(boost::bind(&vsspDriver::on_timeout, this,
                                          boost::asio::placeholders::error));
             boost::asio::async_read(
-				socket,
-				buf,
-				boost::asio::transfer_at_least(65536),
-				boost::bind(
-					&vsspDriver::on_read,
-					this,
-					boost::asio::placeholders::error)
-				);
+        socket,
+        buf,
+        boost::asio::transfer_at_least(65536),
+        boost::bind(
+          &vsspDriver::on_read,
+          this,
+          boost::asio::placeholders::error)
+        );
         };
-	bool poll()
+  bool poll()
         {
             if(!closed)
             {
@@ -175,20 +175,20 @@ public:
         };
 
 private:
-	void send(std::string cmd)
+  void send(std::string cmd)
         {
             boost::shared_ptr<std::string> data(new std::string(cmd));
             boost::asio::async_write(
-				socket,
-				boost::asio::buffer(*data),
-				boost::bind(
-					&vsspDriver::on_send,
-					this,
-					boost::asio::placeholders::error,
-					data)
-				);
+        socket,
+        boost::asio::buffer(*data),
+        boost::bind(
+          &vsspDriver::on_send,
+          this,
+          boost::asio::placeholders::error,
+          data)
+        );
         };
-	void on_timeout_connect(const boost::system::error_code& error)
+  void on_timeout_connect(const boost::system::error_code& error)
         {
             if(!error)
             {
@@ -196,7 +196,7 @@ private:
                 socket.cancel();
             }
         }
-	void on_timeout(const boost::system::error_code& error)
+  void on_timeout(const boost::system::error_code& error)
         {
             if(!error)
             {
@@ -204,7 +204,7 @@ private:
                 socket.cancel();
             }
         }
-	void on_connect(const boost::system::error_code& error)
+  void on_connect(const boost::system::error_code& error)
         {
             timer.cancel();
             if(error)
@@ -215,7 +215,7 @@ private:
             }
             cbConnect(true);
         };
-	void on_send(const boost::system::error_code& error,
+  void on_send(const boost::system::error_code& error,
                  boost::shared_ptr<std::string> data)
         {
             if(error)
@@ -224,31 +224,31 @@ private:
                 return;
             }
         };
-	template<class DATA_TYPE>
+  template<class DATA_TYPE>
     void rangeToXYZ(const vssp::range_header &range_header,
                     const vssp::range_index &range_index,
                     boost::shared_array<uint16_t> &index,
                     boost::shared_array<vssp::xyzi> &points)
-		{
-			int i = 0;
+    {
+      int i = 0;
 
-			double h_head = range_header.line_head_h_angle_ratio * 2.0 * M_PI / 65535.0;
-			double h_tail = range_header.line_tail_h_angle_ratio * 2.0 * M_PI / 65535.0;
-			const DATA_TYPE *data =
-				boost::asio::buffer_cast
-				<const DATA_TYPE*>(buf.data());
-			for(int s = 0; s < range_index.nspots; s ++)
-			{
-				double spot = s + range_header.spot;
-				double h_rad = h_head + (h_tail - h_head) * tblH[spot];
-				double h_cos = cos(h_rad);
-				double h_sin = sin(h_rad);
-				vssp::xyzi dir(tblV[spot].s, tblV[spot].c, h_sin, h_cos);
-				for(int e = index[s]; e < index[s+1]; e++)
-					points[i++] = dir * data[e];
-			}
-		};
-	void on_read(const boost::system::error_code& error)
+      double h_head = range_header.line_head_h_angle_ratio * 2.0 * M_PI / 65535.0;
+      double h_tail = range_header.line_tail_h_angle_ratio * 2.0 * M_PI / 65535.0;
+      const DATA_TYPE *data =
+        boost::asio::buffer_cast
+        <const DATA_TYPE*>(buf.data());
+      for(int s = 0; s < range_index.nspots; s ++)
+      {
+        double spot = s + range_header.spot;
+        double h_rad = h_head + (h_tail - h_head) * tblH[spot];
+        double h_cos = cos(h_rad);
+        double h_sin = sin(h_rad);
+        vssp::xyzi dir(tblV[spot].s, tblV[spot].c, h_sin, h_cos);
+        for(int e = index[s]; e < index[s+1]; e++)
+          points[i++] = dir * data[e];
+      }
+    };
+  void on_read(const boost::system::error_code& error)
         {
             auto timeRead = std::chrono::system_clock::now();
             auto time = timeReadLast;
@@ -310,43 +310,43 @@ private:
                     {
                     case TYPE_GET:
                         // Response to get command
-					{
-						const std::string data(boost::asio::buffer_cast<const char*>(buf.data()));
-						std::vector<std::string> lines;
-						boost::algorithm::split(lines, data, boost::algorithm::is_any_of("\n\r"));
-						if(lines.size() == 0) break;
+          {
+            const std::string data(boost::asio::buffer_cast<const char*>(buf.data()));
+            std::vector<std::string> lines;
+            boost::algorithm::split(lines, data, boost::algorithm::is_any_of("\n\r"));
+            if(lines.size() == 0) break;
 
-						if(lines[0].compare(0, 7, "GET:tbl") == 0)
-						{
-							if(lines.size() < 2) break;
-							std::vector<std::string> cells;
-							boost::algorithm::split(cells, lines[1], boost::algorithm::is_any_of(","));
-							int i = 0;
+            if(lines[0].compare(0, 7, "GET:tbl") == 0)
+            {
+              if(lines.size() < 2) break;
+              std::vector<std::string> cells;
+              boost::algorithm::split(cells, lines[1], boost::algorithm::is_any_of(","));
+              int i = 0;
 
-							if(lines[0].compare("GET:tblv") == 0)
-							{
-								tblV.reset(new table_sincos[cells.size()]);
-								for(auto &cell: cells)
-								{
-									double rad = (double)std::strtol(cell.c_str(), NULL, 16) * 2.0 * M_PI / 65535;
-									sincos(rad, &tblV[i].s, &tblV[i].c);
-									i ++;
-								}
-								tblV_loaded = true;
-							}
-							else if(lines[0].compare("GET:tblh") == 0)
-							{
-								tblH.reset(new double[cells.size()]);
-								for(auto &cell: cells)
-								{
-									tblH[i] = (double)std::strtol(cell.c_str(), NULL, 16) / 65535;
-									i ++;
-								}
-								tblH_loaded = true;
-							}
-						}
-					}
-					break;
+              if(lines[0].compare("GET:tblv") == 0)
+              {
+                tblV.reset(new table_sincos[cells.size()]);
+                for(auto &cell: cells)
+                {
+                  double rad = (double)std::strtol(cell.c_str(), NULL, 16) * 2.0 * M_PI / 65535;
+                  sincos(rad, &tblV[i].s, &tblV[i].c);
+                  i ++;
+                }
+                tblV_loaded = true;
+              }
+              else if(lines[0].compare("GET:tblh") == 0)
+              {
+                tblH.reset(new double[cells.size()]);
+                for(auto &cell: cells)
+                {
+                  tblH[i] = (double)std::strtol(cell.c_str(), NULL, 16) / 65535;
+                  i ++;
+                }
+                tblH_loaded = true;
+              }
+            }
+          }
+          break;
                     case TYPE_SET:
                         // Response to set command
                         break;
@@ -415,34 +415,34 @@ private:
                         break;
                     case TYPE_AX:
                         // Aux data
-					{
-						// Decode range data header
-						const vssp::aux_header aux_header =
-							*boost::asio::buffer_cast<const vssp::aux_header*>(buf.data());
-						buf.consume(aux_header.header_length);
-						length -= aux_header.header_length;
+          {
+            // Decode range data header
+            const vssp::aux_header aux_header =
+              *boost::asio::buffer_cast<const vssp::aux_header*>(buf.data());
+            buf.consume(aux_header.header_length);
+            length -= aux_header.header_length;
 
-						// Decode aux data
-						boost::shared_array<vssp::aux> auxs(new vssp::aux[aux_header.data_count]);
-						for(int i = 0; i < aux_header.data_count; i ++)
-						{
-							const vssp::aux_data *data =
-								boost::asio::buffer_cast
-								<const vssp::aux_data*>(buf.data());
-							int offset = 0;
-							for(aux_id b = vssp::AX_MASK_LAST;
+            // Decode aux data
+            boost::shared_array<vssp::aux> auxs(new vssp::aux[aux_header.data_count]);
+            for(int i = 0; i < aux_header.data_count; i ++)
+            {
+              const vssp::aux_data *data =
+                boost::asio::buffer_cast
+                <const vssp::aux_data*>(buf.data());
+              int offset = 0;
+              for(aux_id b = vssp::AX_MASK_LAST;
                                 b >= vssp::AX_MASK_FIRST;
                                 b = static_cast<aux_id>(b - 1))
-							{
-								if(aux_header.data_bitfield & (1 << static_cast<int>(b)))
-									auxs[i][b] = aux_factor[b] * data[offset ++].val;
-							}
-							buf.consume(sizeof(int32_t) * offset);
-							length -= sizeof(int32_t) * offset;
-						}
-						if(!cbAux.empty()) cbAux(header, aux_header, auxs, delay);
-					}
-					break;
+              {
+                if(aux_header.data_bitfield & (1 << static_cast<int>(b)))
+                  auxs[i][b] = aux_factor[b] * data[offset ++].val;
+              }
+              buf.consume(sizeof(int32_t) * offset);
+              length -= sizeof(int32_t) * offset;
+            }
+            if(!cbAux.empty()) cbAux(header, aux_header, auxs, delay);
+          }
+          break;
                     }
                 }
                 while(false);

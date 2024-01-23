@@ -54,7 +54,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-#define GX3_45_MODEL_NUMBER			6226
+#define GX3_45_MODEL_NUMBER      6226
 
 
 
@@ -73,12 +73,12 @@
 // when status_selector = 3DM_GX3_45_BASIC_STATUS_SEL)
 ///
 
-#define GX3_45_BASIC_STATUS_SEL		1
+#define GX3_45_BASIC_STATUS_SEL    1
 
 typedef struct _gx3_45_basic_status_field
 {
- u16 device_model;		// always 3DM_GX3_45_MODEL_NUMBER
- u8  status_selector;	// always 3DM_GX3_45_BASIC_STATUS_SEL
+ u16 device_model;    // always 3DM_GX3_45_MODEL_NUMBER
+ u8  status_selector;  // always 3DM_GX3_45_BASIC_STATUS_SEL
  u8  com_mode;
  u8  com_device;
  u32 settings_flags;
@@ -92,12 +92,12 @@ typedef struct _gx3_45_basic_status_field
 // when status_selector = 3DM_GX3_45_DIAGNOSTICS_STATUS_SEL)
 ///
 
-#define GX3_45_DIAGNOSTICS_STATUS_SEL	2
+#define GX3_45_DIAGNOSTICS_STATUS_SEL  2
 
 typedef struct _gx3_45_diagnostic_status_field
 {
- u16 device_model;		// always 3DM_GX3_45_MODEL_NUMBER
- u8  status_selector;	// always 3DM_GX3_45_DIAGNOSTICS_STATUS_SEL
+ u16 device_model;    // always 3DM_GX3_45_MODEL_NUMBER
+ u8  status_selector;  // always 3DM_GX3_45_DIAGNOSTICS_STATUS_SEL
  u8  com_mode;
  u8  com_device;
  u32 settings_flags;

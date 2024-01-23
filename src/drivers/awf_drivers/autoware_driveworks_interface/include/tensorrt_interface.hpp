@@ -41,27 +41,27 @@ namespace tensorrt_interface{
 class TensorRTInterface
 {
 public:
-	TensorRTInterface();
-	void Run();
-	void Init();
+  TensorRTInterface();
+  void Run();
+  void Init();
 private:
 
-	ros::NodeHandle node_handle_;
-	ros::Subscriber cloud_sub_;
-	ros::Subscriber image_sub_;
-	ros::Publisher publisher_car_objects_;
+  ros::NodeHandle node_handle_;
+  ros::Subscriber cloud_sub_;
+  ros::Subscriber image_sub_;
+  ros::Publisher publisher_car_objects_;
 
-	std::string tensorRT_model_;
-	std::string image_source_;
+  std::string tensorRT_model_;
+  std::string image_source_;
 
-	bool streamer_initialized_;
-	bool isInitialized_ = false;
+  bool streamer_initialized_;
+  bool isInitialized_ = false;
 
-	void ImageCallback(const sensor_msgs::Image& in_image_msg);
-	void InitDriveworks();
-	void InitRenderer();
-	void InitDNN();
-	void Release();
+  void ImageCallback(const sensor_msgs::Image& in_image_msg);
+  void InitDriveworks();
+  void InitRenderer();
+  void InitDNN();
+  void Release();
 };
 }
 #endif

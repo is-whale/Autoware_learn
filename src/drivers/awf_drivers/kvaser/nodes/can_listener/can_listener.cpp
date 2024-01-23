@@ -94,7 +94,7 @@ int main (int argc, char *argv[])
   int channel = 0;
   int bitrate = BAUD_500K;
   int j;
-	autoware_can_msgs::CANPacket candat;
+  autoware_can_msgs::CANPacket candat;
 
   ros::init(argc, argv, "can_listener");
   ros::NodeHandle n;
@@ -141,26 +141,26 @@ int main (int argc, char *argv[])
         }
         for (j = 0; j < dlc; j++){
           printf("%2.2x ", msg[j]);
-	  candat.dat[j]=msg[j];
-	}
+    candat.dat[j]=msg[j];
+  }
         printf(" flags:0x%x time:%ld\n", flag, t);
-	candat.count =i;
-	candat.time=t;
-	candat.id = id;
-	candat.len=dlc;
-	candat.header.stamp=ros::Time::now();
-	can_pub.publish(candat);
-	ros::spinOnce();
-	i++;
-	if (last_time == 0) {
-	  last_time = time(0);
-	} else if (time(0) > last_time) {
-	  last_time = time(0);
-	  if (i != last) {
-	    printf("rx : %d total: %d\n", i - last, i);
-	  }
-	  last = i;
-	}
+  candat.count =i;
+  candat.time=t;
+  candat.id = id;
+  candat.len=dlc;
+  candat.header.stamp=ros::Time::now();
+  can_pub.publish(candat);
+  ros::spinOnce();
+  i++;
+  if (last_time == 0) {
+    last_time = time(0);
+  } else if (time(0) > last_time) {
+    last_time = time(0);
+    if (i != last) {
+      printf("rx : %d total: %d\n", i - last, i);
+    }
+    last = i;
+  }
         break;
       case canERR_NOMSG:
         break;

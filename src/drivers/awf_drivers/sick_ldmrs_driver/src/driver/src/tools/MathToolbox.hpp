@@ -10,7 +10,7 @@
 #define MATHTOOLBOX_HPP
 
 #include <math.h>
-#include <cmath>	// for abs()
+#include <cmath>  // for abs()
 #include "../BasicDatatypes.hpp"
 
 
@@ -27,7 +27,7 @@ extern const double NaN_double;
 */
 inline bool fuzzyCompare (double a, double b)
 {
-	return std::abs(a - b) < 1E-11;
+  return std::abs(a - b) < 1E-11;
 }
 
 //
@@ -35,7 +35,7 @@ inline bool fuzzyCompare (double a, double b)
 //
 inline double sqr(double val)
 {
-	return val * val;
+  return val * val;
 }
 
 /// Tests if two \c float values are nearly equal
@@ -46,7 +46,7 @@ inline double sqr(double val)
  */
 inline bool fuzzyCompare(float a, float b)
 {
-	return std::abs(a - b) < 1E-6f;
+  return std::abs(a - b) < 1E-6f;
 }
 
 
@@ -62,7 +62,7 @@ double normalizeRadians (double radians);
 template<typename floatT>
 inline bool isNaN (floatT x)
 {
-	return (x != x);
+  return (x != x);
 }
 
 /// Round to the closest integer
@@ -74,9 +74,9 @@ template<typename IntT>
 inline IntT round_to_int (float floatValue)
 {
 
-	//	assert (std::numeric_limits<float>::round_style == std::round_toward_zero);
-	//	static_cast<IntT>() rounds toward zero
-	return IntT (floatValue + (floatValue >= 0.0f ? + 0.5f : -0.5f));
+  //  assert (std::numeric_limits<float>::round_style == std::round_toward_zero);
+  //  static_cast<IntT>() rounds toward zero
+  return IntT (floatValue + (floatValue >= 0.0f ? + 0.5f : -0.5f));
 }
 
 /// Round to the closest integer
@@ -88,9 +88,9 @@ template<typename IntT>
 inline IntT round_to_int (double floatValue)
 {
 
-	//	assert (std::numeric_limits<double>::round_style == std::round_toward_zero);
-	//	static_cast<IntT>() rounds toward zero
-	return IntT (floatValue + (floatValue >= 0.0 ? + 0.5 : -0.5));
+  //  assert (std::numeric_limits<double>::round_style == std::round_toward_zero);
+  //  static_cast<IntT>() rounds toward zero
+  return IntT (floatValue + (floatValue >= 0.0 ? + 0.5 : -0.5));
 }
 
 

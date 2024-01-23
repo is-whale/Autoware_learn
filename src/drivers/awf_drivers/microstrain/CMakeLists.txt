@@ -2,34 +2,19 @@ cmake_minimum_required(VERSION 2.8.3)
 project(microstrain_driver)
 
 find_package(catkin REQUIRED COMPONENTS
+  geometry_msgs
+  nav_msgs
   roscpp
-  tf2
-  tf2_ros
+  sensor_msgs
   std_msgs
   std_srvs
-  geometry_msgs
-  sensor_msgs
-  nav_msgs
+  tf2
+  tf2_ros
 )
 
 catkin_package(
-  INCLUDE_DIRS 
-    include
-  CATKIN_DEPENDS
-    roscpp
-    cmake_modules
-    tf2
-    tf2_ros
-    std_msgs
-    std_srvs
-    geometry_msgs
-    sensor_msgs
-    nav_msgs
+  INCLUDE_DIRS include
 )
-
-###########
-## Build ##
-###########
 
 # Directories containing MIP SDK header files
 set(MIPLIBINC MIPSDK/C/Library/Include)
@@ -84,14 +69,17 @@ target_link_libraries(microstrain_driver ${catkin_LIBRARIES})
 target_link_libraries(3dm_gx5_15_node microstrain_driver ${catkin_LIBRARIES})
 target_link_libraries(3dm_gx5_45_node microstrain_driver ${catkin_LIBRARIES})
 
-install(TARGETS
-        microstrain_driver
-        3dm_gx5_15_node
-        3dm_gx5_45_node
-        ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION})
+install(
+  TARGETS
+    microstrain_driver
+    3dm_gx5_15_node
+    3dm_gx5_45_node
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 install(DIRECTORY launch/
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
-        PATTERN ".svn" EXCLUDE)
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/launch
+  PATTERN ".svn" EXCLUDE
+)

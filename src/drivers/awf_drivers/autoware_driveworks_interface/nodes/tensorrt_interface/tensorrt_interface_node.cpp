@@ -33,11 +33,11 @@
 
 int main(int argc, char **argv)
 {
-	ros::init(argc, argv, "driveworks_tensorrt_interface");
+  ros::init(argc, argv, "driveworks_tensorrt_interface");
 
-	tensorrt_interface::TensorRTInterface node;
-	node.Init();
-	node.Run();
+  tensorrt_interface::TensorRTInterface node;
+  node.Init();
+  node.Run();
 
-	return 0;
+  return 0;
 }

@@ -26,6 +26,7 @@
 #include <geometry_msgs/TwistStamped.h>
 #include <autoware_msgs/VehicleCmd.h>
 #include <autoware_msgs/VehicleStatus.h>
+#include <autoware_msgs/Gear.h>
 #include <ds4_msgs/DS4.h>
 
 #include "cansend.h"

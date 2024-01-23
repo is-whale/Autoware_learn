@@ -89,7 +89,7 @@
 //The maximum time in milliseconds to wait for the capture gyro bias command to return.
 ///
 
-#define MIP_INTERFACE_GYRO_BIAS_COMMAND_RESPONSE_TIMEOUT_MS	45000
+#define MIP_INTERFACE_GYRO_BIAS_COMMAND_RESPONSE_TIMEOUT_MS  45000
 
 
 #endif

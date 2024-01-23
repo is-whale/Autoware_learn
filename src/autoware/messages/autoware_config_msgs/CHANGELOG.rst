@@ -2,6 +2,17 @@
 Changelog for package autoware_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.13.0 (2019-12-03)
+-------------------
+* Lateral limitation filter by twist_filter
+* add param of decision_maker: disable insert stopline
+* Add Message Properties for use_sim and use_decision_maker
+* Update package.xml files to Format 2.
+* Contributors: Joshua Whitley, Yuma Nihei, s-azumi
+
+1.12.0 (2019-07-12)
+-------------------
+
 1.11.0 (2019-03-21)
 -------------------
 * [Feature] Rebuild decision maker (`#1609 <https://github.com/CPFL/Autoware/issues/1609>`_)

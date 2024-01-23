@@ -7,7 +7,7 @@
 
 
 #include "../BasicDatatypes.hpp"
-#include <stdexcept>	// for throw
+#include <stdexcept>  // for throw
 
 
 #define printInfoMessage(a, b)  (b ? infoMessage(a, b):doNothing())

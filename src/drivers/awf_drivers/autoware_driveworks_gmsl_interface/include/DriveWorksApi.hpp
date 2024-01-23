@@ -96,7 +96,7 @@ struct Camera {
   std::queue<dwImageNvMedia *> rgbaPool;
   std::vector<dwImageNvMedia> frameRGBA;
   std::queue<uint8_t*> jpegPool;
-	std::vector<NvMediaIJPE *> jpegEncoders;
+  std::vector<NvMediaIJPE *> jpegEncoders;
 };
 
 
@@ -160,7 +160,7 @@ private:
   uint32_t g_numPort;
   std::vector<uint32_t> g_numCameraPort;
   const uint32_t max_jpeg_bytes = 3 * 1290 * 1208;
-	uint32_t JPEG_quality = 70;
+  uint32_t JPEG_quality = 70;
   std::string g_calibFolder = "";
 
 
@@ -172,8 +172,8 @@ private:
   dwContextHandle_t sdk = DW_NULL_HANDLE;
   dwSALHandle_t sal     = DW_NULL_HANDLE;
   std::vector<std::vector<dwImageNvMedia*>> g_frameRGBAPtr;
-  std::vector<std::vector<uint8_t*>>	g_frameJPGPtr;
-	std::vector<std::vector<uint32_t>>  g_compressedSize;
+  std::vector<std::vector<uint8_t*>>  g_frameJPGPtr;
+  std::vector<std::vector<uint32_t>>  g_compressedSize;
 
 
 };

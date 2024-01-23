@@ -78,8 +78,8 @@ int Full(QUEUE_TYPE *queue_ptr);
 int process_xbow_packet(QUEUE_TYPE *queue_ptr, XBOW_PACKET *result)
 {
   unsigned short myCRC = 0, packetCRC = 0, numToPop=0, counter=0;
-//	unsigned short packet_type = 0;
-//	char packet[100], tempchar, dataLength;
+//  unsigned short packet_type = 0;
+//  char packet[100], tempchar, dataLength;
   char dataLength;
   if(Empty(queue_ptr))
   {
