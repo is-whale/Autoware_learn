@@ -9,7 +9,8 @@
                 "/opt/ros/noetic/include/**",
                 "/usr/include/**",
                 "${workspaceFolder}/src/autoware/core_perception/ndt_cpu/include",
-                "${workspaceFolder}/src/autoware/common/autoware_health_checker/include/autoware_health_checker/system_status_subscriber/"
+                "${workspaceFolder}/src/autoware/common/autoware_health_checker/include/autoware_health_checker/system_status_subscriber/",
+                "${workspaceFolder}/autoware/core_planning/waypoint_planner/include"
             ],
             "name": "ROS",
             "intelliSenseMode": "gcc-x64",
