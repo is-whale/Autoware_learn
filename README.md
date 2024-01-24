@@ -1,13 +1,19 @@
+
 ## TODO
 
 - op_simulation_package 模拟了聚类对象，加了噪点。这部分代码可以用在雷达获取的信息利用部分
 - open planner 的思想可以借鉴
 - 状态机部分注意扩展性
 - 暂未发现障碍物膨胀的参数(也许在costmap_generate),或许可以通过修改车辆的宽度信息而修改A star的搜索
+- costmap生成的膨胀，预测占据的框格，A star的启发式函数修改
+
+compare_map_filter,lidar_euclidean_cluster_dectect,imm_ukf_pda_track,naive_motion_predict
 
 ## warning
 
 所有包均已替换为1.14并且删除子仓库
+
+costmap_generator `/points_no_ground` (sensor_msgs::PointCloud2) : from ray_ground_filter or compare map filter. It contains filtered points with the ground removed.
 
 ## 函数记录
 
