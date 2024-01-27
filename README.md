@@ -1,4 +1,3 @@
-
 ## TODO
 
 - op_simulation_package 模拟了聚类对象，加了噪点。这部分代码可以用在雷达获取的信息利用部分
@@ -40,3 +39,13 @@ search_waypoints_delta_  AstarAvoid类的成员变量，用于设置每次搜索
 ```
 
 ``getLocalClosestWaypoint  路线上和车辆距离最小的路点``
+
+nmea2kml tool 可以导出数据包中的GPS航点
+
+lanelet_aisan_converter 高精地图转换
+
+log_tool 日志工具
+
+# visualization
+
+Packages for Autoware-specific visualisation and linking Autoware to external visualisation projects.
