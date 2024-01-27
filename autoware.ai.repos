@@ -3,18 +3,18 @@ repositories:
     type: git
     url: https://gitlab.com/autowarefoundation/autoware.ai/common.git
     version: 1.14.0
-  # autoware/core_perception:
-  #   type: git
-  #   url: https://gitlab.com/autowarefoundation/autoware.ai/core_perception.git
-  #   version: 1.14.0
-  # autoware/core_planning:
-  #   type: git
-  #   url: https://gitlab.com/autowarefoundation/autoware.ai/core_planning.git
-  #   version: 1.14.0
-  # autoware/documentation:
-  #   type: git
-  #   url: https://gitlab.com/autowarefoundation/autoware.ai/documentation.git
-  #   version: 1.14.0
+  autoware/core_perception:
+    type: git
+    url: https://gitlab.com/autowarefoundation/autoware.ai/core_perception.git
+    version: 1.14.0
+  autoware/core_planning:
+    type: git
+    url: https://gitlab.com/autowarefoundation/autoware.ai/core_planning.git
+    version: 1.14.0
+  autoware/documentation:
+    type: git
+    url: https://gitlab.com/autowarefoundation/autoware.ai/documentation.git
+    version: 1.14.0
   autoware/messages:
     type: git
     url: https://gitlab.com/autowarefoundation/autoware.ai/messages.git
