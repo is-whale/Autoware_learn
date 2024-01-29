@@ -5,8 +5,7 @@
 - 状态机部分注意扩展性
 - 暂未发现障碍物膨胀的参数(也许在costmap_generate),或许可以通过修改车辆的宽度信息而修改A star的搜索
 - costmap生成的膨胀，预测占据的框格，A star的启发式函数修改
-
-compare_map_filter,lidar_euclidean_cluster_dectect,imm_ukf_pda_track,naive_motion_predict
+- 聚类+预测需要打开的compare_map_filter,lidar_euclidean_cluster_dectect,imm_ukf_pda_track,naive_motion_predict
 
 ## warning
 
