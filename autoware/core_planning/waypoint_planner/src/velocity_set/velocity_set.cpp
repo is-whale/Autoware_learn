@@ -565,7 +565,7 @@ int main(int argc, char** argv)
   // publisher
   ros::Publisher detection_range_pub = nh.advertise<visualization_msgs::MarkerArray>("detection_range", 1);
   ros::Publisher obstacle_pub = nh.advertise<visualization_msgs::Marker>("obstacle", 1);
-  ros::Publisher obstacle_waypoint_pub = nh.advertise<std_msgs::Int32>("obstacle_waypoint", 1, true);
+  ros::Publisher obstacle_waypoint_pub = nh.advertise<std_msgs::Int32>("obstacle_waypoint_origin", 1, true);
   ros::Publisher stopline_waypoint_pub = nh.advertise<std_msgs::Int32>("stopline_waypoint", 1, true);
 
   ros::Publisher final_waypoints_pub;
