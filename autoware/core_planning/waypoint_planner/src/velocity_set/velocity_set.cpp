@@ -385,6 +385,13 @@ EControl pointsDetection(const pcl::PointCloud<pcl::PointXYZ>& points, const int
       detectStopObstacle(points, closest_waypoint, lane, crosswalk, vs_info.getStopRange(),
                          vs_info.getPointsThreshold(), vs_info.getLocalizerPose(),
                          obstacle_points, &obstacle_type, vs_info.getDetectionResultByOtherNodes());
+      //light_brake
+      std_msgs::Int32 light_status_tmp = vs_info.getLightStatus();
+      std::cout << "light_status_tmp.data: " << light_status_tmp.data << std::endl;
+      if (light_status_tmp.data > -1)
+      {
+        stop_obstacle_waypoint = light_status_tmp.data;
+      }
 
   // skip searching deceleration range
   if (vs_info.getDecelerationRange() < 0.01)
@@ -547,7 +554,8 @@ int main(int argc, char** argv)
   ros::Subscriber current_vel_sub =
       nh.subscribe("current_velocity", 1, &VelocitySetPath::currentVelocityCallback, &vs_path);
 
-
+  // light brake subscriber
+  ros::Subscriber light_sub = nh.subscribe("traffic_light_status", 1, &VelocitySetInfo::light_brakeCallback, &vs_info);
 
   // velocity set info subscriber
   ros::Subscriber config_sub = nh.subscribe("config/velocity_set", 1, &VelocitySetInfo::configCallback, &vs_info);
@@ -565,7 +573,7 @@ int main(int argc, char** argv)
   // publisher
   ros::Publisher detection_range_pub = nh.advertise<visualization_msgs::MarkerArray>("detection_range", 1);
   ros::Publisher obstacle_pub = nh.advertise<visualization_msgs::Marker>("obstacle", 1);
-  ros::Publisher obstacle_waypoint_pub = nh.advertise<std_msgs::Int32>("obstacle_waypoint_origin", 1, true);
+  ros::Publisher obstacle_waypoint_pub = nh.advertise<std_msgs::Int32>("obstacle_waypoint", 1, true);
   ros::Publisher stopline_waypoint_pub = nh.advertise<std_msgs::Int32>("stopline_waypoint", 1, true);
 
   ros::Publisher final_waypoints_pub;
