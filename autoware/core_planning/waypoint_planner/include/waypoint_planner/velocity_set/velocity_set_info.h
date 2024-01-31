@@ -43,6 +43,8 @@ class VelocitySetInfo
   double velocity_change_limit_;    // (m/s)
   double temporal_waypoints_size_;  // (meter)
   int  wpidx_detectionResultByOtherNodes_; // waypoints index@finalwaypoints
+  // TODO : light_brake
+  std_msgs::Int32 light_status_;
 
   // ROS param
   double remove_points_upto_;
@@ -65,9 +67,15 @@ class VelocitySetInfo
   void localizerPoseCallback(const geometry_msgs::PoseStampedConstPtr &msg);
   void detectionCallback(const std_msgs::Int32 &msg);
 
+  //light brake
+  void light_brakeCallback(const std_msgs::Int32 &msg);
   void clearPoints();
 
-
+  //light brake
+  std_msgs::Int32 getLightStatus() const
+  {
+    return light_status_;
+  }
   int getDetectionResultByOtherNodes() const
   {
     return wpidx_detectionResultByOtherNodes_;

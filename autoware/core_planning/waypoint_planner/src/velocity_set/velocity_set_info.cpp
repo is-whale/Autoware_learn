@@ -129,3 +129,11 @@ void VelocitySetInfo::localizerPoseCallback(const geometry_msgs::PoseStampedCons
   health_checker_ptr_->CHECK_RATE("topic_rate_localizer_pose_slow", 8, 5, 1, "topic localizer_pose subscribe rate slow.");
   localizer_pose_ = *msg;
 }
+
+/**
+ * @brief light dectection
+  */
+void VelocitySetInfo::light_brakeCallback(const std_msgs::Int32 &msg)
+{
+  light_status_ = msg;
+}
