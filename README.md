@@ -13,6 +13,8 @@ autoware1.14源码的注释和优化。
 
 所有包均已替换为1.14并且删除子仓库
 
+障碍物聚类二维化
+
 costmap_generator `/points_no_ground` (sensor_msgs::PointCloud2) : from ray_ground_filter or compare map filter. It contains filtered points with the ground removed.
 
 ## 函数记录
