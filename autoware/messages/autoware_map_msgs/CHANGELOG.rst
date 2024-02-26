@@ -2,6 +2,9 @@
 Changelog for package autoware_map_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+1.14.0 (2020-09-03)
+-------------------
+
 1.13.0 (2019-12-03)
 -------------------
 * Update package.xml files to Format 2.
