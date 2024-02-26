@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Autoware Foundation. All rights reserved.
+ * Copyright 2018-2020 Autoware Foundation. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,42 +29,48 @@ bool CNNSegmentation::init()
 
   if (private_node_handle.getParam("network_definition_file", proto_file))
   {
-    ROS_INFO("[%s] network_definition_file: %s", __APP_NAME__, proto_file.c_str());
+    ROS_INFO("Network_definition_file: %s", proto_file.c_str());
   } else
   {
-    ROS_INFO("[%s] No Network Definition File was received. Finishing execution.", __APP_NAME__);
+    ROS_INFO("No Network Definition File was received. Finishing execution.");
     return false;
   }
   if (private_node_handle.getParam("pretrained_model_file", weight_file))
   {
-    ROS_INFO("[%s] Pretrained Model File: %s", __APP_NAME__, weight_file.c_str());
+    ROS_INFO("Pretrained Model File: %s", weight_file.c_str());
   } else
   {
-    ROS_INFO("[%s] No Pretrained Model File was received. Finishing execution.", __APP_NAME__);
+    ROS_INFO("No Pretrained Model File was received. Finishing execution.");
     return false;
   }
 
 
   private_node_handle.param<std::string>("points_src", topic_src_, "points_raw");
-  ROS_INFO("[%s] points_src: %s", __APP_NAME__, topic_src_.c_str());
+  ROS_INFO("points_src: %s", topic_src_.c_str());
 
   private_node_handle.param<double>("range", range_, 60.);
-  ROS_INFO("[%s] Pretrained Model File: %.2f", __APP_NAME__, range_);
+  ROS_INFO("range: %.2f", range_);
 
   private_node_handle.param<double>("score_threshold", score_threshold_, 0.6);
-  ROS_INFO("[%s] score_threshold: %.2f", __APP_NAME__, score_threshold_);
+  ROS_INFO("score_threshold: %.2f", score_threshold_);
 
   private_node_handle.param<int>("width", width_, 512);
-  ROS_INFO("[%s] width: %d", __APP_NAME__, width_);
+  ROS_INFO("width: %d", width_);
 
   private_node_handle.param<int>("height", height_, 512);
-  ROS_INFO("[%s] height: %d", __APP_NAME__, height_);
+  ROS_INFO("height: %d", height_);
+
+  private_node_handle.param<bool>("use_constant_feature", use_constant_feature_, false);
+  ROS_INFO("[%s] whether to use constant features: %d", __APP_NAME__, use_constant_feature_);
+
+  private_node_handle.param<bool>("normalize_lidar_intensity", normalize_lidar_intensity_, false);
+  ROS_INFO("[%s] whether to normalize lidar intensity data: %d", __APP_NAME__, normalize_lidar_intensity_);
 
   private_node_handle.param<bool>("use_gpu", use_gpu_, false);
-  ROS_INFO("[%s] use_gpu: %d", __APP_NAME__, use_gpu_);
+  ROS_INFO("use_gpu: %d", use_gpu_);
 
   private_node_handle.param<int>("gpu_device_id", gpu_device_id_, 0);
-  ROS_INFO("[%s] gpu_device_id: %d", __APP_NAME__, gpu_device_id_);
+  ROS_INFO("gpu_device_id: %d", gpu_device_id_);
 
   /// Instantiate Caffe net
   if (!use_gpu_)
@@ -115,14 +121,14 @@ bool CNNSegmentation::init()
   cluster2d_.reset(new Cluster2D());
   if (!cluster2d_->init(height_, width_, range_))
   {
-    ROS_ERROR("[%s] Fail to Initialize cluster2d for CNNSegmentation", __APP_NAME__);
+    ROS_ERROR("Failed to Initialize cluster2d for CNNSegmentation");
     return false;
   }
 
   feature_generator_.reset(new FeatureGenerator());
-  if (!feature_generator_->init(feature_blob_.get()))
+  if (!feature_generator_->init(feature_blob_.get(), use_constant_feature_, normalize_lidar_intensity_))
   {
-    ROS_ERROR("[%s] Fail to Initialize feature generator for CNNSegmentation", __APP_NAME__);
+    ROS_ERROR("Failed to Initialize feature generator for CNNSegmentation");
     return false;
   }
 
@@ -136,22 +142,14 @@ bool CNNSegmentation::segment(const pcl::PointCloud<pcl::PointXYZI>::Ptr &pc_ptr
   int num_pts = static_cast<int>(pc_ptr->points.size());
   if (num_pts == 0)
   {
-    ROS_INFO("[%s] Empty point cloud.", __APP_NAME__);
+    ROS_INFO("Empty point cloud.");
     return true;
   }
 
   feature_generator_->generate(pc_ptr);
 
-// network forward process
+  // network forward process
   caffe_net_->Forward();
-#ifndef USE_CAFFE_GPU
-//  caffe::Caffe::set_mode(caffe::Caffe::CPU);
-#else
-//  int gpu_id = 0;
-//   caffe::Caffe::SetDevice(gpu_id);
-//    caffe::Caffe::set_mode(caffe::Caffe::GPU);
-//    caffe::Caffe::DeviceQuery();
-#endif
 
   // clutser points and construct segments/objects
   float objectness_thresh = 0.5;
@@ -185,19 +183,21 @@ void CNNSegmentation::test_run()
   autoware_msgs::DetectedObjectArray objects;
   init();
   segment(in_pc_ptr, valid_idx, objects);
-
-
 }
 
 void CNNSegmentation::run()
 {
-  init();
+  if(this->init()){
+    ROS_INFO("Network init successfully!");
+  }else{
+    ROS_ERROR("Network init fail!!!");
+  }
 
   points_sub_ = nh_.subscribe(topic_src_, 1, &CNNSegmentation::pointsCallback, this);
   points_pub_ = nh_.advertise<sensor_msgs::PointCloud2>("/detection/lidar_detector/points_cluster", 1);
   objects_pub_ = nh_.advertise<autoware_msgs::DetectedObjectArray>("/detection/lidar_detector/objects", 1);
 
-  ROS_INFO("[%s] Ready. Waiting for data...", __APP_NAME__);
+  ROS_INFO("Ready. Waiting for data...");
 }
 
 void CNNSegmentation::pointsCallback(const sensor_msgs::PointCloud2 &msg)

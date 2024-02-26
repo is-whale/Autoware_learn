@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2019 Autoware Foundation. All rights reserved.
+ * Copyright 2018-2020 Autoware Foundation. All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,6 @@
 #include "cluster2d.h"
 #include "feature_generator.h"
 
-#define __APP_NAME__ "lidar_apollo_cnn_seg_detect"
-
 struct CellStat
 {
   CellStat() : point_num(0), valid_point_num(0)
@@ -61,6 +59,8 @@ private:
   double range_, score_threshold_;
   int width_;
   int height_;
+  bool use_constant_feature_;
+  bool normalize_lidar_intensity_;
   std_msgs::Header message_header_;
   std::string topic_src_;
 

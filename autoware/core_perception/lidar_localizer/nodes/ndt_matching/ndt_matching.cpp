@@ -30,10 +30,10 @@
 
 #include <boost/filesystem.hpp>
 
-#include <nav_msgs/Odometry.h>
 #include <ros/ros.h>
 #include <sensor_msgs/Imu.h>
 #include <sensor_msgs/PointCloud2.h>
+#include <nav_msgs/Odometry.h>
 #include <std_msgs/Bool.h>
 #include <std_msgs/Float32.h>
 #include <std_msgs/String.h>
@@ -43,10 +43,10 @@
 #include <geometry_msgs/PoseWithCovarianceStamped.h>
 #include <geometry_msgs/TwistStamped.h>
 
-#include <tf/tf.h>
-#include <tf/transform_broadcaster.h>
-#include <tf/transform_datatypes.h>
-#include <tf/transform_listener.h>
+#include <tf2_ros/transform_listener.h>
+#include <tf2_ros/transform_broadcaster.h>
+#include <tf2_eigen/tf2_eigen.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 #include <pcl/io/io.h>
 #include <pcl/io/pcd_io.h>
@@ -61,9 +61,6 @@
 #ifdef USE_PCL_OPENMP
 #include <pcl_omp_registration/ndt.h>
 #endif
-
-#include <pcl_ros/point_cloud.h>
-#include <pcl_ros/transforms.h>
 
 #include <autoware_config_msgs/ConfigNDT.h>
 
@@ -108,8 +105,7 @@ static double offset_odom_x, offset_odom_y, offset_odom_z, offset_odom_roll, off
 static double offset_imu_odom_x, offset_imu_odom_y, offset_imu_odom_z, offset_imu_odom_roll, offset_imu_odom_pitch,
     offset_imu_odom_yaw;
 
-// Can't load if typed "pcl::PointCloud<pcl::PointXYZRGB> map, add;"
-static pcl::PointCloud<pcl::PointXYZ> map, add;
+static pcl::PointCloud<pcl::PointXYZ> map;
 
 // If the map is loaded, map_loaded will be 1.
 static int map_loaded = 0;
@@ -147,12 +143,6 @@ static geometry_msgs::PoseStamped predict_pose_imu_odom_msg;
 static ros::Publisher ndt_pose_pub;
 static geometry_msgs::PoseStamped ndt_pose_msg;
 
-// current_pose is published by vel_pose_mux
-/*
-static ros::Publisher current_pose_pub;
-static geometry_msgs::PoseStamped current_pose_msg;
- */
-
 static ros::Publisher localizer_pose_pub;
 static geometry_msgs::PoseStamped localizer_pose_msg;
 
@@ -177,7 +167,6 @@ static double current_velocity = 0.0, previous_velocity = 0.0, previous_previous
 static double current_velocity_x = 0.0, previous_velocity_x = 0.0;
 static double current_velocity_y = 0.0, previous_velocity_y = 0.0;
 static double current_velocity_z = 0.0, previous_velocity_z = 0.0;
-// static double current_velocity_yaw = 0.0, previous_velocity_yaw = 0.0;
 static double current_velocity_smooth = 0.0;
 
 static double current_velocity_imu_x = 0.0;
@@ -188,7 +177,6 @@ static double current_accel = 0.0, previous_accel = 0.0;  // [m/s^2]
 static double current_accel_x = 0.0;
 static double current_accel_y = 0.0;
 static double current_accel_z = 0.0;
-// static double current_accel_yaw = 0.0;
 
 static double angular_velocity = 0.0;
 
@@ -202,17 +190,16 @@ static std::chrono::time_point<std::chrono::system_clock> matching_start, matchi
 static ros::Publisher time_ndt_matching_pub;
 static std_msgs::Float32 time_ndt_matching;
 
-static int _queue_size = 1000;
+static int _queue_size = 1;
 
 static ros::Publisher ndt_stat_pub;
 static autoware_msgs::NDTStat ndt_stat_msg;
 
 static double predict_pose_error = 0.0;
 
-static double _tf_x, _tf_y, _tf_z, _tf_roll, _tf_pitch, _tf_yaw;
+// hold transfrom from baselink to primary lidar
 static Eigen::Matrix4f tf_btol;
 
-static std::string _localizer = "velodyne";
 static std::string _offset = "linear";  // linear, zero, quadratic
 
 static ros::Publisher ndt_reliability_pub;
@@ -224,6 +211,7 @@ static bool _use_imu = false;
 static bool _use_odom = false;
 static bool _imu_upside_down = false;
 static bool _output_log_data = false;
+static std::string _output_tf_frame_id = "base_link";
 
 static std::string _imu_topic = "/imu_raw";
 
@@ -233,8 +221,7 @@ static std::string filename;
 static sensor_msgs::Imu imu;
 static nav_msgs::Odometry odom;
 
-// static tf::TransformListener local_transform_listener;
-static tf::StampedTransform local_transform;
+static tf2::Stamped<tf2::Transform> local_transform;
 
 static unsigned int points_map_num = 0;
 
@@ -242,23 +229,23 @@ pthread_mutex_t mutex;
 
 static pose convertPoseIntoRelativeCoordinate(const pose &target_pose, const pose &reference_pose)
 {
-    tf::Quaternion target_q;
+    tf2::Quaternion target_q;
     target_q.setRPY(target_pose.roll, target_pose.pitch, target_pose.yaw);
-    tf::Vector3 target_v(target_pose.x, target_pose.y, target_pose.z);
-    tf::Transform target_tf(target_q, target_v);
+    tf2::Vector3 target_v(target_pose.x, target_pose.y, target_pose.z);
+    tf2::Transform target_tf(target_q, target_v);
 
-    tf::Quaternion reference_q;
+    tf2::Quaternion reference_q;
     reference_q.setRPY(reference_pose.roll, reference_pose.pitch, reference_pose.yaw);
-    tf::Vector3 reference_v(reference_pose.x, reference_pose.y, reference_pose.z);
-    tf::Transform reference_tf(reference_q, reference_v);
+    tf2::Vector3 reference_v(reference_pose.x, reference_pose.y, reference_pose.z);
+    tf2::Transform reference_tf(reference_q, reference_v);
 
-    tf::Transform trans_target_tf = reference_tf.inverse() * target_tf;
+    tf2::Transform trans_target_tf = reference_tf.inverse() * target_tf;
 
     pose trans_target_pose;
     trans_target_pose.x = trans_target_tf.getOrigin().getX();
     trans_target_pose.y = trans_target_tf.getOrigin().getY();
     trans_target_pose.z = trans_target_tf.getOrigin().getZ();
-    tf::Matrix3x3 tmp_m(trans_target_tf.getRotation());
+    tf2::Matrix3x3 tmp_m(trans_target_tf.getRotation());
     tmp_m.getRPY(trans_target_pose.roll, trans_target_pose.pitch, trans_target_pose.yaw);
 
     return trans_target_pose;
@@ -312,7 +299,7 @@ static void param_callback(const autoware_config_msgs::ConfigNDT::ConstPtr& inpu
 #endif
 #ifdef USE_PCL_OPENMP
     else if (_method_type == MethodType::PCL_OPENMP)
-      omp_ndt.setStepSize(ndt_res);
+      omp_ndt.setStepSize(step_size);
 #endif
   }
 
@@ -330,7 +317,7 @@ static void param_callback(const autoware_config_msgs::ConfigNDT::ConstPtr& inpu
 #endif
 #ifdef USE_PCL_OPENMP
     else if (_method_type == MethodType::PCL_OPENMP)
-      omp_ndt.setTransformationEpsilon(ndt_res);
+      omp_ndt.setTransformationEpsilon(trans_eps);
 #endif
   }
 
@@ -348,7 +335,7 @@ static void param_callback(const autoware_config_msgs::ConfigNDT::ConstPtr& inpu
 #endif
 #ifdef USE_PCL_OPENMP
     else if (_method_type == MethodType::PCL_OPENMP)
-      omp_ndt.setMaximumIterations(ndt_res);
+      omp_ndt.setMaximumIterations(max_iter);
 #endif
   }
 
@@ -363,15 +350,15 @@ static void param_callback(const autoware_config_msgs::ConfigNDT::ConstPtr& inpu
 
     if (_use_local_transform == true)
     {
-      tf::Vector3 v(input->x, input->y, input->z);
-      tf::Quaternion q;
+      tf2::Vector3 v(input->x, input->y, input->z);
+      tf2::Quaternion q;
       q.setRPY(input->roll, input->pitch, input->yaw);
-      tf::Transform transform(q, v);
+      tf2::Transform transform(q, v);
       initial_pose.x = (local_transform.inverse() * transform).getOrigin().getX();
       initial_pose.y = (local_transform.inverse() * transform).getOrigin().getY();
       initial_pose.z = (local_transform.inverse() * transform).getOrigin().getZ();
 
-      tf::Matrix3x3 m(q);
+      tf2::Matrix3x3 m(q);
       m.getRPY(initial_pose.roll, initial_pose.pitch, initial_pose.yaw);
 
       std::cout << "initial_pose.x: " << initial_pose.x << std::endl;
@@ -438,19 +425,20 @@ static void map_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
 
     if (_use_local_transform == true)
     {
-      tf::TransformListener local_transform_listener;
+      tf2_ros::Buffer tf_buffer;
+      tf2_ros::TransformListener tf_listener(tf_buffer);
+      geometry_msgs::TransformStamped local_transform_msg;
       try
       {
-        ros::Time now = ros::Time(0);
-        local_transform_listener.waitForTransform("/map", "/world", now, ros::Duration(10.0));
-        local_transform_listener.lookupTransform("/map", "world", now, local_transform);
+        local_transform_msg = tf_buffer.lookupTransform("map", "world", ros::Time::now(), ros::Duration(3.0));
       }
-      catch (tf::TransformException& ex)
+      catch (tf2::TransformException& ex)
       {
         ROS_ERROR("%s", ex.what());
       }
 
-      pcl_ros::transformPointCloud(map, map, local_transform.inverse());
+      tf2::fromMsg(local_transform_msg, local_transform);
+      pcl::transformPointCloud(map, map, tf2::transformToEigen(local_transform_msg).matrix().inverse().cast<float>());
     }
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr map_ptr(new pcl::PointCloud<pcl::PointXYZ>(map));
@@ -539,9 +527,9 @@ static void map_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
 
 static void gnss_callback(const geometry_msgs::PoseStamped::ConstPtr& input)
 {
-  tf::Quaternion gnss_q(input->pose.orientation.x, input->pose.orientation.y, input->pose.orientation.z,
+  tf2::Quaternion gnss_q(input->pose.orientation.x, input->pose.orientation.y, input->pose.orientation.z,
                         input->pose.orientation.w);
-  tf::Matrix3x3 gnss_m(gnss_q);
+  tf2::Matrix3x3 gnss_m(gnss_q);
 
   pose current_gnss_pose;
   current_gnss_pose.x = input->pose.position.x;
@@ -606,22 +594,21 @@ static void gnss_callback(const geometry_msgs::PoseStamped::ConstPtr& input)
 
 static void initialpose_callback(const geometry_msgs::PoseWithCovarianceStamped::ConstPtr& input)
 {
-  tf::TransformListener listener;
-  tf::StampedTransform transform;
+  tf2_ros::Buffer tf_buffer;
+  tf2_ros::TransformListener tf_listener(tf_buffer);
+  geometry_msgs::TransformStamped tf_msg;
   try
   {
-    ros::Time now = ros::Time(0);
-    listener.waitForTransform("/map", input->header.frame_id, now, ros::Duration(10.0));
-    listener.lookupTransform("/map", input->header.frame_id, now, transform);
+    tf_msg = tf_buffer.lookupTransform("map", input->header.frame_id, ros::Time::now(), ros::Duration(3.0));
   }
-  catch (tf::TransformException& ex)
+  catch (tf2::TransformException& ex)
   {
     ROS_ERROR("%s", ex.what());
   }
 
-  tf::Quaternion q(input->pose.pose.orientation.x, input->pose.pose.orientation.y, input->pose.pose.orientation.z,
+  tf2::Quaternion q(input->pose.pose.orientation.x, input->pose.pose.orientation.y, input->pose.pose.orientation.z,
                    input->pose.pose.orientation.w);
-  tf::Matrix3x3 m(q);
+  tf2::Matrix3x3 m(q);
 
   if (_use_local_transform == true)
   {
@@ -631,9 +618,9 @@ static void initialpose_callback(const geometry_msgs::PoseWithCovarianceStamped:
   }
   else
   {
-    current_pose.x = input->pose.pose.position.x + transform.getOrigin().x();
-    current_pose.y = input->pose.pose.position.y + transform.getOrigin().y();
-    current_pose.z = input->pose.pose.position.z + transform.getOrigin().z();
+    current_pose.x = input->pose.pose.position.x + tf_msg.transform.translation.x;
+    current_pose.y = input->pose.pose.position.y + tf_msg.transform.translation.y;
+    current_pose.z = input->pose.pose.position.z + tf_msg.transform.translation.z;
   }
   m.getRPY(current_pose.roll, current_pose.pitch, current_pose.yaw);
 
@@ -840,19 +827,24 @@ static double calcDiffForRadian(const double lhs_rad, const double rhs_rad)
 
 static void odom_callback(const nav_msgs::Odometry::ConstPtr& input)
 {
-  // std::cout << __func__ << std::endl;
-
   odom = *input;
   odom_calc(input->header.stamp);
+}
+
+static void vehicle_twist_callback(const geometry_msgs::TwistStampedConstPtr& msg)
+{
+  odom.header = msg->header;
+  odom.twist.twist = msg->twist;
+  odom_calc(odom.header.stamp);
 }
 
 static void imuUpsideDown(const sensor_msgs::Imu::Ptr input)
 {
   double input_roll, input_pitch, input_yaw;
 
-  tf::Quaternion input_orientation;
-  tf::quaternionMsgToTF(input->orientation, input_orientation);
-  tf::Matrix3x3(input_orientation).getRPY(input_roll, input_pitch, input_yaw);
+  tf2::Quaternion input_orientation;
+  tf2::fromMsg(input->orientation, input_orientation);
+  tf2::Matrix3x3(input_orientation).getRPY(input_roll, input_pitch, input_yaw);
 
   input->angular_velocity.x *= -1;
   input->angular_velocity.y *= -1;
@@ -866,7 +858,9 @@ static void imuUpsideDown(const sensor_msgs::Imu::Ptr input)
   input_pitch *= -1;
   input_yaw *= -1;
 
-  input->orientation = tf::createQuaternionMsgFromRollPitchYaw(input_roll, input_pitch, input_yaw);
+  tf2::Quaternion tf_quat;
+  tf_quat.setRPY(input_roll, input_pitch, input_yaw);
+  input->orientation = tf2::toMsg(tf_quat);
 }
 
 static void imu_callback(const sensor_msgs::Imu::Ptr& input)
@@ -881,9 +875,9 @@ static void imu_callback(const sensor_msgs::Imu::Ptr& input)
   const double diff_time = (current_time - previous_time).toSec();
 
   double imu_roll, imu_pitch, imu_yaw;
-  tf::Quaternion imu_orientation;
-  tf::quaternionMsgToTF(input->orientation, imu_orientation);
-  tf::Matrix3x3(imu_orientation).getRPY(imu_roll, imu_pitch, imu_yaw);
+  tf2::Quaternion imu_orientation;
+  tf2::fromMsg(input->orientation, imu_orientation);
+  tf2::Matrix3x3(imu_orientation).getRPY(imu_roll, imu_pitch, imu_yaw);
 
   imu_roll = wrapToPmPi(imu_roll);
   imu_pitch = wrapToPmPi(imu_pitch);
@@ -929,9 +923,9 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
   {
     matching_start = std::chrono::system_clock::now();
 
-    static tf::TransformBroadcaster br;
-    tf::Transform transform;
-    tf::Quaternion predict_q, ndt_q, current_q, localizer_q;
+    static tf2_ros::TransformBroadcaster br;
+    tf2::Transform transform;
+    tf2::Quaternion predict_q, ndt_q, current_q, localizer_q;
 
     pcl::PointXYZ p;
     pcl::PointCloud<pcl::PointXYZ> filtered_scan;
@@ -1104,7 +1098,7 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
 
     pthread_mutex_unlock(&mutex);
 
-    tf::Matrix3x3 mat_l;  // localizer
+    tf2::Matrix3x3 mat_l;  // localizer
     mat_l.setValue(static_cast<double>(t(0, 0)), static_cast<double>(t(0, 1)), static_cast<double>(t(0, 2)),
                    static_cast<double>(t(1, 0)), static_cast<double>(t(1, 1)), static_cast<double>(t(1, 2)),
                    static_cast<double>(t(2, 0)), static_cast<double>(t(2, 1)), static_cast<double>(t(2, 2)));
@@ -1115,7 +1109,7 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
     localizer_pose.z = t(2, 3);
     mat_l.getRPY(localizer_pose.roll, localizer_pose.pitch, localizer_pose.yaw, 1);
 
-    tf::Matrix3x3 mat_b;  // base_link
+    tf2::Matrix3x3 mat_b;  // base_link
     mat_b.setValue(static_cast<double>(t2(0, 0)), static_cast<double>(t2(0, 1)), static_cast<double>(t2(0, 2)),
                    static_cast<double>(t2(1, 0)), static_cast<double>(t2(1, 1)), static_cast<double>(t2(1, 2)),
                    static_cast<double>(t2(2, 0)), static_cast<double>(t2(2, 1)), static_cast<double>(t2(2, 2)));
@@ -1222,9 +1216,9 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
     predict_q.setRPY(predict_pose.roll, predict_pose.pitch, predict_pose.yaw);
     if (_use_local_transform == true)
     {
-      tf::Vector3 v(predict_pose.x, predict_pose.y, predict_pose.z);
-      tf::Transform transform(predict_q, v);
-      predict_pose_msg.header.frame_id = "/map";
+      tf2::Vector3 v(predict_pose.x, predict_pose.y, predict_pose.z);
+      tf2::Transform transform(predict_q, v);
+      predict_pose_msg.header.frame_id = "map";
       predict_pose_msg.header.stamp = current_scan_time;
       predict_pose_msg.pose.position.x = (local_transform * transform).getOrigin().getX();
       predict_pose_msg.pose.position.y = (local_transform * transform).getOrigin().getY();
@@ -1236,7 +1230,7 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
     }
     else
     {
-      predict_pose_msg.header.frame_id = "/map";
+      predict_pose_msg.header.frame_id = "map";
       predict_pose_msg.header.stamp = current_scan_time;
       predict_pose_msg.pose.position.x = predict_pose.x;
       predict_pose_msg.pose.position.y = predict_pose.y;
@@ -1247,7 +1241,7 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
       predict_pose_msg.pose.orientation.w = predict_q.w();
     }
 
-    tf::Quaternion predict_q_imu;
+    tf2::Quaternion predict_q_imu;
     predict_q_imu.setRPY(predict_pose_imu.roll, predict_pose_imu.pitch, predict_pose_imu.yaw);
     predict_pose_imu_msg.header.frame_id = "map";
     predict_pose_imu_msg.header.stamp = input->header.stamp;
@@ -1260,7 +1254,7 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
     predict_pose_imu_msg.pose.orientation.w = predict_q_imu.w();
     predict_pose_imu_pub.publish(predict_pose_imu_msg);
 
-    tf::Quaternion predict_q_odom;
+    tf2::Quaternion predict_q_odom;
     predict_q_odom.setRPY(predict_pose_odom.roll, predict_pose_odom.pitch, predict_pose_odom.yaw);
     predict_pose_odom_msg.header.frame_id = "map";
     predict_pose_odom_msg.header.stamp = input->header.stamp;
@@ -1273,7 +1267,7 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
     predict_pose_odom_msg.pose.orientation.w = predict_q_odom.w();
     predict_pose_odom_pub.publish(predict_pose_odom_msg);
 
-    tf::Quaternion predict_q_imu_odom;
+    tf2::Quaternion predict_q_imu_odom;
     predict_q_imu_odom.setRPY(predict_pose_imu_odom.roll, predict_pose_imu_odom.pitch, predict_pose_imu_odom.yaw);
     predict_pose_imu_odom_msg.header.frame_id = "map";
     predict_pose_imu_odom_msg.header.stamp = input->header.stamp;
@@ -1289,9 +1283,9 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
     ndt_q.setRPY(ndt_pose.roll, ndt_pose.pitch, ndt_pose.yaw);
     if (_use_local_transform == true)
     {
-      tf::Vector3 v(ndt_pose.x, ndt_pose.y, ndt_pose.z);
-      tf::Transform transform(ndt_q, v);
-      ndt_pose_msg.header.frame_id = "/map";
+      tf2::Vector3 v(ndt_pose.x, ndt_pose.y, ndt_pose.z);
+      tf2::Transform transform(ndt_q, v);
+      ndt_pose_msg.header.frame_id = "map";
       ndt_pose_msg.header.stamp = current_scan_time;
       ndt_pose_msg.pose.position.x = (local_transform * transform).getOrigin().getX();
       ndt_pose_msg.pose.position.y = (local_transform * transform).getOrigin().getY();
@@ -1303,7 +1297,7 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
     }
     else
     {
-      ndt_pose_msg.header.frame_id = "/map";
+      ndt_pose_msg.header.frame_id = "map";
       ndt_pose_msg.header.stamp = current_scan_time;
       ndt_pose_msg.pose.position.x = ndt_pose.x;
       ndt_pose_msg.pose.position.y = ndt_pose.y;
@@ -1317,7 +1311,7 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
     current_q.setRPY(current_pose.roll, current_pose.pitch, current_pose.yaw);
     // current_pose is published by vel_pose_mux
     /*
-    current_pose_msg.header.frame_id = "/map";
+    current_pose_msg.header.frame_id = "map";
     current_pose_msg.header.stamp = current_scan_time;
     current_pose_msg.pose.position.x = current_pose.x;
     current_pose_msg.pose.position.y = current_pose.y;
@@ -1331,9 +1325,9 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
     localizer_q.setRPY(localizer_pose.roll, localizer_pose.pitch, localizer_pose.yaw);
     if (_use_local_transform == true)
     {
-      tf::Vector3 v(localizer_pose.x, localizer_pose.y, localizer_pose.z);
-      tf::Transform transform(localizer_q, v);
-      localizer_pose_msg.header.frame_id = "/map";
+      tf2::Vector3 v(localizer_pose.x, localizer_pose.y, localizer_pose.z);
+      tf2::Transform transform(localizer_q, v);
+      localizer_pose_msg.header.frame_id = "map";
       localizer_pose_msg.header.stamp = current_scan_time;
       localizer_pose_msg.pose.position.x = (local_transform * transform).getOrigin().getX();
       localizer_pose_msg.pose.position.y = (local_transform * transform).getOrigin().getY();
@@ -1345,7 +1339,7 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
     }
     else
     {
-      localizer_pose_msg.header.frame_id = "/map";
+      localizer_pose_msg.header.frame_id = "map";
       localizer_pose_msg.header.stamp = current_scan_time;
       localizer_pose_msg.pose.position.x = localizer_pose.x;
       localizer_pose_msg.pose.position.y = localizer_pose.y;
@@ -1359,22 +1353,19 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
     predict_pose_pub.publish(predict_pose_msg);
     health_checker_ptr_->CHECK_RATE("topic_rate_ndt_pose_slow", 8, 5, 1, "topic ndt_pose publish rate slow.");
     ndt_pose_pub.publish(ndt_pose_msg);
-    // current_pose is published by vel_pose_mux
-    //    current_pose_pub.publish(current_pose_msg);
     localizer_pose_pub.publish(localizer_pose_msg);
 
-    // Send TF "/base_link" to "/map"
-    transform.setOrigin(tf::Vector3(current_pose.x, current_pose.y, current_pose.z));
+    // Send TF "base_link" to "map"
+    transform.setOrigin(tf2::Vector3(current_pose.x, current_pose.y, current_pose.z));
     transform.setRotation(current_q);
-    //    br.sendTransform(tf::StampedTransform(transform, current_scan_time, "/map", "/base_link"));
     if (_use_local_transform == true)
     {
-      br.sendTransform(tf::StampedTransform(local_transform * transform, current_scan_time, "/map", "/base_link"));
+      transform = local_transform * transform;
     }
-    else
-    {
-      br.sendTransform(tf::StampedTransform(transform, current_scan_time, "/map", "/base_link"));
-    }
+    tf2::Stamped<tf2::Transform> tf(transform, current_scan_time, "map");
+    geometry_msgs::TransformStamped tf_msg = tf2::toMsg(tf);
+    tf_msg.child_frame_id = _output_tf_frame_id;
+    br.sendTransform(tf_msg);
 
     matching_end = std::chrono::system_clock::now();
     exe_time = std::chrono::duration_cast<std::chrono::microseconds>(matching_end - matching_start).count() / 1000.0;
@@ -1384,7 +1375,7 @@ static void points_callback(const sensor_msgs::PointCloud2::ConstPtr& input)
 
     // Set values for /estimate_twist
     estimate_twist_msg.header.stamp = current_scan_time;
-    estimate_twist_msg.header.frame_id = "/base_link";
+    estimate_twist_msg.header.frame_id = "base_link";
     estimate_twist_msg.twist.linear.x = current_velocity;
     estimate_twist_msg.twist.linear.y = 0.0;
     estimate_twist_msg.twist.linear.z = 0.0;
@@ -1559,43 +1550,83 @@ int main(int argc, char** argv)
   private_nh.getParam("imu_upside_down", _imu_upside_down);
   private_nh.getParam("imu_topic", _imu_topic);
   private_nh.param<double>("gnss_reinit_fitness", _gnss_reinit_fitness, 500.0);
+  private_nh.getParam("output_tf_frame_id", _output_tf_frame_id);
 
+  std::string lidar_frame;
+  nh.param("localizer", lidar_frame, std::string("lidar"));
+  tf2_ros::Buffer tf_buffer;
+  tf2_ros::TransformListener tf_listener(tf_buffer);
+  geometry_msgs::TransformStamped tf_baselink2primarylidar;
+  bool received_tf = true;
 
-  if (nh.getParam("localizer", _localizer) == false)
+  // 1. Try getting base_link -> lidar TF from TF tree
+  try
   {
-    std::cout << "localizer is not set." << std::endl;
+    tf_baselink2primarylidar =
+      tf_buffer.lookupTransform("base_link", lidar_frame, ros::Time().now(), ros::Duration(3.0));
+  }
+  catch (tf2::TransformException& ex)
+  {
+    ROS_WARN("Query base_link to primary lidar frame through TF tree failed: %s", ex.what());
+    received_tf = false;
+  }
+
+  // 2. Try getting base_link -> lidar TF from tf_baselink2primarylidar param
+  if (!received_tf)
+  {
+    std::vector<double> bl2pl_vec;
+    if (nh.getParam("tf_baselink2primarylidar", bl2pl_vec) && bl2pl_vec.size() == 6)
+    {
+      tf2::Vector3 tf_trans(bl2pl_vec[0], bl2pl_vec[1], bl2pl_vec[2]);
+      tf2::Quaternion tf_quat;
+      tf_quat.setRPY(bl2pl_vec[5], bl2pl_vec[4], bl2pl_vec[3]);
+      tf_baselink2primarylidar.transform.translation = tf2::toMsg(tf_trans);
+      tf_baselink2primarylidar.transform.rotation = tf2::toMsg(tf_quat);
+
+      received_tf = true;
+    }
+    else
+    {
+      ROS_WARN("Query base_link to primary lidar frame through tf_baselink2primarylidar param failed");
+    }
+  }
+
+  // 3. Try getting base_link -> lidar TF from tf_* params
+  if (!received_tf)
+  {
+    float tf_x, tf_y, tf_z, tf_roll, tf_pitch, tf_yaw;
+    if (nh.getParam("tf_x", tf_x) &&
+        nh.getParam("tf_y", tf_y) &&
+        nh.getParam("tf_z", tf_z) &&
+        nh.getParam("tf_roll", tf_roll) &&
+        nh.getParam("tf_pitch", tf_pitch) &&
+        nh.getParam("tf_yaw", tf_yaw))
+    {
+      tf2::Vector3 tf_trans(tf_x, tf_y, tf_z);
+      tf2::Quaternion tf_quat;
+      tf_quat.setRPY(tf_roll, tf_pitch, tf_yaw);
+      tf_baselink2primarylidar.transform.translation = tf2::toMsg(tf_trans);
+      tf_baselink2primarylidar.transform.rotation = tf2::toMsg(tf_quat);
+
+      received_tf = true;
+    }
+    else
+    {
+      ROS_WARN("Query base_link to primary lidar frame through tf_* params failed");
+    }
+  }
+
+  if (received_tf)
+  {
+    ROS_INFO("base_link to primary lidar transform queried successfully");
+  }
+  else
+  {
+    ROS_ERROR("Failed to query base_link to primary lidar transform");
     return 1;
   }
-  if (nh.getParam("tf_x", _tf_x) == false)
-  {
-    std::cout << "tf_x is not set." << std::endl;
-    return 1;
-  }
-  if (nh.getParam("tf_y", _tf_y) == false)
-  {
-    std::cout << "tf_y is not set." << std::endl;
-    return 1;
-  }
-  if (nh.getParam("tf_z", _tf_z) == false)
-  {
-    std::cout << "tf_z is not set." << std::endl;
-    return 1;
-  }
-  if (nh.getParam("tf_roll", _tf_roll) == false)
-  {
-    std::cout << "tf_roll is not set." << std::endl;
-    return 1;
-  }
-  if (nh.getParam("tf_pitch", _tf_pitch) == false)
-  {
-    std::cout << "tf_pitch is not set." << std::endl;
-    return 1;
-  }
-  if (nh.getParam("tf_yaw", _tf_yaw) == false)
-  {
-    std::cout << "tf_yaw is not set." << std::endl;
-    return 1;
-  }
+
+  tf_btol = tf2::transformToEigen(tf_baselink2primarylidar).matrix().cast<float>();
 
   std::cout << "-----------------------------------------------------------------" << std::endl;
   std::cout << "Log file: " << filename << std::endl;
@@ -1609,10 +1640,9 @@ int main(int argc, char** argv)
   std::cout << "use_imu: " << _use_imu << std::endl;
   std::cout << "imu_upside_down: " << _imu_upside_down << std::endl;
   std::cout << "imu_topic: " << _imu_topic << std::endl;
-  std::cout << "localizer: " << _localizer << std::endl;
+  std::cout << "localizer: " << lidar_frame << std::endl;
   std::cout << "gnss_reinit_fitness: " << _gnss_reinit_fitness << std::endl;
-  std::cout << "(tf_x,tf_y,tf_z,tf_roll,tf_pitch,tf_yaw): (" << _tf_x << ", " << _tf_y << ", " << _tf_z << ", "
-            << _tf_roll << ", " << _tf_pitch << ", " << _tf_yaw << ")" << std::endl;
+  std::cout << "tf_baselink2primarylidar: \n" << tf_btol << std::endl;
   std::cout << "-----------------------------------------------------------------" << std::endl;
 
 #ifndef CUDA_FOUND
@@ -1633,12 +1663,6 @@ int main(int argc, char** argv)
     exit(1);
   }
 #endif
-
-  Eigen::Translation3f tl_btol(_tf_x, _tf_y, _tf_z);                 // tl: translation
-  Eigen::AngleAxisf rot_x_btol(_tf_roll, Eigen::Vector3f::UnitX());  // rot: rotation
-  Eigen::AngleAxisf rot_y_btol(_tf_pitch, Eigen::Vector3f::UnitY());
-  Eigen::AngleAxisf rot_z_btol(_tf_yaw, Eigen::Vector3f::UnitZ());
-  tf_btol = (tl_btol * rot_z_btol * rot_y_btol * rot_x_btol).matrix();
 
   // Updated in initialpose_callback or gnss_callback
   initial_pose.x = 0.0;
@@ -1670,8 +1694,9 @@ int main(int argc, char** argv)
   //  ros::Subscriber map_sub = nh.subscribe("points_map", 1, map_callback);
   ros::Subscriber initialpose_sub = nh.subscribe("initialpose", 10, initialpose_callback);
   ros::Subscriber points_sub = nh.subscribe("filtered_points", _queue_size, points_callback);
-  ros::Subscriber odom_sub = nh.subscribe("/vehicle/odom", _queue_size * 10, odom_callback);
+  ros::Subscriber odom_sub = nh.subscribe("vehicle/odom", _queue_size * 10, odom_callback);
   ros::Subscriber imu_sub = nh.subscribe(_imu_topic.c_str(), _queue_size * 10, imu_callback);
+  ros::Subscriber twist_sub = nh.subscribe("vehicle/twist", 10, vehicle_twist_callback);
 
   pthread_t thread;
   pthread_create(&thread, NULL, thread_func, NULL);
