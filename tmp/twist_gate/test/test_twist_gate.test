@@ -1,5 +1,0 @@
-<launch>
-
-  <test test-name="test-twist_gate" pkg="twist_gate" type="test-twist_gate" name="test"/>
-
-</launch>
