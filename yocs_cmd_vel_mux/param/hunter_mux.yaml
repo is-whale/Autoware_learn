@@ -1,0 +1,36 @@
+# Created on: Oct 29, 2012
+#     Author: jorge
+# Configuration for subscribers to cmd_vel sources. This file is provided just as an example.
+# Typically automatic controllers, as ROS navigation stack should have the minimum priority
+#
+# Used with example.launch
+#
+# Individual subscriber configuration:
+#   name:           Source name
+#   topic:          The topic that provides cmd_vel messages
+#   timeout:        Time in seconds without incoming messages to consider this topic inactive
+#   priority:       Priority: an UNIQUE unsigned integer from 0 (lowest) to MAX_INT 
+#   short_desc:     Short description (optional)
+
+subscribers:
+  - name:        "Default input"
+    topic:       "input/default"
+    timeout:     0.1
+    priority:    0
+    short_desc:  "The default cmd_vel, controllers unaware that we are multiplexing cmd_vel should come here"
+  - name:        "Navigation stack"
+    topic:       "input/move_base_cmd"
+    timeout:     0.5
+    priority:    1
+    short_desc:  "Key controller"
+  - name:        "Key control"
+    topic:       "input/key_vel"
+    timeout:     0.1
+    priority:    2
+    short_desc:  "using controller can be used on miniPC"
+  - name:        "secure vel"
+    topic:       "input/auto_brake_cmd"
+    timeout:     0.1
+    priority:    10
+    short_desc:  "secure vel use piontcloud"
+publisher:       "output/cmd_vel"

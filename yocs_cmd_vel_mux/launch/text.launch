@@ -1,0 +1,12 @@
+<!-- 使用小海龟例程测试多路速度节点，测试通过 -->
+<launch>
+    <include file="$(find yocs_cmd_vel_mux)/launch/standalone.launch"/>
+
+    <node pkg="turtlesim" type="turtlesim_node" name="turtlesim_node" >
+        <remap from="/turtle1/cmd_vel" to="/yocs_cmd_vel_mux/output/cmd_vel" />
+    </node>
+
+    <node pkg="turtlesim" type="turtle_teleop_key" name="turtle_teleop_key" output="screen">
+        <remap from="/turtle1/cmd_vel" to="/yocs_cmd_vel_mux/input/keyop" />
+    </node>
+</launch>
