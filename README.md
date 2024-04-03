@@ -1,8 +1,14 @@
 # Autoware.ai v1.14个人维护版本
 ---
-原始版本![WIKI地址](https://github.com/autowarefoundation/autoware_ai_documentation/wiki)
+autoware.ai原始版本![WIKI地址](https://github.com/autowarefoundation/autoware_ai_documentation/wiki)
+已停止维护和更新
+## Introduction
+autoware原始版本已停止维护，autoware团队的开发转向了基于ROS2的autoware.universe系列版本，但是基于ROS1的Autoware仍然有很好的学习意义，可以通过ROS1快速上手。但是由于停止维护，相关的资料较少，并且一些不合理的部分需要修改，所以本人fork了原始仓库，根据自己对源码的理解添加注释，并且对一些模块做了优化等。并且在完善各功能的操作方法等。
+如果对你有帮助，欢迎star和fork。如果你有好的想法，也欢迎提出PR。
+## TODO 
+- [ ] 重规划优化
 
-## TODO
+## LIST
 
 - op_simulation_package 模拟了聚类对象，加了噪点。这部分代码可以用在雷达获取的信息利用部分
 - open planner 的思想可以借鉴
