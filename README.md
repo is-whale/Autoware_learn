@@ -1,4 +1,4 @@
-# Autoware.ai v1.14个人维护版本
+# Autoware.ai v1.14持续维护版本
 ---
 autoware.ai原始版本![WIKI地址](https://github.com/autowarefoundation/autoware_ai_documentation/wiki)
 已停止维护和更新
@@ -9,6 +9,8 @@ autoware原始版本已停止维护，autoware团队的开发转向了基于ROS2
 - [ ] 重规划优化
     - 使用![Hybrid A*快速版本](https://github.com/is-whale/path_planner_Hybrid) 替换Astar search；
     - 目前的避让规划需要等待状态机的相应，当车辆转为避让模式时开始新路线搜索，可以从搜索开始时机入手，使用平行驾驶的思想，在车辆循迹时同时进行路线搜索，状态机仅作为安全判定和模式切换；
+- [ ] 模块解耦
+    - 这部分比较困难，由于原来的模块是互相耦合依赖的整体，导致模块的解耦基本等于重写，目前规划是把毕竟重要并且有较高复用价值的模块首先重新优化，可能会删除一部分功能，其他模块暂时不动。
 
 ## LIST
 
@@ -17,15 +19,38 @@ autoware原始版本已停止维护，autoware团队的开发转向了基于ROS2
 - 状态机部分注意扩展性
 - 暂未发现障碍物膨胀的参数(也许在costmap_generate),或许可以通过修改车辆的宽度信息而修改A star的搜索
 - costmap生成的膨胀，预测占据的框格，A star的启发式函数修改
-- 聚类+预测需要打开的选项compare_map_filter,lidar_euclidean_cluster_dectect,imm_ukf_pda_track,naive_motion_predict
+- 聚类 + 预测需要打开的选项compare_map_filter,lidar_euclidean_cluster_dectect,imm_ukf_pda_track,naive_motion_predict
 
 ## warning
 
-**gitlab的并不是最新版，github存档的单独仓库才是最新版**
+**官方的gitlab的并不是最新版，github存档的单独仓库才是最新版**
 
 障碍物聚类二维化
 
 costmap_generator `/points_no_ground` (sensor_msgs::PointCloud2) : from ray_ground_filter or compare map filter. It contains filtered points with the ground removed.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## 函数记录
 
