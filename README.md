@@ -12,6 +12,23 @@ autoware原始版本已停止维护，autoware团队的开发转向了基于ROS2
 - [ ] 模块解耦
     - 这部分比较困难，由于原来的模块是互相耦合依赖的整体，导致模块的解耦基本等于重写，目前规划是把毕竟重要并且有较高复用价值的模块首先重新优化，可能会删除一部分功能，其他模块暂时不动。
 
+安装依赖项
+
+$ rosdep update
+$ rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO
+编译工作区
+
+支持 CUDA
+
+```
+$ AUTOWARE_COMPILE_WITH_CUDA=1 colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+```
+没有CUDA支持
+```
+
+$ colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+```
+
 ## LIST
 
 - op_simulation_package 模拟了聚类对象，加了噪点。这部分代码可以用在雷达获取的信息利用部分
