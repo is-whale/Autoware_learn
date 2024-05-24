@@ -30,6 +30,13 @@ constexpr int32_t DECELERATION_SEARCH_DISTANCE = 30;
 // The number of waypoints ahead of the current closest waypoint to search.
 constexpr int32_t STOP_SEARCH_DISTANCE = 60;
 
+/**
+ * 根据障碍物的种类设置颜色。
+ *
+ * @param kind 障碍物的种类，可能的值包括EControl::STOP、EControl::STOPLINE、EControl::DECELERATE和其他。
+ * @param color 用于存储颜色的std_msgs::ColorRGBA对象。根据障碍物的种类，该对象的r、g、b属性将被设置为相应的颜色值，a属性将被设置为alpha参数的值。
+ * @param alpha 透明度值，取值范围为0.0到1.0，默认值为0.5。
+ */
 void obstacleColorByKind(const EControl kind, std_msgs::ColorRGBA &color, const double alpha=0.5)
 {
   if (kind == EControl::STOP)
@@ -51,6 +58,13 @@ void obstacleColorByKind(const EControl kind, std_msgs::ColorRGBA &color, const 
 }
 
 // Display a detected obstacle
+/**
+ * 根据给定的障碍物类型、障碍物点和发布者，显示障碍物。
+ *
+ * @param kind 障碍物的类型，决定了障碍物的颜色和大小。
+ * @param obstacle_points 障碍物的坐标点集合。
+ * @param obstacle_pub 用于发布障碍物信息的发布者。
+ */
 void displayObstacle(const EControl& kind, const ObstaclePoints& obstacle_points, const ros::Publisher& obstacle_pub)
 {
   visualization_msgs::Marker marker;
@@ -84,6 +98,18 @@ void displayObstacle(const EControl& kind, const ObstaclePoints& obstacle_points
   obstacle_pub.publish(marker);
 }
 
+/**
+ * 显示检测范围的函数。该函数接收车道、人行横道、最近路径点、控制类型、障碍物路径点、停止范围、减速范围等参数，并使用这些参数在地图上标记出相应的检测范围。
+ *
+ * @param lane 表示车道的autoware_msgs::Lane对象。
+ * @param crosswalk 表示人行横道的CrossWalk对象。
+ * @param closest_waypoint 最近的路径点的索引。
+ * @param kind 控制类型，决定了如何标记停止线。
+ * @param obstacle_waypoint 障碍物的路径点的索引。
+ * @param stop_range 停止范围，决定了停止检测的范围大小。
+ * @param deceleration_range 减速范围，决定了减速检测的范围大小。
+ * @param detection_range_pub 用于发布标记消息的ros::Publisher对象。
+ */
 void displayDetectionRange(const autoware_msgs::Lane& lane, const CrossWalk& crosswalk, const int closest_waypoint,
                            const EControl& kind, const int obstacle_waypoint, const double stop_range,
                            const double deceleration_range, const ros::Publisher& detection_range_pub)

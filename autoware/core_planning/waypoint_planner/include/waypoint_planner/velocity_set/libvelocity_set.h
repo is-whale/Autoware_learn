@@ -77,12 +77,17 @@ public:
   void calcCenterPoints();
   void setCrossWalkPoints();
   int findClosestCrosswalk(const int closest_waypoint, const autoware_msgs::Lane &lane, const int search_distance);
+/**
+ * 获取detection_points_的大小。
+ *
+ * @return 返回detection_points_的大小。
+ */
   int getSize() const
   {
-    return detection_points_.size();
+    return detection_points_.size(); 
   }
   std::vector<int> getBDID() const
-  {
+  { 
     return bdID_;
   }
   const CrossWalkPoints& getDetectionPoints(const int &id) const
