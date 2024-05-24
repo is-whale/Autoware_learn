@@ -1,9 +1,8 @@
 # Autoware.ai v1.14个人维护版本
 
----
 
-autoware.ai原始版本[WIKI地址](https://github.com/autowarefoundation/autoware_ai_documentation/wiki)
-已停止维护和更新
+
+autoware.ai原始版本[WIKI地址](https://github.com/autowarefoundation/autoware_ai_documentation/wiki)已停止维护和更新
 
 ## Introduction
 
