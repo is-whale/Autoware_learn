@@ -5,6 +5,25 @@
 [autoware.ai原始版本](https://github.com/autowarefoundation/autoware_ai_documentation/wiki)已停止维护和更新
 
 ## 展示
+
+<div style="display: flex;flex-wrap: wrap; justify-content: flex-start; align-items: stretch; ">
+    <div style="width: 600px; height: 400px;flex-grow: 0;min-width: 100px;margin: 10px;">
+          <iframe src="//player.bilibili.com/player.html?aid=708255828&bvid=BV1wQ4y1E7SW&cid=1395326689&p=1&autoplay=0" style="width: 100%; height: 100%;" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+    </div>
+    <div style="width: 600px; height: 400px;flex-grow: 0;min-width: 100px;margin: 10px;">
+        <iframe src="//player.bilibili.com/player.html?aid=666024576&bvid=BV1pa4y1m7yN&cid=1401696220&p=1&autoplay=0" style="width: 100%; height: 100%;" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+    </div>
+    <div style="width: 600px; height: 400px;flex-grow: 0;min-width: 100px;margin: 10px;">
+        <iframe src="//player.bilibili.com/player.html?aid=666024576&bvid=BV1pa4y1m7yN&cid=1401696220&p=1&autoplay=0" style="width: 100%; height: 100%;" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+    </div>
+    <div style="width: 600px; height: 400px;flex-grow: 0;min-width: 100px;margin: 10px;">
+        <iframe src="//player.bilibili.com/player.html?aid=666024576&bvid=BV1pa4y1m7yN&cid=1401696220&p=1&autoplay=0" style="width: 100%; height: 100%;" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+    </div>
+    <div style="width: 600px; height: 400px;flex-grow: 0;min-width: 100px;margin: 10px;">
+        <iframe src="//player.bilibili.com/player.html?aid=666024576&bvid=BV1pa4y1m7yN&cid=1401696220&p=1&autoplay=0" style="width: 100%; height: 100%;" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+    </div>
+</div>
+
 <iframe src="//player.bilibili.com/player.html?isOutside=true&aid=836849199&bvid=BV1wg4y1e7Lh&cid=1421926570&p=1" allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" frameborder="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
 
 [聚类 + 循迹 + 避障 + 路线跟踪](https://www.bilibili.com/video/BV1wg4y1e7Lh/?share_source=copy_web&vd_source=01ea4120103e2d6dc7d7195ab216d8bb)
