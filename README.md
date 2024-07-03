@@ -6,8 +6,6 @@
 
 ## 展示
 
-<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=836849199&bvid=BV1wg4y1e7Lh&cid=1421926570&p=1" allowfullscreen="allowfullscreen" width="100%" height="500" scrolling="no" frameborder="0" sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"></iframe>
-
 [聚类 + 循迹 + 避障 + 路线跟踪](https://www.bilibili.com/video/BV1wg4y1e7Lh/?share_source=copy_web&vd_source=01ea4120103e2d6dc7d7195ab216d8bb)
 ## Introduction
 
