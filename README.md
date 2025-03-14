@@ -1,4 +1,5 @@
 # Autoware.ai v1.14个人维护版本
+---
 
 
 
@@ -6,7 +7,7 @@
 
 ## 展示
 
-[聚类 + 循迹 + 避障 + 路线跟踪](https://www.bilibili.com/video/BV1wg4y1e7Lh/?share_source=copy_web&vd_source=01ea4120103e2d6dc7d7195ab216d8bb)
+[bilibili: 聚类 + 循迹 + 避障 + 路线跟踪](https://www.bilibili.com/video/BV1wg4y1e7Lh/?share_source=copy_web&vd_source=01ea4120103e2d6dc7d7195ab216d8bb)
 ## Introduction
 
 autoware原始版本已停止维护，autoware团队的开发转向了基于ROS2的autoware.universe系列版本，但是基于ROS1的Autoware仍然有很好的学习意义,但是由于停止维护，相关的资料较少，并且一些不合理的部分需要修改，所以本人fork了原始仓库，根据自己对源码的理解添加注释，并且对一些模块做了优化等。并且在完善各功能的操作方法等。
